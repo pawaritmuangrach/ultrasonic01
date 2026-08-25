@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="716" viewBox="0 0 680 716" font-family="Segoe UI, system-ui, sans-serif" fill="#343a40"><title>ผังภาครับ แผ่นที่ 3 สเตจขยายที่สองและขาออก</title><desc>ต่อขา 1 ลงขา 5 นำขา 7 ลงมาแถว 35 ตัวต้านทานป้อนกลับลงแถว 39 จัมเปอร์จากขา 6 ลงแถว 39 ตัวต้านทานลงแถว 43 คาปาลงแถว 45 แล้วต่อกราวด์ ภาคขาออกอยู่ฝั่งขวาที่แถว 30 ถึง 36 แล้วออกไปยัง GPIO34</desc><rect x="0" y="0" width="680" height="716" fill="#ffffff"/><text x="20" y="30" font-size="17" font-weight="700" fill="#1971c2">ผังภาครับ 3 — สเตจขยายที่ 2 และขาออก</text><text x="20" y="48" font-size="12" fill="#6c757d">Rf2/Rg2/Cg2 · R 2.2k + C 1nF แถว 30-36 · ออกที่ 34g ไป GPIO34</text><g transform="translate(0,56)">
+
+<rect x="110" y="100" width="398" height="500" rx="6" fill="#ffffff" stroke="#ced4da"/>
+<rect x="308" y="100" width="24" height="500" fill="#e9ecef"/>
+<rect x="126" y="122" width="16" height="460" rx="8" fill="#ffc9c9"/>
+<rect x="148" y="122" width="16" height="460" rx="8" fill="#a5d8ff"/>
+<rect x="454" y="122" width="16" height="460" rx="8" fill="#ffc9c9"/>
+<rect x="476" y="122" width="16" height="460" rx="8" fill="#a5d8ff"/>
+<line x1="118" y1="110" x2="118" y2="592" stroke="#e03131" stroke-width="2.5"/>
+<line x1="172" y1="110" x2="172" y2="592" stroke="#343a40" stroke-width="2.5"/>
+<line x1="446" y1="110" x2="446" y2="592" stroke="#e03131" stroke-width="2.5"/>
+<line x1="500" y1="110" x2="500" y2="592" stroke="#343a40" stroke-width="2.5"/>
+
+<g font-size="12" text-anchor="middle" fill="#6c757d"><text x="210" y="122">A</text><text x="232" y="122">B</text><text x="254" y="122">C</text><text x="276" y="122">D</text><text x="298" y="122">E</text><text x="342" y="122">F</text><text x="364" y="122">G</text><text x="386" y="122">H</text><text x="408" y="122">I</text><text x="430" y="122">J</text></g>
+
+<g fill="#e9ecef"><rect x="202" y="138" width="104" height="20" rx="10"/><rect x="202" y="266" width="104" height="20" rx="10"/><rect x="202" y="298" width="104" height="20" rx="10"/><rect x="202" y="330" width="104" height="20" rx="10"/><rect x="202" y="426" width="104" height="20" rx="10"/><rect x="202" y="490" width="104" height="20" rx="10"/><rect x="202" y="522" width="104" height="20" rx="10"/><rect x="202" y="554" width="104" height="20" rx="10"/><rect x="334" y="362" width="104" height="20" rx="10"/><rect x="334" y="394" width="104" height="20" rx="10"/><rect x="334" y="458" width="104" height="20" rx="10"/></g>
+
+<rect x="286" y="134" width="68" height="220" rx="4" fill="#dee2e6" stroke="#868e96" stroke-width="1.5"/>
+<path d="M326 134 A7 7 0 0 1 312 134" fill="none" stroke="#343a40" stroke-width="1.5"/>
+<g font-size="13" text-anchor="middle"><text x="300" y="153">1</text><text x="300" y="185">2</text><text x="300" y="217">3</text><text x="300" y="249">4</text><text x="300" y="281">5</text><text x="300" y="313">6</text><text x="300" y="345">7</text></g>
+
+<path d="M254 148 L254 276" fill="none" stroke="#1971c2" stroke-width="3"/><circle cx="254" cy="148" r="5" fill="#1971c2"/><circle cx="254" cy="276" r="5" fill="#1971c2"/>
+
+<path d="M232 340 L210 436" fill="none" stroke="#1971c2" stroke-width="2.5"/><circle cx="232" cy="340" r="5" fill="#1971c2"/><circle cx="210" cy="436" r="5" fill="#1971c2"/>
+
+<path d="M232 436 L232 448 M232 488 L232 500" fill="none" stroke="#1971c2" stroke-width="2.5"/><rect x="222" y="448" width="20" height="40" rx="3" fill="#ffd8a8" stroke="#e8590c" stroke-width="1.5"/><circle cx="232" cy="436" r="5" fill="#1971c2"/><circle cx="232" cy="500" r="5" fill="#1971c2"/>
+
+<path d="M276 308 L276 500" fill="none" stroke="#1971c2" stroke-width="2.5" stroke-dasharray="6 4"/><circle cx="276" cy="308" r="5" fill="#1971c2"/><circle cx="276" cy="500" r="5" fill="#1971c2"/>
+
+<path d="M298 500 L298 512 M298 522 L298 532" fill="none" stroke="#1971c2" stroke-width="2.5"/><rect x="288" y="512" width="20" height="10" rx="3" fill="#ffd8a8" stroke="#e8590c" stroke-width="1.5"/><circle cx="298" cy="500" r="5" fill="#1971c2"/><circle cx="298" cy="532" r="5" fill="#1971c2"/>
+
+<path d="M210 532 L210 544 M210 556 L210 564" fill="none" stroke="#1971c2" stroke-width="2.5"/><line x1="197" y1="544" x2="223" y2="544" stroke="#1971c2" stroke-width="3.5"/><line x1="197" y1="556" x2="223" y2="556" stroke="#1971c2" stroke-width="3.5"/><circle cx="210" cy="532" r="5" fill="#1971c2"/><circle cx="210" cy="564" r="5" fill="#1971c2"/>
+<path d="M232 564 L232 586 L156 586" fill="none" stroke="#343a40" stroke-width="2.5"/><circle cx="232" cy="564" r="5" fill="#343a40"/><circle cx="156" cy="586" r="5" fill="#343a40"/>
+
+<path d="M254 340 L254 356 L364 356 L364 372" fill="none" stroke="#1971c2" stroke-width="2.5"/><circle cx="254" cy="340" r="5" fill="#1971c2"/><circle cx="364" cy="372" r="5" fill="#1971c2"/>
+
+<path d="M386 372 L386 382 M386 394 L386 404" fill="none" stroke="#1971c2" stroke-width="2.5"/><rect x="376" y="382" width="20" height="12" rx="3" fill="#ffd8a8" stroke="#e8590c" stroke-width="1.5"/><circle cx="386" cy="372" r="5" fill="#1971c2"/><circle cx="386" cy="404" r="5" fill="#1971c2"/>
+
+<path d="M408 404 L408 420 M408 452 L408 468" fill="none" stroke="#1971c2" stroke-width="2.5"/><line x1="395" y1="420" x2="421" y2="420" stroke="#1971c2" stroke-width="3.5"/><line x1="395" y1="452" x2="421" y2="452" stroke="#1971c2" stroke-width="3.5"/><circle cx="408" cy="404" r="5" fill="#1971c2"/><circle cx="408" cy="468" r="5" fill="#1971c2"/>
+
+<path d="M430 468 L454 468 A9 9 0 0 1 472 468 L484 468" fill="none" stroke="#343a40" stroke-width="2.5"/><circle cx="430" cy="468" r="5" fill="#343a40"/><circle cx="484" cy="468" r="5" fill="#343a40"/>
+
+<path d="M364 404 L364 620 L96 620" fill="none" stroke="#1971c2" stroke-width="3"/><circle cx="364" cy="404" r="5" fill="#1971c2"/><text font-size="14" font-weight="600" x="90" y="624" text-anchor="end" fill="#1971c2">GPIO34</text>
+
+<line stroke-width="1" x1="246" y1="468" x2="102" y2="452" stroke="#adb5bd" stroke-dasharray="4 3"/><text font-size="14" font-weight="600" x="96" y="450" text-anchor="end">Rf2 100k</text>
+<line stroke-width="1" x1="312" y1="517" x2="418" y2="512" stroke="#adb5bd" stroke-dasharray="4 3"/><text font-size="14" font-weight="600" x="424" y="516">Rg2 10k</text>
+<line stroke-width="1" x1="226" y1="550" x2="102" y2="556" stroke="#adb5bd" stroke-dasharray="4 3"/><text font-size="14" font-weight="600" x="96" y="560" text-anchor="end">C 1nF</text>
+<line stroke-width="1" x1="400" y1="388" x2="524" y2="382" stroke="#adb5bd" stroke-dasharray="4 3"/><text font-size="14" font-weight="600" x="530" y="386">R 2.2k</text>
+<line stroke-width="1" x1="424" y1="436" x2="524" y2="436" stroke="#adb5bd" stroke-dasharray="4 3"/><text font-size="14" font-weight="600" x="530" y="440">C 1nF</text>
+
+<g fill="#ffffff"><rect x="174" y="134" width="28" height="20" rx="4"/><rect x="174" y="166" width="28" height="20" rx="4"/><rect x="174" y="198" width="28" height="20" rx="4"/><rect x="174" y="230" width="28" height="20" rx="4"/><rect x="174" y="262" width="28" height="20" rx="4"/><rect x="174" y="294" width="28" height="20" rx="4"/><rect x="174" y="326" width="28" height="20" rx="4"/><rect x="174" y="358" width="28" height="20" rx="4"/><rect x="174" y="390" width="28" height="20" rx="4"/><rect x="174" y="422" width="28" height="20" rx="4"/><rect x="174" y="454" width="28" height="20" rx="4"/><rect x="174" y="486" width="28" height="20" rx="4"/><rect x="174" y="518" width="28" height="20" rx="4"/><rect x="174" y="550" width="28" height="20" rx="4"/></g>
+<g font-size="13" text-anchor="end" fill="#6c757d"><text x="198" y="150">20</text><text x="198" y="182">21</text><text x="198" y="214">22</text><text x="198" y="246">23</text><text x="198" y="278">24</text><text x="198" y="310">25</text><text x="198" y="342">26</text><text x="198" y="374">30</text><text x="198" y="406">34</text><text x="198" y="438">35</text><text x="198" y="470">36</text><text x="198" y="502">39</text><text x="198" y="534">43</text><text x="198" y="566">45</text></g>
+</g></svg>

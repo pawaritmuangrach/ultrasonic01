@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<title>Ultrasonic TDOA 2D Wave Simulation</title>
+<style>
+  :root {
+    --bg: #0b1220;
+    --panel: #121a2b;
+    --panel-border: #223049;
+    --text: #e6edf7;
+    --muted: #8ea0bd;
+    --accent: #4fd1c5;
+    --accent2: #f6a94a;
+    --danger: #f56565;
+    --grid: #1b2740;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  header {
+    padding: 10px 16px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    font-size: 15px;
+    margin: 0 12px 0 0;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  button {
+    background: var(--accent);
+    color: #06231f;
+    border: none;
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  button.secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--panel-border);
+  }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  label { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+  input[type="number"] {
+    width: 60px; background: #0e1725; border: 1px solid var(--panel-border);
+    color: var(--text); border-radius: 4px; padding: 4px 6px; font-size: 12px;
+  }
+  input[type="range"] { width: 100px; }
+  #status-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--danger); display: inline-block; }
+  #status-dot.connected { background: var(--accent); }
+  #status-text { font-size: 12px; color: var(--muted); }
+  main {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+  #canvas-wrap {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 50% 100%, #0f1b30 0%, var(--bg) 70%);
+  }
+  canvas { display: block; }
+  #side {
+    width: 300px;
+    border-left: 1px solid var(--panel-border);
+    background: var(--panel);
+    padding: 14px;
+    overflow-y: auto;
+    font-size: 13px;
+  }
+  #side h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 18px 0 8px; }
+  #side h2:first-child { margin-top: 0; }
+  .kv { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed #1c2740; }
+  .kv .k { color: var(--muted); }
+  .kv .v { font-variant-numeric: tabular-nums; font-weight: 600; }
+  #status-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700;
+    background: #17321f; color: #7ee787;
+  }
+  #status-badge.bad { background: #3a1414; color: var(--danger); }
+  #status-badge.warn { background: #3a2a10; color: var(--accent2); }
+  #confidence-bar-bg { width: 100%; height: 8px; background: #0e1725; border-radius: 4px; overflow: hidden; margin-top: 4px; }
+  #confidence-bar { height: 100%; background: var(--accent); width: 0%; transition: width .2s; }
+  #sparkline { width: 100%; height: 60px; background: #0e1725; border-radius: 4px; margin-top: 6px; }
+  #log {
+    background: #070c15; border: 1px solid var(--panel-border); border-radius: 6px;
+    height: 130px; overflow-y: auto; padding: 6px; font-family: Consolas, monospace;
+    font-size: 10.5px; color: #6d859f; white-space: pre-wrap;
+  }
+  #help {
+    font-size: 11.5px; color: var(--muted); line-height: 1.5; margin-top: 6px;
+  }
+  #help b { color: var(--text); }
+  #tooltip {
+    position: absolute; pointer-events: none; display: none;
+    background: #0b1220ee; border: 1px solid var(--panel-border); border-radius: 6px;
+    padding: 5px 8px; font-size: 11.5px; font-family: Consolas, monospace; color: var(--text);
+    white-space: nowrap; z-index: 5;
+  }
+  #map-stat { font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Ultrasonic TDOA · 2D Wave Simulation</h1>
+  <button id="btn-connect">Connect Arduino (Web Serial)</button>
+  <button id="btn-demo" class="secondary">Demo mode (no hardware)</button>
+  <button id="btn-disconnect" class="secondary" disabled>Disconnect</button>
+  <label>Receiver spacing D <input id="in-spacing" type="number" step="0.5" value="5.0" /> cm</label>
+  <label>Slow-motion <input id="in-speed" type="range" min="1" max="10" value="4" /></label>
+  <button id="btn-clear-map" class="secondary">Clear Map</button>
+  <button id="btn-export-map" class="secondary">Export Map (CSV)</button>
+  <span id="map-stat">จุดที่สะสม: 0</span>
+  <span style="flex:1"></span>
+  <span id="status-dot"></span>
+  <span id="status-text">ยังไม่ได้เชื่อมต่อ</span>
+</header>
+
+<main>
+  <div id="canvas-wrap">
+    <canvas id="scene" width="760" height="560"></canvas>
+    <div id="tooltip"></div>
+  </div>
+  <div id="side">
+    <h2>Telemetry ล่าสุด</h2>
+    <div class="kv"><span class="k">status</span><span class="v" id="v-status"><span id="status-badge">--</span></span></div>
+    <div class="kv"><span class="k">confidence</span><span class="v" id="v-confidence">--</span></div>
+    <div id="confidence-bar-bg"><div id="confidence-bar"></div></div>
+    <div class="kv"><span class="k">R1 pulse / dist</span><span class="v" id="v-r1">--</span></div>
+    <div class="kv"><span class="k">R2 pulse / dist</span><span class="v" id="v-r2">--</span></div>
+    <div class="kv"><span class="k">raw dt</span><span class="v" id="v-rawdt">--</span></div>
+    <div class="kv"><span class="k">calibrated dt</span><span class="v" id="v-caldt">--</span></div>
+    <div class="kv"><span class="k">path diff</span><span class="v" id="v-path">--</span></div>
+    <div class="kv"><span class="k">angle</span><span class="v" id="v-angle">--</span></div>
+    <div class="kv"><span class="k">cycle shift</span><span class="v" id="v-cycle">--</span></div>
+
+    <h2>Calibrated dt history</h2>
+    <canvas id="sparkline" width="272" height="60"></canvas>
+
+    <h2>Assumptions ของภาพจำลอง</h2>
+    <div id="help">
+      สมมติว่า <b>T (ตัวส่ง) อยู่ตำแหน่งเดียวกับ R1</b> (บอร์ด 1 มีทั้งตัวส่งและตัวรับ) ระยะ T→เป้าหมาย
+      คำนวณจาก r1_cm (สูตร pulse-echo ปกติ) ส่วนระยะเป้าหมาย→R2 คำนวณจาก
+      <code>r2_pulse_us × c − r1_cm</code> แล้วหาตำแหน่งเป้าหมายจริงด้วยการตัดกันของวงกลมสองวง
+      (multilateration) หากข้อมูลสัญญาณรบกวนมากจนวงกลมไม่ตัดกัน จะ fallback ไปใช้ angle_deg
+      + ระยะเฉลี่ยจากจุดกึ่งกลางแทน นี่คือภาพจำลองเชิงแนวคิด ไม่ใช่ตำแหน่งที่แม่นยำระดับมิลลิเมตร
+      (ดูข้อจำกัดเต็มใน README.md)
+      <br/><br/>
+      <b>Map of the Environment:</b> ทุกครั้งที่วัดได้ (status VALID หรือ UNRELIABLE) จุดสะท้อนจะถูก
+      สะสมไว้เป็นจุดสีชมพูบานเย็น (magenta) ต่อเนื่องกันเรื่อยๆ ไม่ลบทิ้งเหมือนคลื่นแอนิเมชัน — ถ้าจุดที่วัด
+      ได้ต่อเนื่องกันอยู่ใกล้กัน (&lt; 15 cm) จะมีเส้นเชื่อมให้เห็นเป็นขอบวัตถุ/กำแพงคร่าวๆ เอามาส่องเมาส์ที่จุด
+      ใดก็ได้เพื่อดูระยะ/มุม/confidence ของจุดนั้น เหมาะกับการทดลองเลื่อนแผ่นสะท้อนไปหลายตำแหน่ง
+      (Experiment 4 ในสเปก) แล้วดูภาพรวมทั้งหมด — เซนเซอร์ชุดนี้ไม่ได้หมุนสแกนแบบ lidar จึงยังไม่ใช่แผนที่ห้อง
+      ที่สมบูรณ์ ถ้าจะได้แผนที่แบบในภาพตัวอย่าง ต้องเพิ่มกลไกหมุนตัวเซนเซอร์และส่ง heading มาด้วย
+    </div>
+
+    <h2>Replay captured data (offline)</h2>
+    <div id="help" style="margin-bottom:6px;">
+      วางบรรทัด CSV ที่ก็อปมาจาก Serial Monitor (หรือจากที่ผมแคปเจอร์ให้ดู) แล้วกด Replay
+      เพื่อดูว่าข้อมูลชุดนั้นจะออกมาเป็นภาพแบบไหน โดยไม่ต้องต่อฮาร์ดแวร์จริง
+    </div>
+    <textarea id="replay-input" rows="4" style="width:100%; background:#0e1725; color:var(--text); border:1px solid var(--panel-border); border-radius:4px; font-family:Consolas,monospace; font-size:10.5px; padding:4px;" placeholder="timestamp_ms,r1_pulse_us,r2_pulse_us,r1_cm,r2_cm,raw_dt_us,calibrated_dt_us,path_diff_cm,angle_deg,confidence,status,cycle_shift"></textarea>
+    <div style="display:flex; gap:6px; margin-top:6px;">
+      <button id="btn-replay" class="secondary">Replay</button>
+      <button id="btn-replay-stop" class="secondary" disabled>Stop</button>
+      <label>ms/แถว <input id="in-replay-speed" type="number" value="110" style="width:55px;" /></label>
+    </div>
+
+    <h2>Serial log</h2>
+    <div id="log"></div>
+  </div>
+</main>
+
+<script>
+(() => {
+  const SOUND_SPEED_CM_PER_US = 0.0343;
+  const canvas = document.getElementById('scene');
+  const ctx = canvas.getContext('2d');
+  const spark = document.getElementById('sparkline');
+  const sctx = spark.getContext('2d');
+  const logEl = document.getElementById('log');
+
+  const btnConnect = document.getElementById('btn-connect');
+  const btnDemo = document.getElementById('btn-demo');
+  const btnDisconnect = document.getElementById('btn-disconnect');
+  const btnClearMap = document.getElementById('btn-clear-map');
+  const btnExportMap = document.getElementById('btn-export-map');
+  const btnReplay = document.getElementById('btn-replay');
+  const btnReplayStop = document.getElementById('btn-replay-stop');
+  const replayInput = document.getElementById('replay-input');
+  const replaySpeedInput = document.getElementById('in-replay-speed');
+  const mapStatEl = document.getElementById('map-stat');
+  const tooltipEl = document.getElementById('tooltip');
+  const inSpacing = document.getElementById('in-spacing');
+  const inSpeed = document.getElementById('in-speed');
+  const statusDot = document.getElementById('status-dot');
+  const statusText = document.getElementById('status-text');
+
+  // --- accumulated map (all reflections received over time) ------------
+  const EDGE_MAX_CM = 15;      // connect consecutive points closer than this
+  const MAP_POINTS_MAX = 3000; // cap memory usage
+  let mapPoints = [];          // {x, y, rangeCm, angleDeg, confidence, t}
+  let maxMapDist = 0;
+  let lastView = null;         // view used by the most recent render frame
+
+  let port = null;
+  let reader = null;
+  let keepReading = false;
+  let demoTimer = null;
+  let demoT = 0;
+
+  let dtHistory = [];
+  const DT_HISTORY_MAX = 60;
+
+  // --- animation state -------------------------------------------------
+  // A "shot" carries everything needed to animate one ping.
+  let currentShot = null;   // playing right now
+  let pendingShot = null;   // most recent shot waiting to play next
+  let shotStartMs = 0;
+
+  function log(line) {
+    logEl.textContent += line + "\n";
+    if (logEl.textContent.length > 8000) {
+      logEl.textContent = logEl.textContent.slice(-6000);
+    }
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function setConnected(connected, label) {
+    statusDot.classList.toggle('connected', connected);
+    statusText.textContent = label;
+    btnDisconnect.disabled = !connected;
+    btnConnect.disabled = connected;
+    btnDemo.disabled = connected;
+  }
+
+  // ---------------------------------------------------------------------
+  // Parse one CSV line matching:
+  // timestamp_ms,r1_pulse_us,r2_pulse_us,r1_cm,r2_cm,raw_dt_us,
+  // calibrated_dt_us,path_diff_cm,angle_deg,confidence,status,cycle_shift
+  // ---------------------------------------------------------------------
+  function parseCsvLine(line) {
+    const t = line.trim();
+    if (!t || t.startsWith('#') || t.startsWith('timestamp_ms')) return null;
+    const parts = t.split(',');
+    if (parts.length < 12) return null;
+    const num = (s) => { const f = parseFloat(s); return Number.isFinite(f) ? f : NaN; };
+    const row = {
+      timestampMs: num(parts[0]),
+      r1PulseUs: num(parts[1]),
+      r2PulseUs: num(parts[2]),
+      r1Cm: num(parts[3]),
+      r2Cm: num(parts[4]),
+      rawDtUs: num(parts[5]),
+      calDtUs: num(parts[6]),
+      pathDiffCm: num(parts[7]),
+      angleDeg: parts[8].trim() === 'NA' ? NaN : num(parts[8]),
+      confidence: num(parts[9]),
+      status: parts[10].trim(),
+      cycleShift: parseInt(parts[11], 10),
+    };
+    if (!Number.isFinite(row.r1PulseUs) || !Number.isFinite(row.r2PulseUs)) return null;
+    return row;
+  }
+
+  // ---------------------------------------------------------------------
+  // Build a "shot": geometry + timing needed to animate outgoing wave,
+  // reflection point, and the two return wavefronts.
+  // ---------------------------------------------------------------------
+  function buildShot(row) {
+    const D = parseFloat(inSpacing.value) || 5.0;
+    const c = SOUND_SPEED_CM_PER_US;
+    const pT = { x: -D / 2, y: 0 };   // transmitter ~= R1 (same board)
+    const pR1 = pT;
+    const pR2 = { x: D / 2, y: 0 };
+
+    const rT = Math.max(row.r1Cm, 0.5);                 // T -> target
+    const totalPath2 = row.r2PulseUs * c;                 // T -> target -> R2 (total)
+    const rR2raw = totalPath2 - rT;
+
+    let target = null;
+    if (rR2raw > 0.2) {
+      target = intersectCircles(pT, rT, pR2, rR2raw, D);
+    }
+    let rR2 = rR2raw;
+    if (!target) {
+      // Fallback: use angle_deg (or 0 if invalid) and the average of the two
+      // module-reported distances, measured from the midpoint (0,0).
+      const angle = Number.isFinite(row.angleDeg) ? row.angleDeg : 0;
+      const avgR = (row.r1Cm + row.r2Cm) / 2;
+      const rad = angle * Math.PI / 180;
+      target = { x: avgR * Math.sin(rad), y: avgR * Math.cos(rad) };
+      rR2 = dist(target, pR2);
+    }
+
+    const legOutUs = rT / c;                 // T -> target
+    const legBackR1Us = rT / c;               // target -> R1 (same leg length as outgoing)
+    const legBackR2Us = Math.max(rR2, 0) / c; // target -> R2
+
+    return {
+      row, pT, pR1, pR2, target,
+      rT, rR2,
+      legOutUs, legBackR1Us, legBackR2Us,
+      totalRealUs: legOutUs + Math.max(legBackR1Us, legBackR2Us),
+    };
+  }
+
+  function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
+  // Intersection of circle(c1,r1) and circle(c2,r2), returns the point with
+  // larger y (in front of the R1-R2 baseline). Null if circles don't meet.
+  function intersectCircles(c1, r1, c2, r2, d) {
+    if (d <= 0) return null;
+    const a = (r1 * r1 - r2 * r2 + d * d) / (2 * d);
+    const h2 = r1 * r1 - a * a;
+    if (h2 < 0) return null;
+    const h = Math.sqrt(h2);
+    const ux = (c2.x - c1.x) / d, uy = (c2.y - c1.y) / d;
+    const mx = c1.x + a * ux, my = c1.y + a * uy;
+    const px = -uy, py = ux; // perpendicular
+    const p1 = { x: mx + h * px, y: my + h * py };
+    const p2 = { x: mx - h * px, y: my - h * py };
+    return (p1.y >= p2.y) ? p1 : p2;
+  }
+
+  // ---------------------------------------------------------------------
+  // Handle a fully parsed row: update telemetry panel + queue animation.
+  // ---------------------------------------------------------------------
+  function handleRow(row) {
+    updateTelemetry(row);
+    if (row.status === 'TIMEOUT' || row.status === 'INVALID_PULSE') return; // nothing usable arrived
+    const shot = buildShot(row);
+    addMapPoint(shot, row);
+    if (!currentShot) {
+      currentShot = shot;
+      shotStartMs = performance.now();
+    } else {
+      pendingShot = shot; // drop any older pending shot, keep only latest
+    }
+  }
+
+  // Every usable reflection is kept permanently (until cleared) so the map
+  // shows everything detected across many pings, not just the current shot.
+  function addMapPoint(shot, row) {
+    const rangeCm = (row.r1Cm + row.r2Cm) / 2;
+    mapPoints.push({
+      x: shot.target.x, y: shot.target.y,
+      rangeCm, angleDeg: row.angleDeg, confidence: row.confidence,
+      status: row.status, t: Date.now(),
+    });
+    if (mapPoints.length > MAP_POINTS_MAX) mapPoints.shift();
+    const d = Math.hypot(shot.target.x, shot.target.y);
+    if (d > maxMapDist) maxMapDist = d;
+    mapStatEl.textContent = `จุดที่สะสม: ${mapPoints.length}`;
+  }
+
+  function clearMap() {
+    mapPoints = [];
+    maxMapDist = 0;
+    mapStatEl.textContent = 'จุดที่สะสม: 0';
+  }
+
+  function exportMapCsv() {
+    let csv = 'x_cm,y_cm,range_cm,angle_deg,confidence,status,timestamp_ms\n';
+    for (const p of mapPoints) {
+      csv += `${p.x.toFixed(3)},${p.y.toFixed(3)},${p.rangeCm.toFixed(3)},` +
+             `${Number.isFinite(p.angleDeg) ? p.angleDeg.toFixed(2) : 'NA'},` +
+             `${p.confidence},${p.status},${p.t}\n`;
+    }
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ultrasonic_map_${Date.now()}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function updateTelemetry(row) {
+    const badge = document.getElementById('status-badge');
+    badge.textContent = row.status;
+    badge.className = row.status === 'VALID' ? '' : (row.status === 'UNRELIABLE' ? 'warn' : 'bad');
+
+    document.getElementById('v-confidence').textContent = row.confidence + ' / 100';
+    document.getElementById('confidence-bar').style.width = Math.max(0, Math.min(100, row.confidence)) + '%';
+    document.getElementById('v-r1').textContent = `${row.r1PulseUs.toFixed(1)} us / ${row.r1Cm.toFixed(2)} cm`;
+    document.getElementById('v-r2').textContent = `${row.r2PulseUs.toFixed(1)} us / ${row.r2Cm.toFixed(2)} cm`;
+    document.getElementById('v-rawdt').textContent = row.rawDtUs.toFixed(1) + ' us';
+    document.getElementById('v-caldt').textContent = row.calDtUs.toFixed(1) + ' us';
+    document.getElementById('v-path').textContent = row.pathDiffCm.toFixed(3) + ' cm';
+    document.getElementById('v-angle').textContent = Number.isFinite(row.angleDeg) ? row.angleDeg.toFixed(2) + ' deg' : 'NA';
+    document.getElementById('v-cycle').textContent = row.cycleShift;
+
+    dtHistory.push(row.calDtUs);
+    if (dtHistory.length > DT_HISTORY_MAX) dtHistory.shift();
+    drawSparkline();
+  }
+
+  function drawSparkline() {
+    const w = spark.width, h = spark.height;
+    sctx.clearRect(0, 0, w, h);
+    if (dtHistory.length < 2) return;
+    const maxAbs = Math.max(10, ...dtHistory.map(v => Math.abs(v)));
+    sctx.strokeStyle = '#223049';
+    sctx.beginPath(); sctx.moveTo(0, h / 2); sctx.lineTo(w, h / 2); sctx.stroke();
+    sctx.strokeStyle = '#4fd1c5';
+    sctx.lineWidth = 1.5;
+    sctx.beginPath();
+    dtHistory.forEach((v, i) => {
+      const x = (i / (DT_HISTORY_MAX - 1)) * w;
+      const y = h / 2 - (v / maxAbs) * (h / 2 - 4);
+      if (i === 0) sctx.moveTo(x, y); else sctx.lineTo(x, y);
+    });
+    sctx.stroke();
+  }
+
+  // ---------------------------------------------------------------------
+  // Rendering
+  // ---------------------------------------------------------------------
+  function worldToCanvas(p, view) {
+    return {
+      x: view.originX + p.x * view.scale,
+      y: view.baselineY - p.y * view.scale,
+    };
+  }
+
+  function computeView(shot) {
+    const D = parseFloat(inSpacing.value) || 5.0;
+    let maxDist = 30;
+    if (shot) maxDist = Math.max(maxDist, shot.rT * 1.15, shot.target ? Math.hypot(shot.target.x, shot.target.y) * 1.15 : 0);
+    maxDist = Math.max(maxDist, maxMapDist * 1.1);
+    const halfWidth = Math.max(maxDist, D * 1.5, 20);
+    const w = canvas.width, h = canvas.height;
+    const scale = Math.min(w / (2 * halfWidth), (h - 70) / halfWidth);
+    return { scale, originX: w / 2, baselineY: h - 50, halfWidth };
+  }
+
+  // Draw every accumulated reflection as a magenta dot; link consecutive
+  // points that are close together so nearby returns read as one edge/wall.
+  function drawMapPoints(view) {
+    if (mapPoints.length === 0) return;
+    ctx.lineWidth = 1.5;
+    for (let i = 1; i < mapPoints.length; i++) {
+      const a = mapPoints[i - 1], b = mapPoints[i];
+      if (Math.hypot(a.x - b.x, a.y - b.y) <= EDGE_MAX_CM) {
+        const ca = worldToCanvas(a, view), cb = worldToCanvas(b, view);
+        ctx.strokeStyle = '#ff2fd6';
+        ctx.globalAlpha = 0.55;
+        ctx.beginPath();
+        ctx.moveTo(ca.x, ca.y); ctx.lineTo(cb.x, cb.y);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+    for (const p of mapPoints) {
+      const c = worldToCanvas(p, view);
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, 2.6, 0, Math.PI * 2);
+      ctx.fillStyle = '#ff2fd6';
+      ctx.globalAlpha = Math.max(0.35, (p.confidence || 60) / 100);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawStatic(view) {
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    // range rings (grid), every 10 cm
+    ctx.strokeStyle = '#1b2740';
+    ctx.fillStyle = '#3d5170';
+    ctx.font = '10px monospace';
+    ctx.lineWidth = 1;
+    for (let r = 10; r <= view.halfWidth + 10; r += 10) {
+      ctx.beginPath();
+      ctx.arc(view.originX, view.baselineY, r * view.scale, Math.PI, 2 * Math.PI);
+      ctx.stroke();
+      ctx.fillText(r + 'cm', view.originX + 4, view.baselineY - r * view.scale - 3);
+    }
+
+    // baseline
+    ctx.strokeStyle = '#2a3a58';
+    ctx.beginPath();
+    ctx.moveTo(0, view.baselineY);
+    ctx.lineTo(w, view.baselineY);
+    ctx.stroke();
+  }
+
+  function drawSensor(view, p, label, color) {
+    const c = worldToCanvas(p, view);
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, 6, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.fillStyle = '#e6edf7';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillText(label, c.x + 9, c.y + 4);
+  }
+
+  function drawRipple(view, center, radius, color, alphaScale) {
+    if (radius <= 0) return;
+    const c = worldToCanvas(center, view);
+    for (let i = 0; i < 3; i++) {
+      const rr = radius - i * (3.5 / view.scale) * 4;
+      if (rr <= 0) continue;
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, rr * view.scale, 0, Math.PI * 2);
+      ctx.strokeStyle = color;
+      ctx.globalAlpha = alphaScale * (1 - i * 0.32);
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function render() {
+    const view = computeView(currentShot);
+    lastView = view;
+    drawStatic(view);
+    drawMapPoints(view);
+    drawSensor(view, { x: -parseFloat(inSpacing.value || 5) / 2, y: 0 }, 'T + R1', '#f6a94a');
+    drawSensor(view, { x: parseFloat(inSpacing.value || 5) / 2, y: 0 }, 'R2', '#4fd1c5');
+
+    if (currentShot) {
+      const shot = currentShot;
+      const speedFactor = parseInt(inSpeed.value, 10);
+      const animTotalMs = 900 + speedFactor * 220; // total wall-clock duration target
+      const elapsedMs = performance.now() - shotStartMs;
+      const realTotalUs = shot.totalRealUs;
+      const msPerUs = animTotalMs / realTotalUs;
+
+      const outEndMs = shot.legOutUs * msPerUs;
+      const r1EndMs = outEndMs + shot.legBackR1Us * msPerUs;
+      const r2EndMs = outEndMs + shot.legBackR2Us * msPerUs;
+      const totalMs = Math.max(outEndMs, r1EndMs, r2EndMs) + 250; // brief hold at the end
+
+      if (elapsedMs <= outEndMs) {
+        const frac = elapsedMs / outEndMs;
+        drawRipple(view, shot.pT, shot.rT * frac, '#f6a94a', 0.9);
+      } else {
+        // outgoing wave fully arrived: draw the reflection marker
+        const tc = worldToCanvas(shot.target, view);
+        ctx.beginPath();
+        ctx.arc(tc.x, tc.y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(tc.x, tc.y, 10, 0, Math.PI * 2);
+        ctx.strokeStyle = '#ffffff55';
+        ctx.stroke();
+
+        if (elapsedMs <= r1EndMs) {
+          const frac = (elapsedMs - outEndMs) / (r1EndMs - outEndMs || 1);
+          drawRipple(view, shot.target, shot.rT * frac, '#f6a94a', 0.75);
+        }
+        if (elapsedMs <= r2EndMs) {
+          const frac = (elapsedMs - outEndMs) / (r2EndMs - outEndMs || 1);
+          drawRipple(view, shot.target, shot.rR2 * frac, '#4fd1c5', 0.75);
+        }
+      }
+
+      // straight sightlines (faint) for context
+      ctx.setLineDash([3, 4]);
+      ctx.strokeStyle = '#33415e';
+      ctx.beginPath();
+      const pTc = worldToCanvas(shot.pT, view), tc2 = worldToCanvas(shot.target, view), r2c = worldToCanvas(shot.pR2, view);
+      ctx.moveTo(pTc.x, pTc.y); ctx.lineTo(tc2.x, tc2.y); ctx.lineTo(r2c.x, r2c.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if (elapsedMs > totalMs) {
+        currentShot = pendingShot;
+        pendingShot = null;
+        shotStartMs = performance.now();
+      }
+    }
+
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+
+  // ---------------------------------------------------------------------
+  // Web Serial connection
+  // ---------------------------------------------------------------------
+  async function connectSerial() {
+    if (!('serial' in navigator)) {
+      alert('เบราว์เซอร์นี้ไม่รองรับ Web Serial API กรุณาเปิดด้วย Chrome หรือ Edge');
+      return;
+    }
+    try {
+      port = await navigator.serial.requestPort();
+      await port.open({ baudRate: 115200 });
+      setConnected(true, 'เชื่อมต่อแล้ว, กำลังรอข้อมูล...');
+      keepReading = true;
+      readLoop();
+    } catch (err) {
+      log('# connect error: ' + err.message);
+      setConnected(false, 'เชื่อมต่อไม่สำเร็จ');
+    }
+  }
+
+  async function readLoop() {
+    const textDecoder = new TextDecoderStream();
+    const readableClosed = port.readable.pipeTo(textDecoder.writable);
+    reader = textDecoder.readable.getReader();
+    let buffer = '';
+    try {
+      while (keepReading) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += value;
+        let idx;
+        while ((idx = buffer.indexOf('\n')) >= 0) {
+          const line = buffer.slice(0, idx).replace('\r', '');
+          buffer = buffer.slice(idx + 1);
+          if (line.trim().length) log(line);
+          const row = parseCsvLine(line);
+          if (row) {
+            setConnected(true, 'รับข้อมูลล่าสุด @ ' + new Date().toLocaleTimeString());
+            handleRow(row);
+          }
+        }
+      }
+    } catch (err) {
+      log('# read error: ' + err.message);
+    } finally {
+      reader.releaseLock();
+      await readableClosed.catch(() => {});
+    }
+  }
+
+  async function disconnectSerial() {
+    keepReading = false;
+    try { if (reader) await reader.cancel(); } catch (e) {}
+    try { if (port) await port.close(); } catch (e) {}
+    port = null;
+    setConnected(false, 'ตัดการเชื่อมต่อแล้ว');
+  }
+
+  // ---------------------------------------------------------------------
+  // Demo mode: synthetic target sweeping left-right, feeds the same pipeline
+  // ---------------------------------------------------------------------
+  function startDemo() {
+    stopDemo();
+    setConnected(true, 'Demo mode (ไม่มีฮาร์ดแวร์จริง)');
+    btnDemo.disabled = true;
+    let tick = 0;
+    demoTimer = setInterval(() => {
+      tick++;
+      const D = parseFloat(inSpacing.value) || 5.0;
+      const c = SOUND_SPEED_CM_PER_US;
+      const pT = { x: -D / 2, y: 0 };
+      const pR2 = { x: D / 2, y: 0 };
+
+      const sweep = Math.sin(tick * 0.18) * 20; // cm, left-right sweep
+      const forward = 35 + Math.sin(tick * 0.05) * 8;
+      const target = { x: sweep, y: forward };
+
+      const rT = dist(pT, target);
+      const rR2 = dist(pR2, target);
+      const pulse1Us = 2 * rT / c;
+      const pulse2Us = (rT + rR2) / c;
+      const rawDt = pulse2Us - pulse1Us;
+      const pathDiff = rawDt * c;
+      let ratio = pathDiff / D;
+      ratio = Math.max(-1, Math.min(1, ratio));
+      const angle = Math.asin(ratio) * 180 / Math.PI;
+
+      const row = {
+        timestampMs: Date.now(),
+        r1PulseUs: pulse1Us,
+        r2PulseUs: pulse2Us,
+        r1Cm: pulse1Us * c / 2,
+        r2Cm: pulse2Us * c / 2,
+        rawDtUs: rawDt,
+        calDtUs: rawDt,
+        pathDiffCm: pathDiff,
+        angleDeg: angle,
+        confidence: 88 + Math.round(Math.random() * 10),
+        status: 'VALID',
+        cycleShift: 0,
+      };
+      log(`[demo] r1=${row.r1PulseUs.toFixed(1)}us r2=${row.r2PulseUs.toFixed(1)}us angle=${angle.toFixed(1)}deg`);
+      handleRow(row);
+    }, 900);
+  }
+
+  function stopDemo() {
+    if (demoTimer) { clearInterval(demoTimer); demoTimer = null; }
+    btnDemo.disabled = false;
+  }
+
+  // ---------------------------------------------------------------------
+  // Replay mode: feed pasted CSV lines (e.g. copied straight out of a
+  // real Serial Monitor capture) through the exact same pipeline as live
+  // serial data, so you can see what a given dataset looks like on the
+  // map/animation without any hardware connected at all.
+  // ---------------------------------------------------------------------
+  let replayTimer = null;
+  function startReplay() {
+    stopReplay();
+    const lines = replayInput.value.split('\n').map(l => l.trim()).filter(l => l.length);
+    const rows = lines.map(parseCsvLine).filter(r => r !== null);
+    if (rows.length === 0) {
+      log('# replay: no valid CSV rows found in the pasted text');
+      return;
+    }
+    log(`# replay: starting, ${rows.length} rows`);
+    setConnected(true, `Replay mode (${rows.length} แถว, ไม่มีฮาร์ดแวร์จริง)`);
+    btnReplay.disabled = true;
+    btnReplayStop.disabled = false;
+    let i = 0;
+    const intervalMs = Math.max(20, parseInt(replaySpeedInput.value, 10) || 110);
+    replayTimer = setInterval(() => {
+      if (i >= rows.length) { stopReplay(); log('# replay: done'); return; }
+      handleRow(rows[i]);
+      i++;
+    }, intervalMs);
+  }
+
+  function stopReplay() {
+    if (replayTimer) { clearInterval(replayTimer); replayTimer = null; }
+    btnReplay.disabled = false;
+    btnReplayStop.disabled = true;
+  }
+
+  btnConnect.addEventListener('click', connectSerial);
+  btnDisconnect.addEventListener('click', () => { disconnectSerial(); stopDemo(); stopReplay(); });
+  btnDemo.addEventListener('click', startDemo);
+  btnClearMap.addEventListener('click', clearMap);
+  btnExportMap.addEventListener('click', exportMapCsv);
+  btnReplay.addEventListener('click', startReplay);
+  btnReplayStop.addEventListener('click', () => { stopReplay(); log('# replay: stopped'); });
+
+  // Hover over the canvas to inspect an individual accumulated point.
+  canvas.addEventListener('mousemove', (ev) => {
+    if (!lastView || mapPoints.length === 0) { tooltipEl.style.display = 'none'; return; }
+    const rect = canvas.getBoundingClientRect();
+    const mx = (ev.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (ev.clientY - rect.top) * (canvas.height / rect.height);
+    let nearest = null, nearestDist = 10; // pixel radius
+    for (const p of mapPoints) {
+      const c = worldToCanvas(p, lastView);
+      const d = Math.hypot(c.x - mx, c.y - my);
+      if (d < nearestDist) { nearestDist = d; nearest = p; }
+    }
+    if (nearest) {
+      tooltipEl.style.display = 'block';
+      tooltipEl.style.left = (ev.clientX - rect.left + 12) + 'px';
+      tooltipEl.style.top = (ev.clientY - rect.top + 12) + 'px';
+      const ageS = ((Date.now() - nearest.t) / 1000).toFixed(1);
+      tooltipEl.innerHTML = `R=${nearest.rangeCm.toFixed(2)} cm<br/>` +
+        `angle=${Number.isFinite(nearest.angleDeg) ? nearest.angleDeg.toFixed(1) + ' deg' : 'NA'}<br/>` +
+        `confidence=${nearest.confidence}<br/>${ageS}s ago`;
+    } else {
+      tooltipEl.style.display = 'none';
+    }
+  });
+  canvas.addEventListener('mouseleave', () => { tooltipEl.style.display = 'none'; });
+
+  // initial idle scene
+  drawStatic(computeView(null));
+})();
+</script>
+</body>
+</html>

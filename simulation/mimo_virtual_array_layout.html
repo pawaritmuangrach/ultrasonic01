@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<title>MIMO Virtual Array — 3 TX (coded) + 4 RX</title>
+<style>
+  :root {
+    --bg: #0b1220;
+    --panel: #121a2b;
+    --panel-border: #223049;
+    --text: #e6edf7;
+    --muted: #8ea0bd;
+    --accent: #4fd1c5;
+    --accent2: #f6a94a;
+    --tx: #f6a94a;
+    --rx: #4fd1c5;
+    --virt: #ff2fd6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
+    padding: 18px 22px 50px;
+  }
+  h1 { font-size: 18px; color: var(--accent); margin: 0 0 6px; }
+  h2 { font-size: 13.5px; color: var(--text); margin: 20px 0 8px; }
+  #intro { font-size: 12.5px; color: var(--muted); line-height: 1.6; max-width: 1050px; margin-bottom: 8px; }
+  #intro b { color: var(--text); }
+  .layout { display: grid; grid-template-columns: 1.35fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 10px; padding: 14px; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  th, td { border-bottom: 1px solid var(--panel-border); padding: 5px 8px; text-align: left; }
+  th { color: var(--muted); font-weight: 600; }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+  .legend-item { font-size: 12px; margin: 5px 0; color: var(--muted); }
+  .legend-item b { color: var(--text); }
+  .callout { background: #0e1725; border: 1px solid var(--panel-border); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: 12px; }
+  .callout b { color: var(--accent2); }
+  svg text { font-family: Consolas, monospace; }
+  .compare { max-width: 1050px; }
+  .compare table { font-size: 12.5px; }
+</style>
+</head>
+<body>
+
+<h1>MIMO Virtual Array — 3 TX (coded, ยิงพร้อมกัน) + 4 RX</h1>
+<div id="intro">
+  ผังนี้ใช้มาตราส่วนเดียวกับผัง Y-array ก่อนหน้า เพื่อเทียบกันตรงๆ — ของจริงมีแค่ <b>7 ตัว</b> เท่าเดิม (3 TX + 4 RX
+  แทนที่จะเป็น 1 TX + 6 RX) แต่เพราะ TX แต่ละตัวยิง <b>code ต่างกัน</b> (แยกด้วย matched filter ฝั่งรับ) ตัวรับ
+  แต่ละตัวจึงแยกได้ว่าเสียงที่ได้ยินมาจาก TX ตัวไหน — เท่ากับมี "เส้นทาง TX→เป้าหมาย→RX" ที่แยกกันได้ถึง
+  <b>3×4 = 12 เส้นทาง</b> จากอุปกรณ์จริงแค่ 7 ตัว นี่คือที่มาของ <b>virtual array</b> ด้านล่าง
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h2>ผังหน้าแผงจริง (Physical plate — 3 TX + 4 RX)</h2>
+    <svg id="plate" viewBox="0 0 560 560" style="width:100%; height:auto; background:#0d1420; border-radius:8px;"></svg>
+  </div>
+
+  <div>
+    <div class="panel">
+      <h2>พิกัดจริง (mm, origin = มุมล่างซ้ายของกลุ่มอุปกรณ์)</h2>
+      <table id="coord-table">
+        <thead><tr><th>จุด</th><th>ชนิด</th><th>x</th><th>y</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="callout" id="plate-size"></div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <h2>Legend</h2>
+      <div class="legend-item"><span class="dot" style="background:var(--tx)"></span><b>TX1-TX3</b> = ตัวส่ง 3 ตัว ยิงพร้อมกันด้วย code ต่างกัน</div>
+      <div class="legend-item"><span class="dot" style="background:var(--rx)"></span><b>RX1-RX4</b> = ตัวรับ 4 ตัว แยกสัญญาณแต่ละ TX ด้วย matched filter</div>
+      <div class="legend-item"><span class="dot" style="background:var(--virt)"></span><b>จุดชมพู</b> = virtual element (ตำแหน่ง TXi + RXj)</div>
+    </div>
+  </div>
+</div>
+
+<h2>Virtual (Synthesized) Array — Sum Co-array = TXi + RXj</h2>
+<div class="layout">
+  <div class="panel">
+    <svg id="virtual" viewBox="0 0 560 380" style="width:100%; height:auto; background:#0d1420; border-radius:8px;"></svg>
+  </div>
+  <div class="panel">
+    <div class="callout">
+      แต่ละจุดชมพู = ตำแหน่ง<b>เสมือน</b>ของ element หนึ่งตัว คำนวณจาก <code>virtual(i,j) = TXi + RXj</code>
+      (ผลบวกเวกเตอร์ตำแหน่ง) — เพราะ TX ห่างกันเป็นจำนวนเท่าของระยะ RX พอดี (design แบบ coprime/sparse MIMO)
+      จุดทั้ง 12 จุดจึงเรียงเป็น<b>ตารางสม่ำเสมอสมบูรณ์ ไม่มีช่องว่าง ไม่ซ้ำตำแหน่งกันเลย</b> — ได้ aperture เสมือน
+      กว้างกว่าของจริงมาก จากอุปกรณ์จำนวนเท่าเดิม
+    </div>
+  </div>
+</div>
+
+<h2>เทียบกับผัง Y-array เดิม (1 TX + 6 RX)</h2>
+<div class="panel compare">
+  <table>
+    <thead><tr><th></th><th>1 TX + 6 RX (เดิม)</th><th>3 TX (coded) + 4 RX (ใหม่)</th></tr></thead>
+    <tbody>
+      <tr><td>อุปกรณ์จริง</td><td>7 ตัว</td><td>7 ตัว (เท่ากัน)</td></tr>
+      <tr><td>เส้นทาง TX→เป้าหมาย→RX ที่แยกได้</td><td>6 เส้นทาง (TX ตัวเดียว × RX 6 ตัว)</td><td><b>12 เส้นทาง</b> (TX 3 × RX 4)</td></tr>
+      <tr><td>Virtual element</td><td>= ตำแหน่ง RX ทั้ง 6 (ขยับด้วย TX คงที่ 1 ค่า ไม่ช่วยอะไร)</td><td><b>12 ตำแหน่งใหม่</b> ที่ไม่มีตัวไหนซ้ำกับของจริงเลย</td></tr>
+      <tr><td>ความซับซ้อนวงจร</td><td>TX driver 1 ชุด</td><td>TX driver 3 ชุด (ต้องสร้าง code เฉพาะแต่ละตัว) + matched filter ฝั่งรับ</td></tr>
+      <tr><td>ความเร็ว/ping</td><td>ยิงครั้งเดียวจบ</td><td>ยิงครั้งเดียวจบเหมือนกัน (เพราะยิง<b>พร้อมกัน</b> ไม่ใช่ทีละตัว)</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">
+    <b>สรุป:</b> ของจริงเท่ากัน (7 ตัว) ความเร็วเท่ากัน (ยิง 1 ครั้ง) แต่ MIMO ได้ aperture เสมือนใหญ่กว่า/ข้อมูลเยอะกว่า
+    2 เท่า — แลกกับความซับซ้อนของวงจรขับ TX และการออกแบบ/ถอดรหัส code ที่เพิ่มขึ้น (ตรงกับ Phase 2 ใน
+    roadmap ของคุณ)
+  </div>
+</div>
+
+<script>
+(() => {
+  const BODY_MM = 16; // TCT40-16 physical body diameter
+
+  // ---- Physical layout: sparse/coprime-style MIMO -------------------------
+  // RX row (M=4), spacing d=24mm; TX column (N=3), spacing = M*d = 96mm
+  // so that all TXi+RXj sums land on one clean, gap-free, non-redundant grid.
+  const D = 24;
+  const rxX = [0, D, 2 * D, 3 * D];       // 0,24,48,72
+  const rxY = -30;
+  const txY = [0, 4 * D, 8 * D];          // 0,96,192
+  const txX = -50;
+
+  const txPoints = txY.map((y, i) => ({ id: `TX${i + 1}`, x: txX, y, color: 'var(--tx)' }));
+  const rxPoints = rxX.map((x, j) => ({ id: `RX${j + 1}`, x, y: rxY, color: 'var(--rx)' }));
+  const allPhysical = [...txPoints, ...rxPoints];
+
+  // ---- Render physical plate ----------------------------------------------
+  const plate = document.getElementById('plate');
+  const xs = allPhysical.map(p => p.x), ys = allPhysical.map(p => p.y);
+  const spanX = Math.max(...xs) - Math.min(...xs);
+  const spanY = Math.max(...ys) - Math.min(...ys);
+  const cxMM = (Math.max(...xs) + Math.min(...xs)) / 2;
+  const cyMM = (Math.max(...ys) + Math.min(...ys)) / 2;
+  const halfSpan = Math.max(spanX, spanY) / 2 + 30;
+  const VIEW = 560, SCALE = (VIEW - 90) / (2 * halfSpan);
+  const CX = VIEW / 2, CY = VIEW / 2;
+  const toPx = (xmm, ymm) => ({ x: CX + (xmm - cxMM) * SCALE, y: CY - (ymm - cyMM) * SCALE });
+
+  let s = '';
+  const plateW = spanX + BODY_MM + 30, plateH = spanY + BODY_MM + 30;
+  const pl = toPx(cxMM - plateW / 2, cyMM + plateH / 2), pr = toPx(cxMM + plateW / 2, cyMM - plateH / 2);
+  s += `<rect x="${pl.x}" y="${pl.y}" width="${pr.x - pl.x}" height="${pr.y - pl.y}" rx="10" fill="#1a1a1a" stroke="#3a3a3a" stroke-width="2"/>`;
+
+  // dimension: RX spacing
+  s += `<g stroke="#8ea0bd" font-size="10" fill="#8ea0bd">`;
+  for (let j = 0; j < rxX.length - 1; j++) {
+    const a = toPx(rxX[j], rxY - 16), b = toPx(rxX[j + 1], rxY - 16);
+    s += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" marker-start="url(#ar)" marker-end="url(#ar)"/>`;
+    s += `<text x="${(a.x + b.x) / 2 - 8}" y="${a.y - 6}">${D}mm</text>`;
+  }
+  // dimension: TX spacing
+  for (let i = 0; i < txY.length - 1; i++) {
+    const a = toPx(txX - 16, txY[i]), b = toPx(txX - 16, txY[i + 1]);
+    s += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" marker-start="url(#ar)" marker-end="url(#ar)"/>`;
+    s += `<text x="${a.x - 42}" y="${(a.y + b.y) / 2 + 3}">${4 * D}mm</text>`;
+  }
+  s += `</g>`;
+
+  // faint line connecting each group
+  const rxA = toPx(rxX[0], rxY), rxB = toPx(rxX[rxX.length - 1], rxY);
+  s += `<line x1="${rxA.x}" y1="${rxA.y}" x2="${rxB.x}" y2="${rxB.y}" stroke="var(--rx)" stroke-width="1" opacity="0.35"/>`;
+  const txA = toPx(txX, txY[0]), txB = toPx(txX, txY[txY.length - 1]);
+  s += `<line x1="${txA.x}" y1="${txA.y}" x2="${txB.x}" y2="${txB.y}" stroke="var(--tx)" stroke-width="1" opacity="0.35"/>`;
+
+  allPhysical.forEach(p => {
+    const px = toPx(p.x, p.y);
+    const col = p.id.startsWith('TX') ? '#f6a94a' : '#4fd1c5';
+    s += `<circle cx="${px.x}" cy="${px.y}" r="${(BODY_MM / 2) * SCALE}" fill="none" stroke="${col}" stroke-width="1" opacity="0.4"/>`;
+    s += `<circle cx="${px.x}" cy="${px.y}" r="7" fill="${col}" stroke="#0b1220" stroke-width="1.5"/>`;
+    s += `<text x="${px.x + 11}" y="${px.y - 9}" fill="#e6edf7" font-size="12" font-weight="bold">${p.id}</text>`;
+  });
+  s = `<defs><marker id="ar" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#8ea0bd"/></marker></defs>` + s;
+  plate.innerHTML = s;
+
+  // ---- Coordinate table ----------------------------------------------------
+  const tb = document.querySelector('#coord-table tbody');
+  allPhysical.forEach(p => {
+    const col = p.id.startsWith('TX') ? '#f6a94a' : '#4fd1c5';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><span class="dot" style="background:${col}"></span>${p.id}</td><td>${p.id.startsWith('TX') ? 'ตัวส่ง' : 'ตัวรับ'}</td><td>${p.x.toFixed(1)}</td><td>${p.y.toFixed(1)}</td>`;
+    tb.appendChild(tr);
+  });
+  document.getElementById('plate-size').innerHTML =
+    `<b>ขนาดแผงขั้นต่ำ:</b> ประมาณ ${Math.ceil(plateW)} × ${Math.ceil(plateH)} mm ` +
+    `(${(plateW/10).toFixed(0)} × ${(plateH/10).toFixed(0)} cm) — เจาะ 7 รู (16mm) วาง TX เป็นแนวตั้ง 1 คอลัมน์ ` +
+    `RX เป็นแนวนอน 1 แถว มุมฉากกัน`;
+
+  // ---- Virtual array (sum co-array) ----------------------------------------
+  const virtual = document.getElementById('virtual');
+  const virtPoints = [];
+  txPoints.forEach((t, i) => {
+    rxPoints.forEach((r, j) => {
+      virtPoints.push({ id: `V${i + 1}${j + 1}`, x: t.x + r.x, y: t.y + r.y });
+    });
+  });
+
+  const vxs = virtPoints.map(p => p.x), vys = virtPoints.map(p => p.y);
+  const vSpanX = Math.max(...vxs) - Math.min(...vxs), vSpanY = Math.max(...vys) - Math.min(...vys);
+  const vCX = (Math.max(...vxs) + Math.min(...vxs)) / 2, vCY = (Math.max(...vys) + Math.min(...vys)) / 2;
+  const VW = 560, VH = 380;
+  const vHalf = Math.max(vSpanX / (VW - 120), vSpanY / (VH - 120));
+  const VSCALE = 1 / vHalf;
+  const VCXpx = VW / 2, VCYpx = VH / 2;
+  const vToPx = (x, y) => ({ x: VCXpx + (x - vCX) * VSCALE, y: VCYpx - (y - vCY) * VSCALE });
+
+  let vs = '';
+  // grid lines through each unique x and y
+  const uniqX = [...new Set(virtPoints.map(p => p.x))].sort((a, b) => a - b);
+  const uniqY = [...new Set(virtPoints.map(p => p.y))].sort((a, b) => a - b);
+  vs += `<g stroke="#223049" stroke-dasharray="2,4">`;
+  uniqX.forEach(x => { const a = vToPx(x, vCY - vSpanY / 2 - 20), b = vToPx(x, vCY + vSpanY / 2 + 20); vs += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`; });
+  uniqY.forEach(y => { const a = vToPx(vCX - vSpanX / 2 - 20, y), b = vToPx(vCX + vSpanX / 2 + 20, y); vs += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>`; });
+  vs += `</g>`;
+
+  virtPoints.forEach(p => {
+    const px = vToPx(p.x, p.y);
+    vs += `<circle cx="${px.x}" cy="${px.y}" r="6" fill="#ff2fd6" stroke="#0b1220" stroke-width="1"/>`;
+    vs += `<text x="${px.x - 9}" y="${px.y + 3}" fill="#1a0a15" font-size="8" font-weight="bold">${p.id}</text>`;
+  });
+  vs += `<text x="10" y="${VH - 8}" fill="#8ea0bd" font-size="10">x (mm)</text>`;
+  vs += `<text x="10" y="16" fill="#8ea0bd" font-size="10">y (mm)</text>`;
+  virtual.innerHTML = vs;
+})();
+</script>
+</body>
+</html>

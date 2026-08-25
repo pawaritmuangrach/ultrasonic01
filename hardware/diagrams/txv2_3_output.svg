@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="566" viewBox="0 0 740 566" font-family="Tahoma, Segoe UI, sans-serif" fill="#343a40">
+<rect width="740" height="566" fill="#ffffff"/>
+<text x="20" y="30" font-size="17" font-weight="700" fill="#1971c2">ผังภาคส่ง 3 — ตัวต้านทานอนุกรม และหัวส่ง</text>
+<text x="20" y="50" font-size="12" fill="#6c757d">R 47Ω สองตัวอนุกรม แถว 34-37 และ 37-40 · TCT40-16T ที่ 40I</text>
+<rect x="168" y="104" width="332" height="154" rx="6" fill="#ffffff" stroke="#ced4da"/>
+<rect x="308" y="104" width="24" height="154" fill="#e9ecef"/>
+<rect x="466" y="118" width="16" height="126" rx="8" fill="#ffc9c9"/>
+<rect x="444" y="118" width="16" height="126" rx="8" fill="#a5d8ff"/>
+<rect x="202" y="118" width="104" height="126" rx="8" fill="#f1f3f5"/>
+<rect x="334" y="118" width="104" height="126" rx="8" fill="#f1f3f5"/>
+<text x="474" y="114" font-size="13" font-weight="700" text-anchor="middle" fill="#e03131">+</text>
+<text x="452" y="114" font-size="13" font-weight="700" text-anchor="middle" fill="#1971c2">–</text>
+<text x="210" y="114" font-size="12" text-anchor="middle" fill="#868e96">A</text>
+<text x="232" y="114" font-size="12" text-anchor="middle" fill="#868e96">B</text>
+<text x="254" y="114" font-size="12" text-anchor="middle" fill="#868e96">C</text>
+<text x="276" y="114" font-size="12" text-anchor="middle" fill="#868e96">D</text>
+<text x="298" y="114" font-size="12" text-anchor="middle" fill="#868e96">E</text>
+<text x="342" y="114" font-size="12" text-anchor="middle" fill="#868e96">F</text>
+<text x="364" y="114" font-size="12" text-anchor="middle" fill="#868e96">G</text>
+<text x="386" y="114" font-size="12" text-anchor="middle" fill="#868e96">H</text>
+<text x="408" y="114" font-size="12" text-anchor="middle" fill="#868e96">I</text>
+<text x="430" y="114" font-size="12" text-anchor="middle" fill="#868e96">J</text>
+<circle cx="210" cy="150" r="3" fill="#ced4da"/>
+<circle cx="232" cy="150" r="3" fill="#ced4da"/>
+<circle cx="254" cy="150" r="3" fill="#ced4da"/>
+<circle cx="276" cy="150" r="3" fill="#ced4da"/>
+<circle cx="298" cy="150" r="3" fill="#ced4da"/>
+<circle cx="342" cy="150" r="3" fill="#ced4da"/>
+<circle cx="364" cy="150" r="3" fill="#ced4da"/>
+<circle cx="386" cy="150" r="3" fill="#ced4da"/>
+<circle cx="408" cy="150" r="3" fill="#ced4da"/>
+<circle cx="430" cy="150" r="3" fill="#ced4da"/>
+<circle cx="474" cy="150" r="3" fill="#ffffff"/>
+<circle cx="452" cy="150" r="3" fill="#ffffff"/>
+<text x="508" y="154" font-size="12" text-anchor="start" fill="#6c757d">34</text>
+<circle cx="210" cy="184" r="3" fill="#ced4da"/>
+<circle cx="232" cy="184" r="3" fill="#ced4da"/>
+<circle cx="254" cy="184" r="3" fill="#ced4da"/>
+<circle cx="276" cy="184" r="3" fill="#ced4da"/>
+<circle cx="298" cy="184" r="3" fill="#ced4da"/>
+<circle cx="342" cy="184" r="3" fill="#ced4da"/>
+<circle cx="364" cy="184" r="3" fill="#ced4da"/>
+<circle cx="386" cy="184" r="3" fill="#ced4da"/>
+<circle cx="408" cy="184" r="3" fill="#ced4da"/>
+<circle cx="430" cy="184" r="3" fill="#ced4da"/>
+<circle cx="474" cy="184" r="3" fill="#ffffff"/>
+<circle cx="452" cy="184" r="3" fill="#ffffff"/>
+<text x="508" y="188" font-size="12" text-anchor="start" fill="#6c757d">37</text>
+<line x1="534" y1="167.0" x2="554" y2="167.0" stroke="#ced4da" stroke-width="1.5" stroke-dasharray="3 3"/>
+<circle cx="210" cy="218" r="3" fill="#ced4da"/>
+<circle cx="232" cy="218" r="3" fill="#ced4da"/>
+<circle cx="254" cy="218" r="3" fill="#ced4da"/>
+<circle cx="276" cy="218" r="3" fill="#ced4da"/>
+<circle cx="298" cy="218" r="3" fill="#ced4da"/>
+<circle cx="342" cy="218" r="3" fill="#ced4da"/>
+<circle cx="364" cy="218" r="3" fill="#ced4da"/>
+<circle cx="386" cy="218" r="3" fill="#ced4da"/>
+<circle cx="408" cy="218" r="3" fill="#ced4da"/>
+<circle cx="430" cy="218" r="3" fill="#ced4da"/>
+<circle cx="474" cy="218" r="3" fill="#ffffff"/>
+<circle cx="452" cy="218" r="3" fill="#ffffff"/>
+<text x="508" y="222" font-size="12" text-anchor="start" fill="#6c757d">40</text>
+<line x1="534" y1="201.0" x2="554" y2="201.0" stroke="#ced4da" stroke-width="1.5" stroke-dasharray="3 3"/>
+<rect x="285" y="134" width="70" height="32" rx="5" fill="#343a40"/>
+<circle cx="342" cy="150" r="5" fill="#ffd43b"/>
+<text x="320" y="154" font-size="11" text-anchor="middle" fill="#ffffff">ขา 8</text>
+<path d="M364,150 L364,184" fill="none" stroke="#f08c00" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="364" cy="150" r="4.5" fill="#f08c00"/>
+<circle cx="364" cy="184" r="4.5" fill="#f08c00"/>
+<rect x="352.0" y="157.0" width="24" height="20" rx="4" fill="#ffe8cc" stroke="#f08c00" stroke-width="2"/>
+<text x="383.0" y="172.0" font-size="13" font-weight="600" fill="#f08c00">47Ω</text>
+<path d="M386,184 L386,218" fill="none" stroke="#f08c00" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="386" cy="184" r="4.5" fill="#f08c00"/>
+<circle cx="386" cy="218" r="4.5" fill="#f08c00"/>
+<rect x="374.0" y="191.0" width="24" height="20" rx="4" fill="#ffe8cc" stroke="#f08c00" stroke-width="2"/>
+<text x="405.0" y="206.0" font-size="13" font-weight="600" fill="#f08c00">47Ω</text>
+<circle cx="56" cy="218" r="21" fill="#f8f9fa" stroke="#495057" stroke-width="2"/>
+<circle cx="56" cy="218" r="11" fill="#dee2e6"/>
+<text x="56" y="190" font-size="11" text-anchor="middle" font-weight="700" fill="#495057">TCT40-16T</text>
+<path d="M72,211 L82,211 L82,201.0 L408,201.0 L408,218" fill="none" stroke="#2f9e44" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="408" cy="218" r="4.5" fill="#2f9e44"/>
+<path d="M72,225 L94,225 L94,235.0 L452,235.0" fill="none" stroke="#343a40" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="452" cy="235.0" r="4.5" fill="#343a40"/>
+<rect x="560" y="108" width="170" height="112" rx="6" fill="#fff5f5" stroke="#e03131"/>
+<text x="570" y="129" font-size="11.5" font-weight="700" fill="#212529">ต้องอนุกรม ไม่ใช่ขนาน</text>
+<text x="570" y="147" font-size="11.5" font-weight="400" fill="#212529">ขนานได้ 23.5Ω</text>
+<text x="570" y="165" font-size="11.5" font-weight="400" fill="#212529">กระแสพีค 130 mA</text>
+<text x="570" y="183" font-size="11.5" font-weight="400" fill="#212529">เกินพิกัด 50 mA ของชิป</text>
+<text x="570" y="201" font-size="11.5" font-weight="400" fill="#212529">ถึง 2.6 เท่า</text>
+<rect x="560" y="280" width="180" height="112" rx="6" fill="#ebfbee" stroke="#2f9e44"/>
+<text x="570" y="301" font-size="11.5" font-weight="700" fill="#212529">47+47 = 94Ω กระแสพีค 46 mA</text>
+<text x="570" y="319" font-size="11.5" font-weight="400" fill="#212529">แถว 37 คือจุดต่อระหว่าง</text>
+<text x="570" y="337" font-size="11.5" font-weight="400" fill="#212529">R สองตัว — 37G กับ 37H</text>
+<text x="570" y="355" font-size="11.5" font-weight="400" fill="#212529">อยู่แถวเดียวฝั่งเดียวกัน</text>
+<text x="570" y="373" font-size="11.5" font-weight="400" fill="#212529">จึงถึงกันใต้บอร์ดอยู่แล้ว</text>
+<rect x="560" y="430" width="180" height="112" rx="6" fill="#e7f5ff" stroke="#1971c2"/>
+<text x="570" y="451" font-size="11.5" font-weight="700" fill="#212529">หัวส่งต้องเป็นตัว T</text>
+<text x="570" y="469" font-size="11.5" font-weight="400" fill="#212529">ไม่ใช่ R</text>
+<text x="570" y="487" font-size="11.5" font-weight="400" fill="#212529">อ่านตัวอักษรบนกระป๋อง</text>
+<text x="570" y="505" font-size="11.5" font-weight="400" fill="#212529">ไม่มีขั้ว สลับขาได้</text>
+<text x="570" y="523" font-size="11.5" font-weight="400" fill="#212529">ถ้ามี R 100Ω ตัวเดียว ใช้ 34G→40G</text>
+</svg>

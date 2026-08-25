@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="600" viewBox="0 0 1040 600" font-family="Segoe UI, Tahoma, sans-serif">
+<rect width="1040" height="600" fill="#ffffff"/>
+<text x="30" y="40" font-size="22" font-weight="700" fill="#1971c2">บอร์ดทดลอง vs แผ่นไข่ปลา — ต่างกันที่ "อะไรเชื่อมถึงกัน"</text>
+
+<rect x="28" y="66" width="470" height="250" rx="10" fill="#e7f5ff" stroke="#1971c2" stroke-width="2"/>
+<text x="48" y="96" font-size="17" font-weight="700" fill="#1971c2">บอร์ดทดลอง (ที่ใช้อยู่)</text>
+<text x="48" y="120" font-size="13" fill="#495057">แถวเดียวกัน = เชื่อมถึงกันเองข้างใน</text>
+<rect x="62" y="142" width="300" height="26" rx="6" fill="#a5d8ff" opacity="0.55"/>
+<rect x="62" y="182" width="300" height="26" rx="6" fill="#a5d8ff" opacity="0.55"/>
+<rect x="62" y="222" width="300" height="26" rx="6" fill="#a5d8ff" opacity="0.55"/>
+<text x="372" y="160" font-size="11.5" fill="#1971c2">ต่อถึงกัน</text>
+<text x="372" y="200" font-size="11.5" fill="#1971c2">ต่อถึงกัน</text>
+<text x="372" y="240" font-size="11.5" fill="#1971c2">ต่อถึงกัน</text>
+<g fill="#343a40">
+<circle cx="80" cy="155" r="4"/><circle cx="128" cy="155" r="4"/><circle cx="176" cy="155" r="4"/><circle cx="224" cy="155" r="4"/><circle cx="272" cy="155" r="4"/><circle cx="320" cy="155" r="4"/>
+<circle cx="80" cy="195" r="4"/><circle cx="128" cy="195" r="4"/><circle cx="176" cy="195" r="4"/><circle cx="224" cy="195" r="4"/><circle cx="272" cy="195" r="4"/><circle cx="320" cy="195" r="4"/>
+<circle cx="80" cy="235" r="4"/><circle cx="128" cy="235" r="4"/><circle cx="176" cy="235" r="4"/><circle cx="224" cy="235" r="4"/><circle cx="272" cy="235" r="4"/><circle cx="320" cy="235" r="4"/>
+</g>
+<text x="48" y="296" font-size="12.5" fill="#2f9e44">เสียบขาลงแถวเดียวกัน ต่อถึงกันทันที ไม่ต้องบัดกรี</text>
+
+<rect x="538" y="66" width="470" height="250" rx="10" fill="#fff9db" stroke="#f08c00" stroke-width="2"/>
+<text x="558" y="96" font-size="17" font-weight="700" fill="#f08c00">แผ่นไข่ปลา (ของใหม่)</text>
+<text x="558" y="120" font-size="13" fill="#495057">ทุกรูเป็นเกาะทองแดงแยกกันหมด</text>
+<g fill="none" stroke="#e8951c" stroke-width="2.5">
+<circle cx="590" cy="155" r="7"/><circle cx="630" cy="155" r="7"/><circle cx="670" cy="155" r="7"/><circle cx="710" cy="155" r="7"/><circle cx="750" cy="155" r="7"/><circle cx="790" cy="155" r="7"/><circle cx="830" cy="155" r="7"/><circle cx="870" cy="155" r="7"/>
+<circle cx="590" cy="195" r="7"/><circle cx="630" cy="195" r="7"/><circle cx="670" cy="195" r="7"/><circle cx="710" cy="195" r="7"/><circle cx="750" cy="195" r="7"/><circle cx="790" cy="195" r="7"/><circle cx="830" cy="195" r="7"/><circle cx="870" cy="195" r="7"/>
+<circle cx="590" cy="235" r="7"/><circle cx="630" cy="235" r="7"/><circle cx="670" cy="235" r="7"/><circle cx="710" cy="235" r="7"/><circle cx="750" cy="235" r="7"/><circle cx="790" cy="235" r="7"/><circle cx="830" cy="235" r="7"/><circle cx="870" cy="235" r="7"/>
+</g>
+<g fill="#b5651d">
+<circle cx="590" cy="155" r="2.5"/><circle cx="630" cy="155" r="2.5"/><circle cx="670" cy="155" r="2.5"/><circle cx="710" cy="155" r="2.5"/><circle cx="750" cy="155" r="2.5"/><circle cx="790" cy="155" r="2.5"/><circle cx="830" cy="155" r="2.5"/><circle cx="870" cy="155" r="2.5"/>
+<circle cx="590" cy="195" r="2.5"/><circle cx="630" cy="195" r="2.5"/><circle cx="670" cy="195" r="2.5"/><circle cx="710" cy="195" r="2.5"/><circle cx="750" cy="195" r="2.5"/><circle cx="790" cy="195" r="2.5"/><circle cx="830" cy="195" r="2.5"/><circle cx="870" cy="195" r="2.5"/>
+<circle cx="590" cy="235" r="2.5"/><circle cx="630" cy="235" r="2.5"/><circle cx="670" cy="235" r="2.5"/><circle cx="710" cy="235" r="2.5"/><circle cx="750" cy="235" r="2.5"/><circle cx="790" cy="235" r="2.5"/><circle cx="830" cy="235" r="2.5"/><circle cx="870" cy="235" r="2.5"/>
+</g>
+<rect x="627" y="191" width="46" height="8" rx="4" fill="#868e96"/>
+<text x="650" y="182" font-size="10.5" fill="#495057" text-anchor="middle">สะพานตะกั่ว</text>
+<path d="M710,235 Q765,285 830,235" fill="none" stroke="#2f9e44" stroke-width="3" stroke-dasharray="5,4"/>
+<text x="770" y="285" font-size="10.5" fill="#2f9e44" text-anchor="middle">สายจัมป์หลังแผ่น</text>
+<text x="558" y="296" font-size="12.5" fill="#e03131">ทุกรูแยกกัน ต้องบัดกรีเชื่อมเองทุกจุด</text>
+
+<rect x="28" y="334" width="980" height="246" rx="10" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+<text x="48" y="363" font-size="16" font-weight="700" fill="#343a40">3 วิธีเชื่อมรูบนแผ่นไข่ปลา</text>
+
+<text x="60" y="398" font-size="14" font-weight="700" fill="#1971c2">1. ดัดขาอุปกรณ์ให้แตะกัน</text>
+<text x="60" y="420" font-size="12.5" fill="#495057">ขา R/C ยาวอยู่แล้ว ดัดให้สองขา</text>
+<text x="60" y="438" font-size="12.5" fill="#495057">มาเจอรูเดียวกัน แล้วบัดกรีรวม</text>
+<text x="60" y="456" font-size="12.5" fill="#2f9e44">= วิธีหลัก ใช้ให้มากสุด</text>
+<path d="M60,485 L100,505 L140,485" stroke="#495057" stroke-width="2.5" fill="none"/>
+<circle cx="100" cy="505" r="9" fill="none" stroke="#f08c00" stroke-width="2"/>
+
+<text x="380" y="398" font-size="14" font-weight="700" fill="#868e96">2. สะพานตะกั่ว (รูติดกัน)</text>
+<text x="380" y="420" font-size="12.5" fill="#495057">ป้ายตะกั่วเชื่อมสองรูที่ติดกัน</text>
+<text x="380" y="438" font-size="12.5" fill="#495057">ใช้กับ 2-3 รูสั้นๆ เท่านั้น</text>
+<text x="380" y="456" font-size="12.5" fill="#e03131">ยาวกว่านั้นเสี่ยงลัด ใช้สายแทน</text>
+<circle cx="400" cy="500" r="6" fill="none" stroke="#e8951c" stroke-width="2"/>
+<circle cx="430" cy="500" r="6" fill="none" stroke="#e8951c" stroke-width="2"/>
+<rect x="397" y="495" width="36" height="10" rx="5" fill="#868e96"/>
+
+<text x="700" y="398" font-size="14" font-weight="700" fill="#2f9e44">3. สายจัมป์ด้านหลัง</text>
+<text x="700" y="420" font-size="12.5" fill="#495057">สายแกนเดี่ยวเชื่อมสองรูที่ไกลกัน</text>
+<text x="700" y="438" font-size="12.5" fill="#495057">บัดกรีปลายทั้งสองข้าง</text>
+<text x="700" y="456" font-size="12.5" fill="#495057">= แทนสายจัมป์ยาวบนบอร์ดทดลอง</text>
+<circle cx="720" cy="500" r="6" fill="none" stroke="#e8951c" stroke-width="2"/>
+<circle cx="800" cy="500" r="6" fill="none" stroke="#e8951c" stroke-width="2"/>
+<path d="M720,500 Q760,472 800,500" stroke="#2f9e44" stroke-width="3" fill="none"/>
+
+<line x1="48" y1="528" x2="988" y2="528" stroke="#dee2e6"/>
+<text x="48" y="552" font-size="12.5" fill="#495057">กลับด้าน: เสียบอุปกรณ์ด้านหน้า (ไม่มีทองแดง) บัดกรีด้านหลัง (มีทองแดง) — ขาโผล่ทะลุมาบัดกรี</text>
+<text x="48" y="573" font-size="12.5" fill="#495057">เช็คก่อนจ่ายไฟ: มัลติมิเตอร์โหมดปี๊บ วัดจุดที่ควรต่อ (ต้องปี๊บ) และคู่ที่ไม่ควรต่อ (ต้องเงียบ)</text>
+</svg>

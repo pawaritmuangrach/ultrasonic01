@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="636" height="576" viewBox="0 0 636 576" font-family="Tahoma, Segoe UI, sans-serif">
+<rect width="636" height="576" fill="#ffffff"/>
+<line x1="318.0" y1="370.0" x2="318.0" y2="58.0" stroke="#ced4da" stroke-width="59.0" stroke-linecap="round"/>
+<line x1="318.0" y1="370.0" x2="318.0" y2="58.0" stroke="#f1f3f5" stroke-width="56.0" stroke-linecap="round"/>
+<line x1="318.0" y1="370.0" x2="47.8" y2="526.0" stroke="#ced4da" stroke-width="59.0" stroke-linecap="round"/>
+<line x1="318.0" y1="370.0" x2="47.8" y2="526.0" stroke="#f1f3f5" stroke-width="56.0" stroke-linecap="round"/>
+<line x1="318.0" y1="370.0" x2="588.2" y2="526.0" stroke="#ced4da" stroke-width="59.0" stroke-linecap="round"/>
+<line x1="318.0" y1="370.0" x2="588.2" y2="526.0" stroke="#f1f3f5" stroke-width="56.0" stroke-linecap="round"/>
+<circle cx="318.0" cy="370.0" r="68.0" fill="#f1f3f5" stroke="#ced4da" stroke-width="1.5"/>
+<g stroke="#868e96" stroke-width="1.2" stroke-dasharray="5 4" fill="none">
+<line x1="290.0" y1="264.0" x2="346.0" y2="264.0"/>
+<line x1="290.0" y1="234.0" x2="346.0" y2="234.0"/>
+<line x1="240.2" y1="447.2" x2="212.2" y2="398.8"/>
+<line x1="214.2" y1="462.2" x2="186.2" y2="413.8"/>
+<line x1="423.8" y1="398.8" x2="395.8" y2="447.2"/>
+<line x1="449.8" y1="413.8" x2="421.8" y2="462.2"/>
+</g>
+<g transform="translate(318.0,150.0) rotate(-0.0)"><rect x="-20.0" y="-3.0" width="40.0" height="6.0" rx="3.0" fill="#ffffff" stroke="#868e96"/></g>
+<g transform="translate(127.5,480.0) rotate(-120.0)"><rect x="-20.0" y="-3.0" width="40.0" height="6.0" rx="3.0" fill="#ffffff" stroke="#868e96"/></g>
+<g transform="translate(508.5,480.0) rotate(-240.0)"><rect x="-20.0" y="-3.0" width="40.0" height="6.0" rx="3.0" fill="#ffffff" stroke="#868e96"/></g>
+<circle cx="318.0" cy="370.0" r="6.5" fill="#ffffff" stroke="#868e96"/>
+<line x1="352.6" y1="350.0" x2="318.0" y2="90.0" stroke="#f08c00" stroke-width="2.5" stroke-dasharray="7 5"/>
+<circle cx="352.6" cy="350.0" r="23.0" fill="#ffe3e3" stroke="#e03131" stroke-width="2"/>
+<circle cx="352.6" cy="350.0" r="19.5" fill="#ffffff" stroke="#e03131" stroke-width="1"/>
+<text x="352.6" y="349.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#e03131">T1</text>
+<text x="352.6" y="361.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#e03131">T</text>
+<circle cx="283.4" cy="350.0" r="23.0" fill="#ffe3e3" stroke="#e03131" stroke-width="2"/>
+<circle cx="283.4" cy="350.0" r="19.5" fill="#ffffff" stroke="#e03131" stroke-width="1"/>
+<text x="283.4" y="349.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#e03131">T2</text>
+<text x="283.4" y="361.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#e03131">T</text>
+<circle cx="318.0" cy="410.0" r="23.0" fill="#ffe3e3" stroke="#e03131" stroke-width="2"/>
+<circle cx="318.0" cy="410.0" r="19.5" fill="#ffffff" stroke="#e03131" stroke-width="1"/>
+<text x="318.0" y="409.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#e03131">T3</text>
+<text x="318.0" y="421.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#e03131">T</text>
+<circle cx="318.0" cy="290.0" r="23.0" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<circle cx="318.0" cy="290.0" r="19.5" fill="#ffffff" stroke="#1971c2" stroke-width="1"/>
+<text x="318.0" y="289.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#1971c2">A40</text>
+<text x="318.0" y="301.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#1971c2">R</text>
+<circle cx="318.0" cy="210.0" r="23.0" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<circle cx="318.0" cy="210.0" r="19.5" fill="#ffffff" stroke="#1971c2" stroke-width="1"/>
+<text x="318.0" y="209.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#1971c2">A80</text>
+<text x="318.0" y="221.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#1971c2">R</text>
+<circle cx="318.0" cy="90.0" r="23.0" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<circle cx="318.0" cy="90.0" r="19.5" fill="#ffffff" stroke="#1971c2" stroke-width="1"/>
+<text x="318.0" y="89.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#1971c2">A140</text>
+<text x="318.0" y="101.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#1971c2">R</text>
+<circle cx="318.0" cy="50.0" r="4.5" fill="#ffffff" stroke="#2f9e44" stroke-width="1.5"/>
+<circle cx="248.7" cy="410.0" r="23.0" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<circle cx="248.7" cy="410.0" r="19.5" fill="#ffffff" stroke="#1971c2" stroke-width="1"/>
+<text x="248.7" y="409.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#1971c2">B40</text>
+<text x="248.7" y="421.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#1971c2">R</text>
+<circle cx="179.4" cy="450.0" r="23.0" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<circle cx="179.4" cy="450.0" r="19.5" fill="#ffffff" stroke="#1971c2" stroke-width="1"/>
+<text x="179.4" y="449.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#1971c2">B80</text>
+<text x="179.4" y="461.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#1971c2">R</text>
+<circle cx="75.5" cy="510.0" r="23.0" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<circle cx="75.5" cy="510.0" r="19.5" fill="#ffffff" stroke="#1971c2" stroke-width="1"/>
+<text x="75.5" y="509.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#1971c2">B140</text>
+<text x="75.5" y="521.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#1971c2">R</text>
+<circle cx="40.9" cy="530.0" r="4.5" fill="#ffffff" stroke="#2f9e44" stroke-width="1.5"/>
+<circle cx="387.3" cy="410.0" r="23.0" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<circle cx="387.3" cy="410.0" r="19.5" fill="#ffffff" stroke="#1971c2" stroke-width="1"/>
+<text x="387.3" y="409.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#1971c2">C40</text>
+<text x="387.3" y="421.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#1971c2">R</text>
+<circle cx="456.6" cy="450.0" r="23.0" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<circle cx="456.6" cy="450.0" r="19.5" fill="#ffffff" stroke="#1971c2" stroke-width="1"/>
+<text x="456.6" y="449.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#1971c2">C80</text>
+<text x="456.6" y="461.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#1971c2">R</text>
+<circle cx="560.5" cy="510.0" r="23.0" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<circle cx="560.5" cy="510.0" r="19.5" fill="#ffffff" stroke="#1971c2" stroke-width="1"/>
+<text x="560.5" y="509.0" text-anchor="middle" font-size="12" font-weight="bold" fill="#1971c2">C140</text>
+<text x="560.5" y="521.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#1971c2">R</text>
+<circle cx="595.1" cy="530.0" r="4.5" fill="#ffffff" stroke="#2f9e44" stroke-width="1.5"/>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#212529"/></marker></defs>
+<line x1="318.0" y1="382.0" x2="318.0" y2="318.0" stroke="#212529" stroke-width="2" marker-end="url(#ar)"/>
+<polyline points="246,306 290,306 312.0,322.0" fill="none" stroke="#868e96" stroke-width="1.2"/>
+<text x="240" y="300" text-anchor="end" font-size="12" font-weight="bold" fill="#212529">+Y = ทิศหน้าของอาเรย์</text>
+<text x="240" y="317" text-anchor="end" font-size="11" fill="#495057">บนดุมจริงมีอักษร +Y จมไว้</text>
+<rect x="369.3" y="206.0" width="188" height="26" rx="5" fill="#fff9db" stroke="#f08c00"/>
+<text x="377.3" y="224.0" font-size="12" font-weight="bold" fill="#e67700">คู่ที่ต่อสายตอนนี้ ห่างกัน 131 มม.</text>
+<rect x="14.0" y="14.0" width="265" height="102" rx="6" fill="#ffffff" stroke="#ced4da"/>
+<text x="26.0" y="35.0" font-size="12" font-weight="bold" fill="#212529">ใส่กระป๋องแบบไหนลงรูไหน</text>
+<circle cx="38.0" cy="53.0" r="9.0" fill="#ffe3e3" stroke="#e03131" stroke-width="2"/>
+<text x="38.0" y="57.0" text-anchor="middle" font-size="10" font-weight="bold" fill="#e03131">T</text>
+<text x="56.0" y="57.0" font-size="11" fill="#212529">กระป๋องพิมพ์ว่า T = ตัวส่ง  3 ตัว</text>
+<circle cx="38.0" cy="75.0" r="9.0" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<text x="38.0" y="79.0" text-anchor="middle" font-size="10" font-weight="bold" fill="#1971c2">R</text>
+<text x="56.0" y="79.0" font-size="11" fill="#212529">กระป๋องพิมพ์ว่า R = ตัวรับ  9 ตัว</text>
+<circle cx="38.0" cy="97.0" r="4.5" fill="#ffffff" stroke="#2f9e44" stroke-width="2"/>
+<text x="56.0" y="101.0" font-size="11" fill="#212529">รูยึด ⌀4.5 + จุดอ้างอิงกล้อง  3 รู</text>
+<rect x="350.0" y="14.0" width="262" height="86" rx="6" fill="#fff4e6" stroke="#f08c00"/>
+<text x="362.0" y="35.0" font-size="12" font-weight="bold" fill="#e67700">3 ข้อที่ห้ามพลาดตอนใส่</text>
+<text x="362.0" y="56.0" font-size="11" fill="#212529">1. หน้ากระป๋องหันขึ้น สายออกทางใต้แผ่น</text>
+<text x="362.0" y="74.0" font-size="11" fill="#212529">2. หน้ากระป๋องเสมอปากบอสทุกตัว 1 มม. = 2.9 µs</text>
+<text x="362.0" y="92.0" font-size="11" fill="#212529">3. หมุนขาทั้ง 12 ตัวให้เรียงทิศเดียวกัน</text>
+</svg>

@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<title>Front-Facing Plate Layout — 1 TX + 6 RX Y-Array</title>
+<style>
+  :root {
+    --bg: #0b1220;
+    --panel: #121a2b;
+    --panel-border: #223049;
+    --text: #e6edf7;
+    --muted: #8ea0bd;
+    --accent: #4fd1c5;
+    --accent2: #f6a94a;
+    --up: #4fd1c5;
+    --dl: #9b6bff;
+    --dr: #f472b6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
+    padding: 18px 22px 50px;
+  }
+  h1 { font-size: 18px; color: var(--accent); margin: 0 0 6px; }
+  h2 { font-size: 13.5px; color: var(--text); margin: 20px 0 8px; }
+  #intro { font-size: 12.5px; color: var(--muted); line-height: 1.6; max-width: 1050px; margin-bottom: 8px; }
+  #intro b { color: var(--text); }
+  .layout { display: grid; grid-template-columns: 1.35fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 10px; padding: 14px; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  th, td { border-bottom: 1px solid var(--panel-border); padding: 5px 8px; text-align: left; }
+  th { color: var(--muted); font-weight: 600; }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+  .legend-item { font-size: 12px; margin: 5px 0; color: var(--muted); }
+  .legend-item b { color: var(--text); }
+  .callout { background: #0e1725; border: 1px solid var(--panel-border); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: 12px; }
+  .callout b { color: var(--accent2); }
+  svg text { font-family: Consolas, monospace; }
+  .theory { max-width: 1050px; font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+  .theory h3 { color: var(--accent); font-size: 13px; margin: 16px 0 4px; }
+  .theory b { color: var(--text); }
+</style>
+</head>
+<body>
+
+<h1>ผังแผงหันหน้า (Front-Facing) — 1 TX + 6 RX Y-Array (TCT40-16)</h1>
+<div id="intro">
+  มองแผง <b>face-on</b> (เหมือนยืนหันหน้าเข้าหาแผง เซนเซอร์ทุกตัวพุ่งเข้าหาเรา) — ตำแหน่งของเซนเซอร์บนระนาบ
+  หน้าแผง (แกน X = ซ้าย-ขวา, แกน Y = บน-ล่าง) เป็นตัวกำหนดความละเอียดเชิงมุมของภาพที่ได้ (azimuth จากการกระจาย
+  แกน X, elevation จากการกระจายแกน Y) วงกลมโปร่งรอบแต่ละจุดคือขนาดตัวถังจริง 16mm (แสดงว่าไม่ชนกัน)
+  ทุกหน่วยเป็นมิลลิเมตร origin = TX ที่จุดกึ่งกลางแผง
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h2>ผังหน้าแผง (Face-on / drill template)</h2>
+    <svg id="plate" viewBox="0 0 560 560" style="width:100%; height:auto; background:#0d1420; border-radius:8px;"></svg>
+  </div>
+
+  <div>
+    <div class="panel">
+      <h2>พิกัดเจาะรู (mm, origin = TX กลางแผง, X→ขวา, Y→บน)</h2>
+      <table id="coord-table">
+        <thead><tr><th>จุด</th><th>แขน</th><th>x (mm)</th><th>y (mm)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="callout" id="plate-size"></div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <h2>Difference Co-array (ทฤษฎีรองรับ)</h2>
+      <svg id="coarray" viewBox="0 0 320 320" style="width:100%; max-width:320px; height:auto; background:#0d1420; border-radius:8px; display:block; margin:0 auto;"></svg>
+      <div class="callout">
+        แต่ละจุดคือ <b>เวกเตอร์ผลต่างตำแหน่งของตัวรับทุกคู่</b> (p<sub>j</sub> − p<sub>i</sub>) — นี่คือ "ความถี่เชิงพื้นที่"
+        (spatial frequency) ที่ array นี้วัดได้ ยิ่งกลุ่มจุดนี้<b>กว้างและกระจายทั่ว 2 มิติ</b> = ยิ่งแยกทิศทางได้ละเอียด
+        ทั้งแนว azimuth และ elevation รูปตัว Y ทำให้ co-array กระจายรอบทิศเท่าๆ กัน (คล้ายกล้องโทรทรรศน์วิทยุ VLA)
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <h2>Legend</h2>
+      <div class="legend-item"><span class="dot" style="background:#f6a94a"></span><b>T</b> = Transmitter (TCT40-16<b>T</b>) — จุดกึ่งกลาง 1 ตัว</div>
+      <div class="legend-item"><span class="dot" style="background:var(--up)"></span><b>R1,R2</b> = แขนบน (90°) — ให้ข้อมูล elevation เป็นหลัก</div>
+      <div class="legend-item"><span class="dot" style="background:var(--dl)"></span><b>R3,R4</b> = แขนล่างซ้าย (210°)</div>
+      <div class="legend-item"><span class="dot" style="background:var(--dr)"></span><b>R5,R6</b> = แขนล่างขวา (330°)</div>
+    </div>
+  </div>
+</div>
+
+<h2>ทฤษฎีที่รองรับการวางแบบนี้</h2>
+<div class="theory panel">
+  <h3>1. Aperture &amp; Angular Resolution (ความกว้าง array → ความละเอียดเชิงมุม)</h3>
+  ความละเอียดเชิงมุมของ array แปรผกผันกับความกว้างของ array เทียบกับความยาวคลื่น: θ<sub>res</sub> ≈ λ/D
+  (D = ความกว้าง aperture) ที่ 40kHz, λ≈8.6mm ถ้า D=160mm จะได้ θ<sub>res</sub> ≈ 3° — <b>ยิ่ง array กว้าง ยิ่งแยก
+  ทิศทางละเอียด</b> นี่คือเหตุผลที่ใช้ baseline ใหญ่ (4-8cm) ไม่ใช่ ≤λ/2 การใช้ระยะเล็กจิ๋ว (4.3mm) จะได้ aperture
+  แคบมาก แยกทิศแทบไม่ได้เลย
+
+  <h3>2. Grating Lobe / Spatial Aliasing (ราคาที่ต้องจ่ายเมื่อใช้ baseline ใหญ่)</h3>
+  เพราะระยะห่าง element (16mm+) &gt; λ/2 จึงเกิด <b>grating lobe</b> — มีทิศทางหลอกที่ให้สัญญาณแรงเท่ากับทิศจริง
+  (spatial aliasing เหมือน undersampling ในสัญญาณเวลา) นี่คือ trade-off โดยตรงกับข้อ 1: baseline ใหญ่ = แยกมุม
+  ละเอียด แต่มี ambiguity ต้องแก้ด้วยข้อ 3-4
+
+  <h3>3. Difference Co-array &amp; Non-redundant Placement (หัวใจของ sparse array)</h3>
+  สิ่งที่กำหนดความสามารถของ array ไม่ใช่จำนวน element ตรงๆ แต่คือ <b>เซตของผลต่างตำแหน่งทุกคู่ (co-array)</b>
+  วางแบบ<b>ไม่สม่ำเสมอ (non-redundant)</b> ทำให้ผลต่างแต่ละคู่ไม่ซ้ำกัน → co-array ยาว/กว้างขึ้นโดยใช้ element น้อย
+  (ทฤษฎี Minimum Redundancy Array, Coprime Array) และเพราะ grating lobe ของแต่ละคู่อยู่คนละมุม เป้าหมายจริง
+  จึงเป็นทิศเดียวที่ทุกคู่เห็นตรงกันพร้อมกัน — ช่วยแก้ ambiguity จากข้อ 2
+
+  <h3>4. Y-array / Uniform Angular Sampling (ทำไมเป็นตัว Y ไม่ใช่เส้นตรงหรือกากบาท)</h3>
+  แขน 3 อันมุม 120° ให้ co-array กระจายสมมาตรรอบทิศ ทำให้แยกทิศได้สม่ำเสมอทุกทิศทาง (ต่างจากเส้นตรงที่แยก
+  ได้แค่แกนเดียว หรือกากบาทที่ sampling ไม่สม่ำเสมอในแนวเฉียง) — เป็นหลักการเดียวกับ <b>กล้องโทรทรรศน์วิทยุ VLA</b>
+  ที่ใช้ผัง Y จริง การมีทั้งแกน X และ Y ยังให้ทั้ง azimuth และ elevation (depth/ทิศทาง 2 มิติ) ตามที่คุณต้องการ
+
+  <h3>5. TDOA / Multilateration (แปลงเวลา → ตำแหน่ง)</h3>
+  ตัวรับแต่ละคู่ที่ได้ผลต่างเวลา (Δt) นิยามเส้นโค้ง hyperbola หนึ่งเส้นที่เป้าหมายต้องอยู่ ตัวรับหลายคู่ที่<b>ไม่อยู่
+  แนวเดียวกัน</b> (ได้จากผัง 2 มิติ) → เส้น hyperbola หลายเส้นตัดกันที่จุดเดียว = ตำแหน่งเป้าหมายไม่กำกวม (หลักการ
+  เดียวกับ GPS) นี่คือเหตุผลที่ต้องกระจายตัวรับทั้ง X และ Y ไม่ใช่เส้นตรงเดียว
+
+  <h3>6. Neural Network + Camera Ground Truth (แก้ส่วนที่สูตรตรงๆ แก้ไม่หมด)</h3>
+  grating lobe และ multipath ที่เหลือหลังข้อ 3-5 ยากจะแก้ด้วยสูตร delay-and-sum ตรงๆ NN ที่เทรนด้วยข้อมูลจริง
+  (raw echo หลายช่อง + depth จากกล้อง Orbbec เป็น label) เรียนรู้ mapping ที่ซับซ้อนกว่าได้ — นี่คือ "learned
+  beamforming / deep DOA estimation" ที่เป็นแกนของโปรเจกต์
+</div>
+
+<script>
+(() => {
+  // ---- Y-array geometry, mm, origin at TX (plate center) -----------------
+  // 3 arms at 90 (up), 210 (down-left), 330 (down-right); 2 RX each at r=40,80mm
+  const R_NEAR = 40, R_FAR = 80;         // mm from center (matches project doc: 4cm, 8cm)
+  const BODY_MM = 16;                     // TCT40-16 physical body diameter
+  const armAngles = [90, 210, 330];
+  const armColors = ['#4fd1c5', '#9b6bff', '#f472b6'];
+  const armNames = ['บน', 'ล่างซ้าย', 'ล่างขวา'];
+
+  const points = [{ id: 'T', arm: '-', x: 0, y: 0, color: '#f6a94a' }];
+  let rxIndex = 1;
+  armAngles.forEach((deg, ai) => {
+    [R_NEAR, R_FAR].forEach(r => {
+      const rad = deg * Math.PI / 180;
+      points.push({
+        id: `R${rxIndex}`, arm: armNames[ai],
+        x: r * Math.cos(rad), y: r * Math.sin(rad),
+        color: armColors[ai],
+      });
+      rxIndex++;
+    });
+  });
+
+  const rx = points.filter(p => p.id !== 'T');
+
+  // ---- Plate size --------------------------------------------------------
+  const spanX = Math.max(...points.map(p => p.x)) - Math.min(...points.map(p => p.x));
+  const spanY = Math.max(...points.map(p => p.y)) - Math.min(...points.map(p => p.y));
+  const plateW = Math.ceil((spanX + BODY_MM + 30) / 10) * 10; // margin
+  const plateH = Math.ceil((spanY + BODY_MM + 30) / 10) * 10;
+
+  // ---- Render plate face-on ----------------------------------------------
+  const plate = document.getElementById('plate');
+  const VIEW = 560, halfSpan = Math.max(plateW, plateH) / 2 + 5;
+  const SCALE = (VIEW - 80) / (2 * halfSpan);
+  const CX = VIEW / 2, CY = VIEW / 2;
+  // screen: x right, y UP (invert)
+  const toPx = (xmm, ymm) => ({ x: CX + xmm * SCALE, y: CY - ymm * SCALE });
+
+  let s = '';
+  // plate rectangle
+  const pl = toPx(-plateW / 2, plateH / 2), pr = toPx(plateW / 2, -plateH / 2);
+  s += `<rect x="${pl.x}" y="${pl.y}" width="${(pr.x - pl.x)}" height="${(pr.y - pl.y)}" rx="10" fill="#1a1a1a" stroke="#3a3a3a" stroke-width="2"/>`;
+
+  // center crosshair + axis labels
+  const c0 = toPx(0, 0);
+  s += `<line x1="${toPx(-plateW/2,0).x}" y1="${c0.y}" x2="${toPx(plateW/2,0).x}" y2="${c0.y}" stroke="#2a3a58" stroke-dasharray="3,4"/>`;
+  s += `<line x1="${c0.x}" y1="${toPx(0,plateH/2).y}" x2="${c0.x}" y2="${toPx(0,-plateH/2).y}" stroke="#2a3a58" stroke-dasharray="3,4"/>`;
+  s += `<text x="${toPx(plateW/2,0).x - 30}" y="${c0.y - 6}" fill="#8ea0bd" font-size="11">X (azimuth)</text>`;
+  s += `<text x="${c0.x + 6}" y="${toPx(0,plateH/2).y + 14}" fill="#8ea0bd" font-size="11">Y (elevation)</text>`;
+
+  // arm center lines from TX
+  armAngles.forEach((deg, ai) => {
+    const rad = deg * Math.PI / 180;
+    const end = toPx(R_FAR * Math.cos(rad), R_FAR * Math.sin(rad));
+    s += `<line x1="${c0.x}" y1="${c0.y}" x2="${end.x}" y2="${end.y}" stroke="${armColors[ai]}" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>`;
+  });
+
+  // 120 degree arc labels
+  s += `<text x="${c0.x - 46}" y="${c0.y + 30}" fill="#f6a94a" font-size="11">120°</text>`;
+  s += `<text x="${c0.x + 24}" y="${c0.y + 30}" fill="#f6a94a" font-size="11">120°</text>`;
+  s += `<text x="${c0.x - 12}" y="${c0.y - 34}" fill="#f6a94a" font-size="11">120°</text>`;
+
+  // radius dimension on the up arm
+  const rn = toPx(0, R_NEAR), rf = toPx(0, R_FAR);
+  s += `<text x="${rn.x + 12}" y="${(c0.y + rn.y)/2 + 3}" fill="#8ea0bd" font-size="10">40mm</text>`;
+  s += `<text x="${rf.x + 12}" y="${(rn.y + rf.y)/2 + 3}" fill="#8ea0bd" font-size="10">80mm</text>`;
+
+  // sensors: 16mm body ring + solid center + label
+  points.forEach(p => {
+    const px = toPx(p.x, p.y);
+    s += `<circle cx="${px.x}" cy="${px.y}" r="${(BODY_MM/2)*SCALE}" fill="none" stroke="${p.color}" stroke-width="1" opacity="0.4"/>`;
+    s += `<circle cx="${px.x}" cy="${px.y}" r="6" fill="${p.color}" stroke="#0b1220" stroke-width="1.5"/>`;
+    s += `<text x="${px.x + 11}" y="${px.y - 9}" fill="#e6edf7" font-size="12" font-weight="bold">${p.id}</text>`;
+  });
+  plate.innerHTML = s;
+
+  // ---- Coordinate table --------------------------------------------------
+  const tb = document.querySelector('#coord-table tbody');
+  points.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><span class="dot" style="background:${p.color}"></span>${p.id}</td><td>${p.arm}</td><td>${p.x.toFixed(1)}</td><td>${p.y.toFixed(1)}</td>`;
+    tb.appendChild(tr);
+  });
+  document.getElementById('plate-size').innerHTML =
+    `<b>ขนาดแผงขั้นต่ำ:</b> ประมาณ ${plateW} × ${plateH} mm (${(plateW/10).toFixed(0)} × ${(plateH/10).toFixed(0)} cm) — ` +
+    `แผง 4 รูในภาพเล็กเกินไปและรูไม่พอ ต้องเจาะรู 7 ตำแหน่งตามพิกัดนี้ (รูสำหรับ TCT40-16 ≈ 16mm)`;
+
+  // ---- Difference co-array ------------------------------------------------
+  const co = document.getElementById('coarray');
+  const diffs = [{ x: 0, y: 0 }];
+  for (let i = 0; i < rx.length; i++)
+    for (let j = 0; j < rx.length; j++)
+      if (i !== j) diffs.push({ x: rx[j].x - rx[i].x, y: rx[j].y - rx[i].y });
+
+  const maxAbs = Math.max(...diffs.map(d => Math.max(Math.abs(d.x), Math.abs(d.y)))) * 1.1;
+  const CVIEW = 320, CSC = (CVIEW - 40) / (2 * maxAbs), CCX = CVIEW / 2, CCY = CVIEW / 2;
+  const cpx = (x, y) => ({ x: CCX + x * CSC, y: CCY - y * CSC });
+
+  let cs = '';
+  // axes
+  cs += `<line x1="10" y1="${CCY}" x2="${CVIEW - 10}" y2="${CCY}" stroke="#223049"/>`;
+  cs += `<line x1="${CCX}" y1="10" x2="${CCX}" y2="${CVIEW - 10}" stroke="#223049"/>`;
+  diffs.forEach(d => {
+    const p = cpx(d.x, d.y);
+    const isOrigin = d.x === 0 && d.y === 0;
+    cs += `<circle cx="${p.x}" cy="${p.y}" r="${isOrigin ? 4 : 3}" fill="${isOrigin ? '#f6a94a' : '#4fd1c5'}" opacity="0.75"/>`;
+  });
+  cs += `<text x="${CVIEW - 60}" y="${CCY - 6}" fill="#8ea0bd" font-size="9">Δx (mm)</text>`;
+  cs += `<text x="${CCX + 5}" y="16" fill="#8ea0bd" font-size="9">Δy (mm)</text>`;
+  co.innerHTML = cs;
+})();
+</script>
+</body>
+</html>

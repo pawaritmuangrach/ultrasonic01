@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" font-family="Segoe UI, Tahoma, sans-serif">
+<rect width="900" height="560" fill="#ffffff"/>
+<text x="30" y="40" font-size="22" font-weight="700" fill="#1971c2">Stage B — ขา ESP32 ทั้ง 4 ช่องรับ (หัวต่อฝั่ง ADC)</text>
+<text x="30" y="66" font-size="13.5" fill="#868e96">ช่อง 3,4 ใหม่ ต่อขาถัดจากช่อง 1,2 ลงมาพอดี (แถว 48,49) · ห้ามสลับขา</text>
+<rect x="60" y="90" width="360" height="310" rx="10" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+<text x="240" y="114" font-size="14" font-weight="700" text-anchor="middle" fill="#343a40">หัวต่อ ESP32 (บนลงล่าง)</text>
+<rect x="80" y="140" width="320" height="54" rx="8" fill="#ebfbee" stroke="#2f9e44" stroke-width="2"/>
+<circle cx="112" cy="167" r="14" fill="#2f9e44"/>
+<text x="112" y="172" font-size="14" font-weight="700" text-anchor="middle" fill="#fff">46</text>
+<text x="140" y="163" font-size="14" font-weight="700" fill="#343a40">GPIO34 / ADC1_CH6</text>
+<text x="140" y="183" font-size="12.5" fill="#495057">ช่อง 1 · หัวรับ A140</text>
+<text x="388" y="172" font-size="16" text-anchor="end" fill="#2f9e44">✓ ต่อแล้ว</text>
+<path d="M400,167 L470,167" stroke="#2f9e44" stroke-width="2.5" marker-end="url(#ar)"/>
+<circle cx="510" cy="167" r="22" fill="none" stroke="#2f9e44" stroke-width="2.5"/>
+<circle cx="510" cy="167" r="15" fill="#2f9e44" opacity="0.25"/>
+<text x="510" y="172" font-size="12" font-weight="700" text-anchor="middle" fill="#2f9e44">A140</text>
+<rect x="80" y="210" width="320" height="54" rx="8" fill="#ebfbee" stroke="#2f9e44" stroke-width="2"/>
+<circle cx="112" cy="237" r="14" fill="#2f9e44"/>
+<text x="112" y="242" font-size="14" font-weight="700" text-anchor="middle" fill="#fff">47</text>
+<text x="140" y="233" font-size="14" font-weight="700" fill="#343a40">GPIO35 / ADC1_CH7</text>
+<text x="140" y="253" font-size="12.5" fill="#495057">ช่อง 2 · หัวรับ C140</text>
+<text x="388" y="242" font-size="16" text-anchor="end" fill="#2f9e44">✓ ต่อแล้ว</text>
+<path d="M400,237 L470,237" stroke="#2f9e44" stroke-width="2.5" marker-end="url(#ar)"/>
+<circle cx="510" cy="237" r="22" fill="none" stroke="#2f9e44" stroke-width="2.5"/>
+<circle cx="510" cy="237" r="15" fill="#2f9e44" opacity="0.25"/>
+<text x="510" y="242" font-size="12" font-weight="700" text-anchor="middle" fill="#2f9e44">C140</text>
+<rect x="80" y="280" width="320" height="54" rx="8" fill="#fff4e6" stroke="#e8590c" stroke-width="2"/>
+<circle cx="112" cy="307" r="14" fill="#e8590c"/>
+<text x="112" y="312" font-size="14" font-weight="700" text-anchor="middle" fill="#fff">48</text>
+<text x="140" y="303" font-size="14" font-weight="700" fill="#343a40">GPIO32 / ADC1_CH4</text>
+<text x="140" y="323" font-size="12.5" fill="#495057">ช่อง 3 · หัวรับ A80</text>
+<text x="388" y="312" font-size="16" text-anchor="end" fill="#e8590c">＋ ต่อใหม่</text>
+<path d="M400,307 L470,307" stroke="#e8590c" stroke-width="2.5" marker-end="url(#ar)"/>
+<circle cx="510" cy="307" r="22" fill="none" stroke="#e8590c" stroke-width="2.5"/>
+<circle cx="510" cy="307" r="15" fill="#e8590c" opacity="0.25"/>
+<text x="510" y="312" font-size="12" font-weight="700" text-anchor="middle" fill="#e8590c">A80</text>
+<rect x="80" y="350" width="320" height="54" rx="8" fill="#fff4e6" stroke="#e8590c" stroke-width="2"/>
+<circle cx="112" cy="377" r="14" fill="#e8590c"/>
+<text x="112" y="382" font-size="14" font-weight="700" text-anchor="middle" fill="#fff">49</text>
+<text x="140" y="373" font-size="14" font-weight="700" fill="#343a40">GPIO33 / ADC1_CH5</text>
+<text x="140" y="393" font-size="12.5" fill="#495057">ช่อง 4 · หัวรับ C80</text>
+<text x="388" y="382" font-size="16" text-anchor="end" fill="#e8590c">＋ ต่อใหม่</text>
+<path d="M400,377 L470,377" stroke="#e8590c" stroke-width="2.5" marker-end="url(#ar)"/>
+<circle cx="510" cy="377" r="22" fill="none" stroke="#e8590c" stroke-width="2.5"/>
+<circle cx="510" cy="377" r="15" fill="#e8590c" opacity="0.25"/>
+<text x="510" y="382" font-size="12" font-weight="700" text-anchor="middle" fill="#e8590c">C80</text>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#868e96"/></marker></defs>
+<rect x="560" y="150" width="310" height="180" rx="10" fill="#e7f5ff" stroke="#1971c2" stroke-width="2"/>
+<text x="580" y="178" font-size="15" font-weight="700" fill="#1971c2">เบสไลน์สองขนาด (coarse-to-fine)</text>
+<text x="580" y="206" font-size="12.5" fill="#495057">คู่ 1: GPIO34-35 = A140-C140</text>
+<text x="580" y="228" font-size="12.5" fill="#495057">         เบสไลน์ 242 mm (ละเอียด)</text>
+<text x="580" y="250" font-size="12.5" fill="#495057">คู่ 2: GPIO32-33 = A80-C80</text>
+<text x="580" y="272" font-size="12.5" fill="#495057">         เบสไลน์ 139 mm (หยาบ)</text>
+<text x="580" y="294" font-size="12.5" fill="#868e96"></text>
+<text x="580" y="316" font-size="12.5" fill="#868e96">ADC อ่านทีละคู่ (ยิงสองครั้ง)</text>
+<text x="580" y="338" font-size="12.5" fill="#868e96">ฉากนิ่งตอนเก็บ dataset จึงได้</text>
+<rect x="560" y="350" width="310" height="150" rx="10" fill="#fff5f5" stroke="#e03131" stroke-width="2"/>
+<text x="580" y="378" font-size="15" font-weight="700" fill="#e03131">กฎ 3 ข้อ ห้ามพลาด</text>
+<text x="580" y="406" font-size="12.5" fill="#495057">1. VREF ทั้ง 4 ช่องจากตัวแบ่งเดียว</text>
+<text x="580" y="430" font-size="12.5" fill="#495057">2. เลย์เอาต์ 4 ช่องเหมือนกันเป๊ะ</text>
+<text x="580" y="454" font-size="12.5" fill="#495057">     (ปรสิตเท่ากัน = แมตช์)</text>
+<text x="580" y="478" font-size="12.5" fill="#495057">3. strain relief ทุกสายหัวรับ</text>
+</svg>

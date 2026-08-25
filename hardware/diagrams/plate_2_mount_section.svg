@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="470" viewBox="0 0 680 470" font-family="Segoe UI, system-ui, sans-serif" fill="#343a40">
+<title>ภาพตัดขวางของรูยึดเซ็นเซอร์แบบแยกการสั่นสะเทือน</title>
+<desc>รูเจาะ 19.5 มิลลิเมตร ใหญ่กว่าตัวเซ็นเซอร์ 16 มิลลิเมตร เหลือช่องว่างข้างละ 1.75 มิลลิเมตร ใส่โอริงสองวงคั่นไว้ ทำให้โลหะไม่แตะพลาสติกโดยตรง</desc>
+<rect width="680" height="470" fill="#ffffff"/>
+<text x="20" y="30" font-size="17" font-weight="700" fill="#1971c2">รูยึดเซ็นเซอร์ — ภาพตัดขวาง</text>
+<text x="20" y="48" font-size="12" fill="#6c757d">หัวใจของแบบนี้คือ โลหะของเซ็นเซอร์ต้องไม่แตะเนื้อพลาสติกที่จุดใดเลย</text>
+
+<rect x="110" y="300" width="300" height="24" fill="#f1f3f5" stroke="#adb5bd" stroke-width="1.5"/>
+<rect x="182" y="240" width="156" height="60" fill="#f1f3f5" stroke="#adb5bd" stroke-width="1.5"/>
+<rect x="201" y="240" width="118" height="84" fill="#ffffff" stroke="none"/>
+<line x1="201" y1="240" x2="201" y2="324" stroke="#adb5bd" stroke-width="1.5"/>
+<line x1="319" y1="240" x2="319" y2="324" stroke="#adb5bd" stroke-width="1.5"/>
+
+<rect x="212" y="234" width="96" height="72" rx="3" fill="#dee2e6" stroke="#495057" stroke-width="2"/>
+<rect x="216" y="238" width="88" height="10" rx="2" fill="#adb5bd"/>
+<line x1="236" y1="306" x2="236" y2="352" stroke="#343a40" stroke-width="2"/>
+<line x1="284" y1="306" x2="284" y2="352" stroke="#343a40" stroke-width="2"/>
+
+<circle cx="206" cy="252" r="6" fill="#ffd8a8" stroke="#e8590c" stroke-width="2"/>
+<circle cx="314" cy="252" r="6" fill="#ffd8a8" stroke="#e8590c" stroke-width="2"/>
+<circle cx="206" cy="288" r="6" fill="#ffd8a8" stroke="#e8590c" stroke-width="2"/>
+<circle cx="314" cy="288" r="6" fill="#ffd8a8" stroke="#e8590c" stroke-width="2"/>
+
+<circle cx="370" cy="312" r="7" fill="#ffffff" stroke="#343a40" stroke-width="2"/>
+
+<line x1="212" y1="200" x2="212" y2="230" stroke="#868e96" stroke-width="1"/>
+<line x1="308" y1="200" x2="308" y2="230" stroke="#868e96" stroke-width="1"/>
+<line x1="212" y1="212" x2="308" y2="212" stroke="#495057" stroke-width="1.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="260" y="206" font-size="12" text-anchor="middle" fill="#495057">⌀16.0 ตัวเซ็นเซอร์</text>
+
+<line x1="201" y1="150" x2="201" y2="236" stroke="#868e96" stroke-width="1"/>
+<line x1="319" y1="150" x2="319" y2="236" stroke="#868e96" stroke-width="1"/>
+<line x1="201" y1="166" x2="319" y2="166" stroke="#1971c2" stroke-width="1.5" marker-start="url(#b)" marker-end="url(#b)"/>
+<text x="260" y="160" font-size="13" font-weight="600" text-anchor="middle" fill="#1971c2">⌀19.5 รูเจาะ</text>
+
+<line x1="182" y1="110" x2="182" y2="238" stroke="#868e96" stroke-width="1"/>
+<line x1="338" y1="110" x2="338" y2="238" stroke="#868e96" stroke-width="1"/>
+<line x1="182" y1="126" x2="338" y2="126" stroke="#495057" stroke-width="1.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="260" y="120" font-size="12" text-anchor="middle" fill="#495057">⌀23.0 บอสรอบรู</text>
+
+<line x1="430" y1="240" x2="470" y2="240" stroke="#868e96" stroke-width="1"/>
+<line x1="430" y1="300" x2="470" y2="300" stroke="#868e96" stroke-width="1"/>
+<line x1="452" y1="240" x2="452" y2="300" stroke="#495057" stroke-width="1.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="462" y="274" font-size="12" fill="#495057">บอสสูง 10</text>
+<line x1="430" y1="324" x2="470" y2="324" stroke="#868e96" stroke-width="1"/>
+<line x1="452" y1="300" x2="452" y2="324" stroke="#495057" stroke-width="1.5"/>
+<text x="462" y="320" font-size="12" fill="#495057">แผ่นหนา 4</text>
+
+<line x1="314" y1="252" x2="512" y2="228" stroke="#e8590c" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="518" y="226" font-size="13" font-weight="600" fill="#e8590c">โอริง 2 วง</text>
+<text x="518" y="244" font-size="12" fill="#e8590c">ID 15 · หน้าตัด 2.0 มม.</text>
+<text x="518" y="262" font-size="12" fill="#6c757d">บีบตัวเหลือ 1.75 มม.</text>
+
+<line x1="319" y1="270" x2="500" y2="292" stroke="#495057" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="506" y="290" font-size="12" fill="#495057">ช่องว่าง 1.75 มม. รอบตัว</text>
+<text x="506" y="308" font-size="12" fill="#495057">โลหะไม่แตะพลาสติกเลย</text>
+
+<line x1="377" y1="312" x2="470" y2="360" stroke="#495057" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="476" y="358" font-size="12" fill="#495057">รู ⌀3.5 สำหรับเคเบิลไทร์</text>
+<text x="476" y="376" font-size="12" fill="#6c757d">กันสายดึงเซ็นเซอร์เอียง</text>
+
+<text x="110" y="380" font-size="13" font-weight="600" fill="#343a40">ถ้าไม่มีโอริง — ใช้โฟมเทปสองหน้าแทนได้ รูเดียวกัน</text>
+<text x="110" y="400" font-size="12" fill="#6c757d">พันโฟมหนา 1.5–1.75 มม. รอบตัวกระป๋องหนึ่งรอบ (หรือโฟม 0.8 มม. สองรอบ) แล้วกดลงรู</text>
+<text x="110" y="420" font-size="12" fill="#6c757d">โอริงดีกว่าตรงที่ถอดเปลี่ยนได้และเข้าศูนย์เองแม่นกว่า — สำคัญมากเพราะ TDOA ต้องรู้พิกัดจริงระดับ 1 มม.</text>
+<text x="110" y="446" font-size="12" fill="#e03131">ห้ามทากาวหรือกดอัดแน่น — จะกลายเป็นสะพานให้เสียงวิ่งลัดผ่านเนื้อแผงทันที</text>
+
+<defs>
+<marker id="a" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+<path d="M0 4 L8 1 L8 7 Z" fill="#495057"/></marker>
+<marker id="b" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+<path d="M0 4 L8 1 L8 7 Z" fill="#1971c2"/></marker>
+</defs>
+</svg>

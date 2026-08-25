@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<title>Sparse Array Layout — วางตำแหน่ง Transducer/Receiver บนโต๊ะ</title>
+<style>
+  :root {
+    --bg: #0b1220;
+    --panel: #121a2b;
+    --panel-border: #223049;
+    --text: #e6edf7;
+    --muted: #8ea0bd;
+    --accent: #4fd1c5;
+    --accent2: #f6a94a;
+    --paper: #f2ead9;
+    --paper-line: #cbbfa0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
+    padding: 18px 22px 50px;
+  }
+  h1 { font-size: 18px; color: var(--accent); margin: 0 0 6px; }
+  h2 { font-size: 13.5px; color: var(--text); margin: 22px 0 8px; }
+  #intro { font-size: 12.5px; color: var(--muted); line-height: 1.6; max-width: 1000px; margin-bottom: 10px; }
+  #intro b { color: var(--text); }
+  .layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; }
+  th, td { border-bottom: 1px solid var(--panel-border); padding: 5px 8px; text-align: left; }
+  th { color: var(--muted); font-weight: 600; }
+  .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+  .legend-item { font-size: 12px; margin: 4px 0; color: var(--muted); }
+  .legend-item b { color: var(--text); }
+  .callout {
+    background: #0e1725; border: 1px solid var(--panel-border); border-radius: 8px;
+    padding: 10px 12px; font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: 12px;
+  }
+  .callout b { color: var(--accent2); }
+  svg text { font-family: Consolas, monospace; }
+</style>
+</head>
+<body>
+
+<h1>ผังการวางตำแหน่ง Transducer + Sparse Receiver Array แบบ L-shape (มองจากด้านบน)</h1>
+<div id="intro">
+  แผนผังนี้วาดตามมาตราส่วนจริง (มิลลิเมตร) ให้คุณใช้ไม้บรรทัดวัดแล้ววางลงบนกระดาษ/โต๊ะได้เลย
+  ตัวรับกระจายอยู่ <b>2 แขนตั้งฉากกัน (แกน X และแกน Y) บนระนาบโต๊ะแบนๆ</b> — ไม่ใช่เส้นตรงเดียวซ้าย-ขวา
+  เหมือนก่อนหน้า เพื่อให้ทำ <b>multilateration เต็มรูปแบบ</b> ได้ (หาทั้งมุมและระยะพร้อมกันจากหลายจุดวัด
+  โดยตรง ไม่ต้องพึ่งการประมาณระยะแบบ monostatic จากช่องเดียว) แต่ละแขนยังคงใช้ระยะห่างแบบ
+  <b>ไม่เท่ากัน (sparse)</b> เหมือนเดิม และจงใจใช้ชุดตัวเลขคนละชุดกันระหว่างสองแขน เพื่อไม่ให้เกิดความกำกวม
+  ซ้ำกันโดยบังเอิญระหว่างแขน
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h2>ผังบนโต๊ะ (Top-down plan view)</h2>
+    <svg id="plan" viewBox="0 0 700 620" style="width:100%; height:auto; background:#0d1420; border-radius:8px;"></svg>
+  </div>
+
+  <div>
+    <div class="panel">
+      <h2>พิกัดแต่ละจุด (มม. จากมุมล่างซ้ายของกระดาษ)</h2>
+      <table id="coord-table">
+        <thead><tr><th>จุด</th><th>x (mm)</th><th>y (mm)</th><th>หมายเหตุ</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <h2>ระยะห่างระหว่างตัวรับ (ต้องไม่เท่ากัน)</h2>
+      <table id="gap-table">
+        <thead><tr><th>แขน</th><th>คู่</th><th>ระยะห่าง (mm)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="callout">
+        <b>ทำไมต้องเป็นค่าพวกนี้:</b> แขน X ใช้ชุด 8,13,21,34mm ส่วนแขน Y ใช้ชุด <b>11,18,29mm</b> (คนละชุดกัน
+        โดยตั้งใจ) ทำให้ผลต่างระหว่างตัวรับแต่ละคู่ในภาพรวมซ้ำกันน้อยที่สุด — ถ้าใช้ระยะเท่ากันหมดทุกคู่/ทุกแขน
+        จะเกิด grating lobe ซ้ำที่มุมเดียวกันทุกคู่ ทำให้แก้ความกำกวมไม่ได้เลยแม้จะมีตัวรับเยอะแค่ไหนก็ตาม
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <h2>Legend</h2>
+      <div class="legend-item"><span class="dot" style="background:#f6a94a"></span><b>T</b> = ตัวส่งคลื่น (transmitter) — อยู่ที่มุมของตัว L</div>
+      <div class="legend-item"><span class="dot" style="background:#4fd1c5"></span><b>R1-R4</b> = ตัวรับแขน X (แนวนอน) — sparse spacing</div>
+      <div class="legend-item"><span class="dot" style="background:#9b6bff"></span><b>R6-R8</b> = ตัวรับแขน Y (แนวตั้ง) — sparse spacing คนละชุดกับแขน X</div>
+      <div class="legend-item"><span class="dot" style="background:#ff2fd6"></span><b>โซนสีชมพู</b> = พื้นที่ที่ควรเลื่อนวัตถุเป้าหมายไปเรื่อยๆ ระหว่างเก็บข้อมูล (มุมตรงข้ามตัว L พอดี ไม่บังแขนไหนเลย)</div>
+      <div class="legend-item"><span class="dot" style="background:#e6edf7"></span><b>จุดขาว</b> = ตำแหน่งวัตถุ + ArUco/สติกเกอร์สีเด่น ให้กล้องแกะรอย</div>
+    </div>
+  </div>
+</div>
+
+<h2>มุมมองด้านข้าง (Side view) — ความสูงกล้อง</h2>
+<div class="panel" style="max-width:700px;">
+  <svg id="side" viewBox="0 0 700 260" style="width:100%; height:auto; background:#0d1420; border-radius:8px;"></svg>
+  <div class="callout">
+    กล้องต้องมองตั้งฉากลงมาตรงๆ (มุม 90° กับโต๊ะ) จากขาตั้งเหนือ<b>กึ่งกลางกระดาษพอดี</b> — เอียงแม้เล็กน้อย
+    จะทำให้พิกัดที่แปลงจาก pixel ผิดเพี้ยน (perspective distortion) ความสูงประมาณ <b>50-70cm</b> เหนือโต๊ะ
+    ก็เพียงพอให้เห็นกระดาษทั้งแผ่นสำหรับพื้นที่ทำงานขนาดนี้ (ปรับตามมุมรับภาพจริงของกล้อง/เลนส์ที่ใช้)
+    ต้องมี marker อย่างน้อย 4 จุดที่รู้พิกัดจริงแน่นอน (เช่น 4 มุมกระดาษ) เพื่อคำนวณ homography (pixel → mm)
+  </div>
+</div>
+
+<script>
+(() => {
+  // ---- Plan (top-down) geometry, all units mm --------------------------
+  // L-shape sparse array: T sits at the elbow, one arm runs along +X, the
+  // other along +Y, each with its own non-uniform (sparse) spacing so no
+  // grating-lobe-style ambiguity lines up between the two arms either.
+  const PAPER_W = 250, PAPER_H = 220;
+  const gapsX = [8, 13, 21, 34];   // mm, X-arm (azimuth-ish) receiver spacing
+  const gapsY = [11, 18, 29];      // mm, Y-arm (depth-ish) receiver spacing — deliberately different values
+
+  const txPos = { x: 45, y: 45 };
+
+  const xReceivers = [];
+  { let cx = txPos.x; gapsX.forEach(g => { cx += g; xReceivers.push(cx); }); }
+  const yReceivers = [];
+  { let cy = txPos.y; gapsY.forEach(g => { cy += g; yReceivers.push(cy); }); }
+
+  const points = [
+    { id: 'T', x: txPos.x, y: txPos.y, color: '#f6a94a', note: 'ตัวส่ง (transmitter, มุม L)' },
+    ...xReceivers.map((x, i) => ({ id: `R${i + 1}`, x, y: txPos.y, color: '#4fd1c5', note: `ตัวรับแขน X ${i + 1}` })),
+    ...yReceivers.map((y, i) => ({ id: `R${i + 6}`, x: txPos.x, y, color: '#9b6bff', note: `ตัวรับแขน Y ${i + 1}` })),
+  ];
+
+  // ---- Render plan view --------------------------------------------------
+  const SCALE = 2.4; // px per mm
+  const MARGIN = 40;
+  const svgW = PAPER_W * SCALE + MARGIN * 2;
+  const svgH = PAPER_H * SCALE + MARGIN * 2;
+  const plan = document.getElementById('plan');
+  plan.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
+
+  const toPx = (xmm, ymm) => ({
+    // y=0 (baseline, back of paper) at top of drawing; y increases forward (downward on screen)
+    x: MARGIN + xmm * SCALE,
+    y: MARGIN + ymm * SCALE,
+  });
+
+  let svg = '';
+
+  // paper rectangle
+  const pTL = toPx(0, 0);
+  svg += `<rect x="${pTL.x}" y="${pTL.y}" width="${PAPER_W * SCALE}" height="${PAPER_H * SCALE}" fill="#f2ead9" stroke="#cbbfa0" stroke-width="2"/>`;
+
+  // ruler ticks every 20mm along top and left edges
+  svg += `<g font-size="9" fill="#6b7280">`;
+  for (let x = 0; x <= PAPER_W; x += 20) {
+    const p = toPx(x, 0);
+    svg += `<line x1="${p.x}" y1="${p.y}" x2="${p.x}" y2="${p.y - 6}" stroke="#6b7280"/>`;
+    svg += `<text x="${p.x - 6}" y="${p.y - 9}">${x}</text>`;
+  }
+  for (let y = 0; y <= PAPER_H; y += 20) {
+    const p = toPx(0, y);
+    svg += `<line x1="${p.x}" y1="${p.y}" x2="${p.x - 6}" y2="${p.y}" stroke="#6b7280"/>`;
+    svg += `<text x="${p.x - 26}" y="${p.y + 3}">${y}</text>`;
+  }
+  svg += `</g>`;
+
+  // target zone: rectangle in the corner diagonally opposite the L, clear
+  // of both arms entirely
+  const zoneX1 = 100, zoneY1 = 110, zoneX2 = PAPER_W - 10, zoneY2 = PAPER_H - 10;
+  const zTL = toPx(zoneX1, zoneY1), zBR = toPx(zoneX2, zoneY2);
+  svg += `<rect x="${zTL.x}" y="${zTL.y}" width="${zBR.x - zTL.x}" height="${zBR.y - zTL.y}" fill="#ff2fd6" opacity="0.10" stroke="#ff2fd6" stroke-width="1" stroke-dasharray="5,4"/>`;
+  svg += `<text x="${zTL.x + 14}" y="${zTL.y + 20}" fill="#ff2fd6" font-size="12">โซนเลื่อนวัตถุเป้าหมาย</text>`;
+
+  // dimension lines: X-arm (horizontal, above the arm) and Y-arm (vertical, left of the arm)
+  svg += `<g stroke="#8ea0bd" font-size="11" fill="#8ea0bd">`;
+  const xChain = [txPos.x, ...xReceivers];
+  for (let i = 0; i < xChain.length - 1; i++) {
+    const a = toPx(xChain[i], txPos.y - 14);
+    const b = toPx(xChain[i + 1], txPos.y - 14);
+    svg += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" marker-start="url(#arrow)" marker-end="url(#arrow)"/>`;
+    svg += `<text x="${(a.x + b.x) / 2 - 12}" y="${a.y - 6}">${gapsX[i]}mm</text>`;
+  }
+  const yChain = [txPos.y, ...yReceivers];
+  for (let i = 0; i < yChain.length - 1; i++) {
+    const a = toPx(txPos.x - 16, yChain[i]);
+    const b = toPx(txPos.x - 16, yChain[i + 1]);
+    svg += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" marker-start="url(#arrow)" marker-end="url(#arrow)"/>`;
+    svg += `<text x="${a.x - 32}" y="${(a.y + b.y) / 2 + 3}">${gapsY[i]}</text>`;
+  }
+  svg += `</g>`;
+
+  // points (T + receivers)
+  points.forEach(p => {
+    const px = toPx(p.x, p.y);
+    svg += `<circle cx="${px.x}" cy="${px.y}" r="7" fill="${p.color}" stroke="#0b1220" stroke-width="1.5"/>`;
+    svg += `<text x="${px.x + 10}" y="${px.y - 8}" fill="#e6edf7" font-size="13" font-weight="bold">${p.id}</text>`;
+  });
+
+  // example target object marker, centered in the target zone
+  const tgt = toPx((zoneX1 + zoneX2) / 2, (zoneY1 + zoneY2) / 2);
+  svg += `<circle cx="${tgt.x}" cy="${tgt.y}" r="6" fill="#e6edf7"/>`;
+  svg += `<text x="${tgt.x + 10}" y="${tgt.y + 4}" fill="#e6edf7" font-size="11">วัตถุ + marker</text>`;
+
+  svg = `<defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#8ea0bd"/></marker></defs>` + svg;
+  plan.innerHTML = svg;
+
+  // ---- Coordinates table --------------------------------------------------
+  const tbody = document.querySelector('#coord-table tbody');
+  points.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><span class="dot" style="background:${p.color}"></span>${p.id}</td><td>${p.x.toFixed(1)}</td><td>${p.y.toFixed(1)}</td><td>${p.note}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  const gapBody = document.querySelector('#gap-table tbody');
+  for (let i = 0; i < gapsX.length; i++) {
+    const tr = document.createElement('tr');
+    const prev = i === 0 ? 'T' : `R${i}`;
+    tr.innerHTML = `<td>X</td><td>${prev} - R${i + 1}</td><td>${gapsX[i]}</td>`;
+    gapBody.appendChild(tr);
+  }
+  for (let i = 0; i < gapsY.length; i++) {
+    const tr = document.createElement('tr');
+    const prev = i === 0 ? 'T' : `R${i + 5}`;
+    tr.innerHTML = `<td>Y</td><td>${prev} - R${i + 6}</td><td>${gapsY[i]}</td>`;
+    gapBody.appendChild(tr);
+  }
+
+  // ---- Side view (camera height) ------------------------------------------
+  const side = document.getElementById('side');
+  const sw = 700, sh = 260;
+  const tableY = 200, tableX1 = 80, tableX2 = 620;
+  const camX = (tableX1 + tableX2) / 2, camY = 30, camHeight = 60;
+  let sideSvg = '';
+  // table
+  sideSvg += `<line x1="${tableX1 - 20}" y1="${tableY}" x2="${tableX2 + 20}" y2="${tableY}" stroke="#8ea0bd" stroke-width="3"/>`;
+  sideSvg += `<line x1="${tableX1}" y1="${tableY}" x2="${tableX1}" y2="${tableY + 30}" stroke="#8ea0bd" stroke-width="3"/>`;
+  sideSvg += `<line x1="${tableX2}" y1="${tableY}" x2="${tableX2}" y2="${tableY + 30}" stroke="#8ea0bd" stroke-width="3"/>`;
+  // paper on table
+  sideSvg += `<rect x="${tableX1 + 10}" y="${tableY - 6}" width="${tableX2 - tableX1 - 20}" height="6" fill="#f2ead9"/>`;
+  // sensors on paper (small marks)
+  sideSvg += `<circle cx="${camX - 40}" cy="${tableY - 6}" r="4" fill="#f6a94a"/>`;
+  sideSvg += `<circle cx="${camX + 10}" cy="${tableY - 6}" r="4" fill="#4fd1c5"/>`;
+  sideSvg += `<circle cx="${camX + 40}" cy="${tableY - 6}" r="4" fill="#4fd1c5"/>`;
+  // camera stand
+  sideSvg += `<line x1="${camX}" y1="${camY}" x2="${camX}" y2="${tableY - 6}" stroke="#4fd1c5" stroke-width="1" stroke-dasharray="4,4"/>`;
+  sideSvg += `<rect x="${camX - 16}" y="${camY - 12}" width="32" height="20" rx="4" fill="#e6edf7"/>`;
+  sideSvg += `<text x="${camX - 14}" y="${camY + 2}" font-size="11" fill="#0b1220">CAM</text>`;
+  // FOV cone
+  sideSvg += `<polygon points="${camX},${camY + 8} ${tableX1 + 10},${tableY - 6} ${tableX2 - 10},${tableY - 6}" fill="#4fd1c5" opacity="0.08" stroke="#4fd1c5" stroke-dasharray="3,3"/>`;
+  // height dimension
+  sideSvg += `<line x1="${camX + 60}" y1="${camY}" x2="${camX + 60}" y2="${tableY - 6}" stroke="#8ea0bd" marker-start="url(#arrow2)" marker-end="url(#arrow2)"/>`;
+  sideSvg += `<text x="${camX + 68}" y="${(camY + tableY) / 2}" font-size="13" fill="#8ea0bd">~50-70cm</text>`;
+  sideSvg += `<text x="${tableX1 - 40}" y="${tableY + 45}" font-size="11" fill="#8ea0bd">โต๊ะ</text>`;
+
+  sideSvg = `<defs><marker id="arrow2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#8ea0bd"/></marker></defs>` + sideSvg;
+  side.innerHTML = sideSvg;
+})();
+</script>
+</body>
+</html>

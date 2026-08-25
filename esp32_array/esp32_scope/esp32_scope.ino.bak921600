@@ -1,0 +1,693 @@
+/*
+ * esp32_scope.ino - pulse-echo scope for the 40 kHz ultrasonic array (Stage 1).
+ *
+ * WHAT THIS IS FOR
+ * esp32_selftest proved the capture chain works. This sketch adds the other
+ * half: it fires a short 40 kHz burst out of the TX driver and captures the
+ * receive chain across the same window, so one serial command produces one
+ * complete pulse-echo record. That record is the raw material for everything
+ * later - envelope, cross-correlation, TDOA.
+ *
+ * WIRING
+ *     GPIO18 ---> 74HCT04 pin 1        (see hardware/diagrams/tx_1_driver_version_a.svg)
+ *     GPIO34 <--- RX front-end output  (see hardware/diagrams/rx_*.svg)
+ *     TX board GND ---> ESP32 GND pin directly, NOT through the RX ground rail.
+ *
+ * That last line is not a style preference. The burst pulls ~46 mA in steps;
+ * if that current shares a ground path with an input being amplified 106x,
+ * the voltage drop along the rail lands on top of the echo.
+ *
+ * WHERE t = 0 REALLY IS
+ * The firmware waits `p` microseconds after arming the ADC before it fires,
+ * so the burst *should* land at sample p*fs/1e6, and that index is reported
+ * as `burst=` in the frame header. Treat it as a hint, not a measurement:
+ * the DMA is free-running, so the arm-to-burst gap is only accurate to a
+ * fraction of a conv frame.
+ *
+ * The honest time reference is in the data itself. Every shot contains a
+ * large direct pulse - the transmitter heard through the air and the bench
+ * over the few centimetres between the transducers - and that pulse is the
+ * true t = 0. Range comes from (t_echo - t_direct), which cancels every
+ * software latency in this file. Software sync only has to be good enough
+ * to put the direct pulse inside the record; the data does the rest.
+ *
+ * TWO CHANNELS AT ONCE (Stage 2)
+ * `c 34,35` puts the ADC on both receivers. They are NOT sampled at the same
+ * instant - one ADC walks a pattern - but the gap is one conversion slot,
+ * 1/rate, which is fixed and exactly known. A known constant subtracts out;
+ * only jitter would be fatal. That is the whole reason a multiplexed ADC can
+ * do TDOA at all, and it is why `rate` here means the TOTAL conversion rate:
+ * with two channels each one gets rate/2.
+ *
+ * The demultiplexer keys off the channel tag the ADC stamps into every
+ * sample, and refuses to store anything until it has seen the first channel
+ * of the pattern. Assuming strict alternation instead would swap the two
+ * receivers on any frame the DMA happened to hand over mid-pattern - which
+ * inverts the sign of every angle, intermittently, which is far worse than
+ * failing outright.
+ *
+ * IT ALSO HAS TO IGNORE REPEATS. Measured on this chip: the SAR tops out
+ * near 250 kHz of real conversions, and asking for more does not fail - the
+ * DMA just writes the same conversion out several times. At 1 MHz you get
+ * every reading four times over, bit for bit. Those repeats are not extra
+ * samples and must not be counted as such, so a new conversion is recognised
+ * by the channel tag CHANGING, not by a word arriving.
+ *
+ * Note this costs nothing in accuracy when it does happen: repeating a value
+ * is a zero-order hold, which quantises the waveform in time but does not
+ * shift it. What it costs is time resolution, so `rate` is worth choosing to
+ * land where no repeating occurs - `i` reports the conversion period the
+ * capture actually achieved, which is the number to trust.
+ *
+ * WHY THERE IS NO AVERAGING HERE
+ * Averaging N shots would buy sqrt(N) of SNR, but only if the shots line up
+ * to well under one carrier period (25 us at 40 kHz). The trigger jitter in
+ * this design is microseconds, so summing raw shots on the ESP32 would smear
+ * the carrier away instead of reinforcing it. Averaging belongs in Python,
+ * after each shot has been aligned on its own direct pulse.
+ *
+ * REQUIRES: Arduino-ESP32 core 3.x. Board "ESP32 Dev Module". Original ESP32
+ * only - S2/S3/C3 have a much slower continuous ADC and a different channel map.
+ *
+ * SERIAL COMMANDS (921600 baud):
+ *   ?           help
+ *   i           info: chip, config, window length, range covered
+ *   r           fire a burst and capture one record   <- the normal shot
+ *   q           capture without firing (background / noise reference)
+ *   f <hz>      ADC sample rate            (default 500000)
+ *   n <count>   samples per capture        (default 24000)
+ *   s <hz>      burst carrier frequency    (default 40000)
+ *   b <cycles>  burst length in cycles     (default 8)
+ *   p <us>      quiet time before the burst(default 200)
+ *   c <pin>[,<pin>]  probe pin(s): 34 35 32 33 36 39 - two pins = TDOA mode
+ *   d <hz>      test tone on GPIO26, 0 = off (for RX gain checks)
+ *   w <0|1>     continuous carrier on GPIO25, for bringing up the TX board
+ */
+
+#include <Arduino.h>
+#include "esp_adc/adc_continuous.h"
+#include "esp_timer.h"
+#include "driver/ledc.h"
+
+#if __has_include("driver/dac_cosine.h")
+#include "driver/dac_cosine.h"
+#define HAVE_DAC_COSINE 1
+#endif
+
+// ---------------------------------------------------------------- config --
+
+/* TX drive lives on GPIO18, on the opposite header from the ADC inputs.
+ * GPIO25/26 would work electrically, but they sit four pins away from
+ * GPIO34/35 on the same header, which puts a 3.3 V 40 kHz square wave with
+ * nanosecond edges alongside a high-impedance analog node. Moving it to the
+ * far header puts the 25 mm width of the DevKit between them, and lets the
+ * TX board sit on its own breadboard with only the 5 V feed crossing over.
+ *
+ * TEST_GPIO cannot move the same way: it is a DAC output, and GPIO25/26 are
+ * the only two DACs on this chip. That is fine - the test tone is injected
+ * into the RX front-end, so it belongs on the RX side anyway. */
+#define TX_GPIO 18    // -> 74HCT04 input
+#define TEST_GPIO 26  // DAC2, independent tone for measuring RX gain
+
+/* 24000 samples at 500 kS/s is a 48 ms window = 16.5 m of travel = 8.2 m of
+ * range, and costs 48 KB of the ESP32's 320 KB of DRAM. 500 kS/s is also
+ * 12.5 samples per 40 kHz cycle - ample for cross-correlation with
+ * sub-sample interpolation, and close to the 333 kS/s per channel that six
+ * channels will get in Stage 3, so what is learned here still applies. */
+#define MAX_SAMPLES 32000   /* total slots, shared across channels */
+#define MAX_CH 8
+
+static uint32_t g_sample_hz = 500000;
+static uint32_t g_num_samples = MAX_SAMPLES;   /* per channel */
+static uint32_t g_burst_hz = 40000;
+/* Burst length trades blind zone against range.
+ *
+ * Measured on this hardware with a reflector at 20 cm: 8 cycles put the echo
+ * 23.9 cm away, 6 cycles 22.5 cm, 4 cycles 19.5 cm. The echo did not move -
+ * the transmitter's ring-down did. A TCT40 is a high-Q resonator, so a longer
+ * burst leaves a longer tail, and anything arriving under that tail is
+ * reported late or not at all. 4 cycles clears the tail by ~15 cm; 8 cycles
+ * buys ~8 dB more SNR for targets that are far enough away to care. */
+static uint32_t g_burst_cycles = 8;
+static uint32_t g_pre_us = 200;
+static bool g_cw = false;  // continuous carrier, for TX bring-up only
+
+static adc_channel_t g_ch[MAX_CH] = {ADC_CHANNEL_6};  // GPIO34
+static int g_pin[MAX_CH] = {34};
+static uint32_t g_nch = 1;
+
+static uint16_t g_samples[MAX_SAMPLES];
+static adc_continuous_handle_t g_adc = NULL;
+static bool g_adc_running = false;
+
+#ifdef HAVE_DAC_COSINE
+static dac_cosine_handle_t g_test = NULL;
+#endif
+static uint32_t g_test_hz = 0;
+
+// ------------------------------------------------------------ transmitter --
+
+static void tx_attach() {
+  ledcDetach(TX_GPIO);
+  // 8-bit resolution is plenty: the transducer is a high-Q resonator that
+  // turns whatever edges it is given into a sine wave anyway.
+  ledcAttach(TX_GPIO, g_burst_hz, 8);
+  ledcWrite(TX_GPIO, 0);  // parked low, not floating
+}
+
+/* Fire g_burst_cycles cycles of the carrier.
+ *
+ * Deliberately not wrapped in a critical section. Disabling interrupts here
+ * would tighten the burst *length* by a few microseconds, which changes only
+ * how much energy is radiated - while the burst *start*, the thing that would
+ * matter, is recovered from the direct pulse in the data regardless. Paying
+ * for precision that gets thrown away is not a good trade. */
+static void tx_burst() {
+  if (g_burst_cycles == 0) return;
+  const int64_t len_us = (int64_t)g_burst_cycles * 1000000 / g_burst_hz;
+  ledcWrite(TX_GPIO, 128);  // 50% duty
+  const int64_t stop_at = esp_timer_get_time() + len_us;
+  while (esp_timer_get_time() < stop_at) { /* busy-wait; len_us is ~200 us */ }
+  ledcWrite(TX_GPIO, 0);
+}
+
+static void test_tone(uint32_t hz) {
+#ifdef HAVE_DAC_COSINE
+  if (g_test) {
+    dac_cosine_stop(g_test);
+    dac_cosine_del_channel(g_test);
+    g_test = NULL;
+  }
+  g_test_hz = 0;
+  if (hz == 0) {
+    Serial.println("# test tone: off");
+    return;
+  }
+  dac_cosine_config_t cfg = {};
+  cfg.chan_id = DAC_CHAN_1;  // GPIO26
+  cfg.freq_hz = hz;
+  cfg.clk_src = DAC_COSINE_CLK_SRC_DEFAULT;
+  cfg.offset = 0;
+  cfg.phase = DAC_COSINE_PHASE_0;
+  cfg.atten = DAC_COSINE_ATTEN_DB_6;  // ~0.8 Vpp -> 0.8 mVpp after a 100k/100R divider
+  cfg.flags.force_set_freq = true;
+  if (dac_cosine_new_channel(&cfg, &g_test) == ESP_OK &&
+      dac_cosine_start(g_test) == ESP_OK) {
+    g_test_hz = hz;
+    Serial.printf("# test tone: %u Hz on GPIO%d (~0.8 Vpp)\n", (unsigned)hz, TEST_GPIO);
+  } else {
+    Serial.println("!! test tone failed to start");
+    g_test = NULL;
+  }
+#else
+  Serial.println("!! dac_cosine not available in this core");
+#endif
+}
+
+static int pin_to_ch(int pin) {
+  switch (pin) {
+    case 36: return 0;
+    case 39: return 3;
+    case 32: return 4;
+    case 33: return 5;
+    case 34: return 6;
+    case 35: return 7;
+    default: return -1;
+  }
+}
+
+/* One buffer is shared by every channel, so the per-channel depth is the
+ * total divided by the channel count. */
+static uint32_t max_per_channel() { return MAX_SAMPLES / g_nch; }
+
+// ------------------------------------------------------------------- adc --
+
+static void adc_teardown() {
+  if (g_adc) {
+    if (g_adc_running) {  // stopping a stopped driver logs an error that is not one
+      adc_continuous_stop(g_adc);
+      g_adc_running = false;
+    }
+    adc_continuous_deinit(g_adc);
+    g_adc = NULL;
+  }
+}
+
+static bool adc_setup() {
+  adc_teardown();
+
+  adc_continuous_handle_cfg_t hcfg = {};
+  /* conv_frame_size is 256 bytes = 128 samples rather than the 1024 used by
+   * the self-test. The DMA hands over data one frame at a time, so the frame
+   * size is also the granularity of "how stale is the data I just drained" -
+   * which is exactly the arm-to-burst uncertainty. Smaller frame, tighter
+   * sync. 8192 bytes of store buffer still holds 8 ms at 500 kS/s, far more
+   * than the burst needs. */
+  hcfg.max_store_buf_size = 8192;
+  hcfg.conv_frame_size = 256;
+  esp_err_t err = adc_continuous_new_handle(&hcfg, &g_adc);
+  if (err != ESP_OK) {
+    Serial.printf("!! adc_continuous_new_handle failed: %s\n", esp_err_to_name(err));
+    return false;
+  }
+
+  adc_digi_pattern_config_t pattern[MAX_CH] = {};
+  for (uint32_t i = 0; i < g_nch; i++) {
+    pattern[i].atten = ADC_ATTEN_DB_12;  // ~0-3.1 V
+    pattern[i].channel = g_ch[i] & 0x7;
+    pattern[i].unit = ADC_UNIT_1;
+    pattern[i].bit_width = ADC_BITWIDTH_12;
+  }
+
+  adc_continuous_config_t ccfg = {};
+  ccfg.pattern_num = g_nch;
+  ccfg.adc_pattern = pattern;
+  ccfg.sample_freq_hz = g_sample_hz;
+  ccfg.conv_mode = ADC_CONV_SINGLE_UNIT_1;
+  ccfg.format = ADC_DIGI_OUTPUT_FORMAT_TYPE1;  // correct for the original ESP32
+
+  err = adc_continuous_config(g_adc, &ccfg);
+  if (err != ESP_OK) {
+    Serial.printf("!! adc_continuous_config failed at %u Hz: %s\n",
+                  (unsigned)g_sample_hz, esp_err_to_name(err));
+    adc_teardown();
+    return false;
+  }
+  return true;
+}
+
+/* Arm the ADC, wait g_pre_us, optionally fire, then collect g_num_samples.
+ * Returns the number of samples collected. */
+static uint32_t shoot(bool fire, uint32_t &elapsed_us, uint32_t &burst_index,
+                      uint32_t &resyncs) {
+  uint8_t rbuf[256];
+  uint32_t got = 0;
+  uint32_t n = 0;      // complete pattern cycles stored = samples per channel
+  uint32_t k = 0;      // position within the pattern
+  int prev_ch = -1;    // last channel tag seen, for spotting repeats
+  bool locked = false;
+
+  elapsed_us = 0;
+  burst_index = 0;
+  resyncs = 0;
+
+  if (adc_continuous_start(g_adc) != ESP_OK) {
+    Serial.println("!! adc_continuous_start failed");
+    return 0;
+  }
+  g_adc_running = true;
+
+  /* Throw away everything the DMA has already queued. Whatever is in there
+   * was converted while the driver was spinning up, and it is also the only
+   * thing standing between "now" and the first sample we keep. */
+  while (adc_continuous_read(g_adc, rbuf, sizeof(rbuf), &got, 0) == ESP_OK && got > 0) {
+  }
+
+  const int64_t t_armed = esp_timer_get_time();
+  burst_index = (uint32_t)((uint64_t)g_pre_us * g_sample_hz / 1000000ULL);
+
+  while (esp_timer_get_time() - t_armed < (int64_t)g_pre_us) { /* quiet run-in */ }
+  if (fire) tx_burst();
+
+  const int64_t give_up = t_armed + 3000000;  // 3 s ceiling
+  while (n < g_num_samples && esp_timer_get_time() < give_up) {
+    esp_err_t err = adc_continuous_read(g_adc, rbuf, sizeof(rbuf), &got, 200);
+    if (err != ESP_OK || got == 0) continue;
+    for (uint32_t i = 0; i + SOC_ADC_DIGI_RESULT_BYTES <= got && n < g_num_samples;
+         i += SOC_ADC_DIGI_RESULT_BYTES) {
+      adc_digi_output_data_t *p = (adc_digi_output_data_t *)&rbuf[i];
+      const uint32_t ch = p->type1.channel;
+      /* A repeated tag means the DMA wrote the same conversion again. Only a
+       * change of channel marks a genuinely new one. Single-channel captures
+       * cannot use this test - every tag is the same - so they keep every
+       * word and accept the zero-order-hold staircase. */
+      if (g_nch > 1) {
+        if ((int)ch == prev_ch) continue;
+        prev_ch = (int)ch;
+      }
+      /* Position alone is not trustworthy - the DMA can hand over a buffer
+       * that starts anywhere inside the pattern. Lock on the pattern's first
+       * channel, then check every sample against the slot it is filling. */
+      if (!locked) {
+        if (ch != (uint32_t)(g_ch[0] & 0x7)) continue;
+        locked = true;
+        k = 0;
+      } else if (ch != (uint32_t)(g_ch[k] & 0x7)) {
+        resyncs++;                        // a conversion went missing
+        k = 0;
+        if (ch != (uint32_t)(g_ch[0] & 0x7)) { locked = false; continue; }
+      }
+      g_samples[n * g_nch + k] = p->type1.data;
+      if (++k == g_nch) { k = 0; n++; }
+    }
+  }
+
+  const int64_t t_last = esp_timer_get_time();
+  adc_continuous_stop(g_adc);
+  g_adc_running = false;
+
+  if (n > 1) elapsed_us = (uint32_t)(t_last - t_armed);
+  return n;
+}
+
+static void send_frame(uint32_t n, uint32_t elapsed_us, uint32_t burst_index, bool fired) {
+  String order;
+  for (uint32_t i = 0; i < g_nch; i++) {
+    if (i) order += ",";
+    order += String((int)(g_ch[i] & 0x7));
+  }
+  /* n counts samples PER CHANNEL; the payload is n*ch interleaved samples.
+   *
+   * skew_us is the gap between neighbouring channels inside one cycle, and it
+   * is MEASURED - elapsed time divided by the conversions that actually
+   * happened - rather than derived from the requested rate, which the chip
+   * does not always deliver. It is a known constant for the host to subtract,
+   * not an error term. */
+  Serial.printf("#FRAME rate=%u ch=%u n=%u us=%u order=%s burst=%u "
+                "cycles=%u f0=%u fired=%d skew_us=%.3f\n",
+                (unsigned)g_sample_hz, (unsigned)g_nch, (unsigned)n, (unsigned)elapsed_us,
+                order.c_str(), (unsigned)(fired ? burst_index : 0),
+                (unsigned)(fired ? g_burst_cycles : 0), (unsigned)g_burst_hz,
+                fired ? 1 : 0,
+                (n && g_nch > 1) ? (double)elapsed_us / ((double)n * g_nch) : 0.0);
+  Serial.flush();
+
+  Serial.write((const uint8_t *)"USC1", 4);
+
+  uint16_t checksum = 0;
+  const uint8_t *bytes = (const uint8_t *)g_samples;
+  const uint32_t nbytes = n * g_nch * 2;
+  for (uint32_t i = 0; i < nbytes; i += 512) {
+    const uint32_t chunk = min((uint32_t)512, nbytes - i);
+    Serial.write(bytes + i, chunk);
+    for (uint32_t k = 0; k < chunk; k++) checksum += bytes[i + k];
+  }
+  Serial.write((const uint8_t *)&checksum, 2);
+  Serial.flush();
+}
+
+static void one_shot(bool fire) {
+  if (g_cw) {
+    Serial.println("!! continuous carrier is on - send 'w 0' first");
+    return;
+  }
+  if (!g_adc && !adc_setup()) return;
+
+  uint32_t elapsed_us = 0, burst_index = 0, resyncs = 0;
+  const uint32_t n = shoot(fire, elapsed_us, burst_index, resyncs);
+  if (n == 0) {
+    Serial.println("!! capture returned nothing");
+    return;
+  }
+  if (n < g_num_samples) {
+    Serial.printf("!! short capture: %u of %u samples\n", (unsigned)n,
+                  (unsigned)g_num_samples);
+  }
+  if (g_nch > 1) {
+    const double per_ch = n / (elapsed_us * 1e-6);
+    Serial.printf("# achieved %.1f kHz per channel, conversion period %.2f us\n",
+                  per_ch / 1000.0, 1e6 / (per_ch * g_nch));
+  }
+  if (resyncs) {
+    /* Loud on purpose. A resync means the channel order slipped mid-frame,
+     * so some cycles may pair samples that were never neighbours in time. */
+    Serial.printf("!! %u pattern resync(s) - Delta-t from this frame is suspect\n",
+                  (unsigned)resyncs);
+  }
+  send_frame(n, elapsed_us, burst_index, fire);
+}
+
+/* Print the ADC's own output words, undecoded. When a demultiplexer
+ * disagrees with the hardware about what order the channels come in, the
+ * only way to settle it is to look at the tags the hardware actually wrote. */
+static void raw_dump(uint32_t want) {
+  if (!g_adc && !adc_setup()) return;
+  uint8_t rbuf[256];
+  uint32_t got = 0;
+  if (adc_continuous_start(g_adc) != ESP_OK) {
+    Serial.println("!! adc_continuous_start failed");
+    return;
+  }
+  g_adc_running = true;
+  while (adc_continuous_read(g_adc, rbuf, sizeof(rbuf), &got, 0) == ESP_OK && got > 0) {
+  }
+  Serial.printf("# raw words, %u channel(s) in pattern, %u Hz total\n",
+                (unsigned)g_nch, (unsigned)g_sample_hz);
+  uint32_t shown = 0;
+  while (shown < want) {
+    if (adc_continuous_read(g_adc, rbuf, sizeof(rbuf), &got, 200) != ESP_OK || got == 0) break;
+    for (uint32_t i = 0; i + SOC_ADC_DIGI_RESULT_BYTES <= got && shown < want;
+         i += SOC_ADC_DIGI_RESULT_BYTES, shown++) {
+      adc_digi_output_data_t *d = (adc_digi_output_data_t *)&rbuf[i];
+      uint16_t w;
+      memcpy(&w, &rbuf[i], 2);
+      Serial.printf("%3u word=0x%04X ch=%2u data=%4u\n", (unsigned)shown, w,
+                    (unsigned)d->type1.channel, (unsigned)d->type1.data);
+    }
+  }
+  adc_continuous_stop(g_adc);
+  g_adc_running = false;
+}
+
+// ------------------------------------------------------------------ info --
+
+static void print_info() {
+  const double fs = g_sample_hz;
+  const double window_s = g_num_samples / (fs / g_nch);
+  Serial.println("# --- esp32_scope ---");
+  Serial.printf("# chip           : %s rev %d, %d core(s)\n", ESP.getChipModel(),
+                ESP.getChipRevision(), ESP.getChipCores());
+  Serial.printf("# arduino core   : %s\n", ESP.getSdkVersion());
+  Serial.printf("# adc rate       : %u Hz (chip allows %d..%d)\n", (unsigned)g_sample_hz,
+                SOC_ADC_SAMPLE_FREQ_THRES_LOW, SOC_ADC_SAMPLE_FREQ_THRES_HIGH);
+  for (uint32_t i = 0; i < g_nch; i++) {
+    Serial.printf("# probe pin %u    : GPIO%d (ADC1_CH%d)\n", (unsigned)i, g_pin[i],
+                  (int)(g_ch[i] & 0x7));
+  }
+  if (g_nch > 1) {
+    Serial.printf("# per channel    : %.0f Hz, skew %.3f us (known constant - subtract it)\n",
+                  fs / g_nch, 1e6 / fs);
+  }
+  Serial.printf("# samples        : %u per channel, %u max\n", (unsigned)g_num_samples,
+                (unsigned)max_per_channel());
+  Serial.printf("# window         : %.2f ms = %.2f m of travel = %.2f m of range\n",
+                window_s * 1000.0, window_s * 343.0, window_s * 343.0 / 2.0);
+  Serial.printf("# burst          : %u cycles of %u Hz = %.0f us, on GPIO%d\n",
+                (unsigned)g_burst_cycles, (unsigned)g_burst_hz,
+                1e6 * g_burst_cycles / (double)g_burst_hz, TX_GPIO);
+  Serial.printf("# range blind to : %.2f m (burst length alone)\n",
+                343.0 * g_burst_cycles / (double)g_burst_hz / 2.0);
+  Serial.printf("# pre-trigger    : %u us = sample %u\n", (unsigned)g_pre_us,
+                (unsigned)((uint64_t)g_pre_us * g_sample_hz / g_nch / 1000000ULL));
+  Serial.printf("# sample spacing : %.2f us = %.2f mm of range\n",
+                1e6 / (fs / g_nch), 343.0 / (fs / g_nch) / 2.0 * 1000.0);
+  if (g_test_hz) Serial.printf("# test tone      : %u Hz on GPIO%d\n",
+                               (unsigned)g_test_hz, TEST_GPIO);
+  if (g_cw) Serial.println("# continuous carrier: ON");
+  Serial.printf("# free heap      : %u bytes\n", (unsigned)ESP.getFreeHeap());
+}
+
+static void print_help() {
+  Serial.println("# ?  i  r  q");
+  Serial.println("#   r          fire a burst and capture one record");
+  Serial.println("#   q          capture without firing (background reference)");
+  Serial.println("#   f <hz>     adc sample rate");
+  Serial.println("#   n <count>  samples per capture");
+  Serial.println("#   s <hz>     burst carrier frequency");
+  Serial.println("#   b <cycles> burst length in cycles");
+  Serial.println("#   p <us>     quiet time before the burst");
+  Serial.println("#   c <pin>    probe pin: 34 35 32 33 36 39");
+  Serial.println("#   c 34,35    two channels at once (rate is shared)");
+  Serial.println("#   x [n]      dump n raw adc words with their channel tags");
+  Serial.println("#   d <hz>     test tone on GPIO26, 0 = off");
+  Serial.println("#   w <0|1>    continuous carrier on GPIO25 (TX bring-up)");
+}
+
+// -------------------------------------------------------------- commands --
+
+static void handle(const String &line) {
+  if (line.length() == 0) return;
+  const char cmd = line[0];
+  const String arg = line.substring(1);
+
+  switch (cmd) {
+    case '?': print_help(); break;
+    case 'i': print_info(); break;
+    case 'r': one_shot(true); break;
+    case 'q': one_shot(false); break;
+
+    case 'f': {
+      const uint32_t hz = arg.toInt();
+      if (hz < SOC_ADC_SAMPLE_FREQ_THRES_LOW || hz > SOC_ADC_SAMPLE_FREQ_THRES_HIGH) {
+        Serial.printf("!! rate must be %d..%d Hz\n", SOC_ADC_SAMPLE_FREQ_THRES_LOW,
+                      SOC_ADC_SAMPLE_FREQ_THRES_HIGH);
+        break;
+      }
+      g_sample_hz = hz;
+      if (!adc_setup()) break;
+      Serial.printf("# adc rate set to %u Hz total (%.2f ms window)\n",
+                    (unsigned)hz, 1000.0 * g_num_samples / ((double)hz / g_nch));
+      if (g_nch > 1) {
+        Serial.printf("# = %.0f Hz per channel, skew %.3f us\n",
+                      (double)hz / g_nch, 1e6 / (double)hz);
+      }
+      break;
+    }
+
+    case 'n': {
+      const uint32_t v = arg.toInt();
+      if (v < 64 || v > max_per_channel()) {
+        Serial.printf("!! samples must be 64..%u with %u channel(s)\n",
+                      (unsigned)max_per_channel(), (unsigned)g_nch);
+        break;
+      }
+      g_num_samples = v;
+      const double per_ch = (double)g_sample_hz / g_nch;
+      Serial.printf("# samples = %u per channel (%.2f ms window, %.2f m of range)\n",
+                    (unsigned)v, 1000.0 * v / per_ch, 343.0 * v / per_ch / 2.0);
+      break;
+    }
+
+    case 's': {
+      const uint32_t hz = arg.toInt();
+      if (hz < 1000 || hz > 200000) {
+        Serial.println("!! burst carrier must be 1000..200000 Hz");
+        break;
+      }
+      g_burst_hz = hz;
+      tx_attach();
+      Serial.printf("# burst carrier = %u Hz\n", (unsigned)hz);
+      if (hz < 38000 || hz > 42000) {
+        Serial.println("# note: TCT40 is a high-Q resonator - off 40 kHz it barely radiates");
+      }
+      break;
+    }
+
+    case 'b': {
+      const uint32_t v = arg.toInt();
+      if (v > 200) {
+        Serial.println("!! cycles must be 0..200");
+        break;
+      }
+      g_burst_cycles = v;
+      Serial.printf("# burst = %u cycles = %.0f us, blind to %.2f m\n", (unsigned)v,
+                    1e6 * v / (double)g_burst_hz,
+                    343.0 * v / (double)g_burst_hz / 2.0);
+      break;
+    }
+
+    case 'p': {
+      const uint32_t v = arg.toInt();
+      if (v > 20000) {
+        Serial.println("!! pre-trigger must be 0..20000 us");
+        break;
+      }
+      g_pre_us = v;
+      Serial.printf("# pre-trigger = %u us = sample %u\n", (unsigned)v,
+                    (unsigned)((uint64_t)v * g_sample_hz / g_nch / 1000000ULL));
+      break;
+    }
+
+    case 'c': {
+      /* "c 34" or "c 34,35". Parsed into a scratch list first, so a typo in
+       * the second pin cannot leave the ADC half-reconfigured. */
+      int pins[MAX_CH], chs[MAX_CH];
+      uint32_t count = 0;
+      bool bad = false;
+      String rest = arg;
+      rest.trim();
+      while (rest.length() && count < MAX_CH && !bad) {
+        const int comma = rest.indexOf(',');
+        String tok = (comma < 0) ? rest : rest.substring(0, comma);
+        rest = (comma < 0) ? String("") : rest.substring(comma + 1);
+        tok.trim();
+        const int ch = pin_to_ch(tok.toInt());
+        if (ch < 0) {
+          Serial.printf("!! '%s' is not an ADC1 pin - use 34 35 32 33 36 or 39\n",
+                        tok.c_str());
+          bad = true;
+          break;
+        }
+        for (uint32_t j = 0; j < count; j++) {
+          if (chs[j] == ch) {
+            Serial.println("!! the same pin twice is not two channels");
+            bad = true;
+          }
+        }
+        if (bad) break;
+        pins[count] = tok.toInt();
+        chs[count] = ch;
+        count++;
+      }
+      if (bad || count == 0) break;
+      if (rest.length()) {
+        Serial.printf("!! at most %d channels\n", MAX_CH);
+        break;
+      }
+      g_nch = count;
+      for (uint32_t i = 0; i < count; i++) {
+        g_ch[i] = (adc_channel_t)chs[i];
+        g_pin[i] = pins[i];
+      }
+      if (g_num_samples > max_per_channel()) {
+        g_num_samples = max_per_channel();
+        Serial.printf("# samples clamped to %u per channel\n",
+                      (unsigned)g_num_samples);
+      }
+      if (!adc_setup()) break;
+      for (uint32_t i = 0; i < count; i++) {
+        Serial.printf("# channel %u: GPIO%d (ADC1_CH%d)\n",
+                      (unsigned)i, pins[i], chs[i]);
+      }
+      if (count > 1) {
+        Serial.printf("# %u channels share %u Hz -> %.0f Hz each, skew %.3f us\n",
+                      (unsigned)count, (unsigned)g_sample_hz,
+                      (double)g_sample_hz / count, 1e6 / (double)g_sample_hz);
+      }
+      break;
+    }
+
+    case 'x': raw_dump(arg.length() ? (uint32_t)arg.toInt() : 48); break;
+
+    case 'd': test_tone(arg.toInt()); break;
+
+    case 'w': {
+      g_cw = arg.toInt() != 0;
+      ledcWrite(TX_GPIO, g_cw ? 128 : 0);
+      Serial.printf("# continuous carrier %s (%u Hz on GPIO%d)\n", g_cw ? "ON" : "off",
+                    (unsigned)g_burst_hz, TX_GPIO);
+      if (g_cw) Serial.println("# send 'w 0' before capturing - a running carrier blinds the receiver");
+      break;
+    }
+
+    default:
+      Serial.printf("!! unknown command '%c' - send ? for help\n", cmd);
+      break;
+  }
+}
+
+// ------------------------------------------------------------------ main --
+
+void setup() {
+  Serial.begin(921600);
+  delay(300);
+  Serial.println();
+  tx_attach();
+  if (!adc_setup()) Serial.println("!! adc setup failed - fix the rate and send 'f'");
+  print_info();
+  print_help();
+}
+
+void loop() {
+  static String line;
+  while (Serial.available()) {
+    const char c = Serial.read();
+    if (c == '\n' || c == '\r') {
+      line.trim();
+      if (line.length()) handle(line);
+      line = "";
+    } else if (line.length() < 32) {
+      line += c;
+    }
+  }
+}

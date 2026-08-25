@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<title>Scaled Array — Extended Aperture + MIMO (3 TX + 9 RX)</title>
+<style>
+  :root {
+    --bg: #0b1220; --panel: #121a2b; --panel-border: #223049;
+    --text: #e6edf7; --muted: #8ea0bd; --accent: #4fd1c5; --accent2: #f6a94a;
+    --tx: #f6a94a; --rx1: #4fd1c5; --rx2: #38a6ff; --rx3: #9b6bff;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif; padding:18px 22px 50px; }
+  h1 { font-size:18px; color:var(--accent); margin:0 0 6px; }
+  h2 { font-size:13.5px; color:var(--text); margin:22px 0 8px; }
+  #intro { font-size:12.5px; color:var(--muted); line-height:1.6; max-width:1080px; margin-bottom:8px; }
+  #intro b { color:var(--text); }
+  .layout { display:grid; grid-template-columns:1.4fr 1fr; gap:18px; align-items:start; }
+  @media (max-width:1000px){ .layout{ grid-template-columns:1fr; } }
+  .panel { background:var(--panel); border:1px solid var(--panel-border); border-radius:10px; padding:14px; }
+  table { border-collapse:collapse; width:100%; font-size:11.8px; }
+  th, td { border-bottom:1px solid var(--panel-border); padding:5px 7px; text-align:left; }
+  th { color:var(--muted); font-weight:600; }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+  .legend-item { font-size:12px; margin:5px 0; color:var(--muted); }
+  .legend-item b { color:var(--text); }
+  .callout { background:#0e1725; border:1px solid var(--panel-border); border-radius:8px; padding:10px 12px; font-size:12px; color:var(--muted); line-height:1.6; margin-top:12px; }
+  .callout b { color:var(--accent2); }
+  svg text { font-family:Consolas,monospace; }
+  .platform-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; max-width:1200px; }
+  @media (max-width:900px){ .platform-grid{ grid-template-columns:1fr; } }
+  .platform-card h3 { margin:0 0 8px; font-size:13.5px; }
+  .platform-card.nano h3 { color:#f6a94a; }
+  .platform-card.esp32 h3 { color:#4fd1c5; }
+  .platform-card.ads h3 { color:#9b6bff; }
+  .badge { display:inline-block; padding:1px 7px; border-radius:9px; font-size:10.5px; font-weight:700; margin-left:6px; }
+  .badge.ok { background:#17321f; color:#7ee787; }
+  .badge.bad { background:#3a1414; color:#f56565; }
+  .badge.warn { background:#3a2a10; color:#f6a94a; }
+</style>
+</head>
+<body>
+
+<h1>Scaled Array — Extended Aperture + MIMO (3 TX + 9 RX, 12 อุปกรณ์จริง)</h1>
+<div id="intro">
+  รวม 2 การอัพเกรดที่คุยกันไว้เข้าด้วยกัน: <b>(1) ขยาย aperture</b> — แต่ละแขนของ Y-array เพิ่มจาก 2 เป็น
+  <b>3 ตัวรับ</b> (40 / 80 / <b>140mm</b> ตัวใหม่) และ <b>(2) MIMO</b> — จาก TX เดี่ยวกลางแผง เป็น
+  <b>3 TX แบบ coded</b> วางเป็นกลุ่มเล็กกึ่งกลาง (ระยะห่างกันเองพอให้ตัวถัง 16mm ไม่ชนกัน) รวมเป็น
+  <b>3×9 = 27 เส้นทางข้อมูลเสมือน</b> จากอุปกรณ์จริงแค่ 12 ตัว
+  <br/><br/>
+  <b>ผังด้านล่างนี้คือแบบเต็ม — ใช้ได้กับ ESP32 + ADS1115 (hybrid) เท่านั้น</b> ตามที่สรุปไว้ในตาราง
+  งบประมาณช่องสัญญาณด้านล่าง Nano และ ESP32 เดี่ยวไม่มีช่องพอสำหรับ 9 RX เต็มรูปแบบ ต้องตัดทอนลง —
+  ดูผังที่ตัดแล้วจริงของแต่ละแพลตฟอร์มได้ในหัวข้อ "ผังตามแพลตฟอร์ม" ถัดจาก Diminishing Returns
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <h2>ผังหน้าแผง (Face-on)</h2>
+    <svg id="plate" viewBox="0 0 620 620" style="width:100%; height:auto; background:#0d1420; border-radius:8px;"></svg>
+  </div>
+  <div>
+    <div class="panel">
+      <h2>พิกัด (mm, origin = จุดกึ่งกลางกลุ่ม TX)</h2>
+      <table id="coord-table"><thead><tr><th>จุด</th><th>แขน/กลุ่ม</th><th>x</th><th>y</th></tr></thead><tbody></tbody></table>
+      <div class="callout" id="plate-size"></div>
+    </div>
+    <div class="panel" style="margin-top:16px;">
+      <h2>Legend</h2>
+      <div class="legend-item"><span class="dot" style="background:var(--tx)"></span><b>TX1-TX3</b> = ตัวส่ง coded กลุ่มกลาง</div>
+      <div class="legend-item"><span class="dot" style="background:var(--rx1)"></span><b>near (40mm)</b> = ตัวรับเดิม</div>
+      <div class="legend-item"><span class="dot" style="background:var(--rx2)"></span><b>mid (80mm)</b> = ตัวรับเดิม</div>
+      <div class="legend-item"><span class="dot" style="background:var(--rx3)"></span><b>far (140mm)</b> = ตัวรับใหม่ (ขยาย aperture)</div>
+    </div>
+  </div>
+</div>
+
+<h2>Diminishing Returns — ยิ่งขยายรัศมี ยิ่งได้น้อยลงต่อหน่วย</h2>
+<div class="panel" style="max-width:620px;">
+  <table>
+    <thead><tr><th>รัศมีสูงสุด (mm)</th><th>Aperture D≈2r (mm)</th><th>θ_res ≈ λ/D (deg)</th><th>เพิ่มขึ้นจากขั้นก่อน</th></tr></thead>
+    <tbody id="dr-table"></tbody>
+  </table>
+  <div class="callout">
+    เพิ่มรัศมีทีละ 20mm แต่ค่า θ_res ดีขึ้นน้อยลงเรื่อยๆ (จาก -2.05° ต่อ 20mm ช่วงแรก เหลือแค่ -0.22° ต่อ 20mm
+    ช่วงหลัง) — นี่คือ "diminishing returns" ที่พูดถึง เป็นเหตุผลที่เลือกหยุดที่ 140mm ไม่ขยายไปเรื่อยๆ
+    (แผงจะใหญ่เทอะทะขึ้นเรื่อยๆ โดยได้ความละเอียดเพิ่มน้อยลงเรื่อยๆ)
+  </div>
+</div>
+
+<h2>ผังตามแพลตฟอร์ม (มาตราส่วนเดียวกัน เทียบขนาดตรงๆ ได้)</h2>
+<div class="platform-grid">
+  <div class="panel platform-card nano">
+    <h3>Arduino Nano — 1 TX + 6 RX <span class="badge bad">ตัดเหลือน้อยสุด</span></h3>
+    <svg id="plate-nano" viewBox="0 0 300 300" style="width:100%; height:auto; background:#0d1420; border-radius:8px;"></svg>
+    <div class="callout">ตัด TX เหลือ 1 ตัว (กลางแผงพอดี) + ตัดตัวรับ "far" 140mm ออกทั้ง 3 แขน เหลือ near/mid เดิม 40/80mm</div>
+  </div>
+  <div class="panel platform-card esp32">
+    <h3>ESP32 เดี่ยว — 3 TX + 8 RX <span class="badge warn">ตัด 1 ตัว</span></h3>
+    <svg id="plate-esp32" viewBox="0 0 300 300" style="width:100%; height:auto; background:#0d1420; border-radius:8px;"></svg>
+    <div class="callout">เก็บ TX ครบ 3 ตัว + RX ครบ 3 ตัว/แขน (near/mid/far) ไว้ 2 แขน ส่วนอีก 1 แขนตัด far ออก เหลือแค่ near/mid</div>
+  </div>
+  <div class="panel platform-card ads">
+    <h3>ESP32 + ADS1115 — 3 TX + 9 RX <span class="badge ok">เต็มรูปแบบ</span></h3>
+    <svg id="plate-full" viewBox="0 0 300 300" style="width:100%; height:auto; background:#0d1420; border-radius:8px;"></svg>
+    <div class="callout">ครบทุกตัวตามที่ออกแบบไว้ — RX "far" ทั้ง 3 (จุดสีม่วง) ต่อผ่าน ADS1115 แบบ envelope-only</div>
+  </div>
+</div>
+
+<h2>งบประมาณช่องสัญญาณ 3 แพลตฟอร์ม (Nano / ESP32 / ESP32+ADS1115)</h2>
+<div class="platform-grid">
+  <div class="panel platform-card nano">
+    <h3>Arduino Nano <span class="badge bad">ไม่พอ</span></h3>
+    <table>
+      <tr><td>ขา ADC ทั้งหมด</td><td>8 (A0-A7)</td></tr>
+      <tr><td>RX ที่ใส่ได้จริง</td><td><b>≤6-7</b> ตัว (เหลือขาไว้คุม TX/TRIG)</td></tr>
+      <tr><td>อัตรา sample ต่อช่อง</td><td>~10-13 kS/s (ADC เดียว มัลติเพล็กซ์)</td></tr>
+      <tr><td>จับ raw chirp 40kHz ได้ไหม</td><td><b>ไม่ได้</b> (ต้องการ &gt;80kS/s/ช่อง)</td></tr>
+      <tr><td>MIMO coded TX</td><td>ไม่ไหว (ประมวลผลจำกัด)</td></tr>
+    </table>
+    <div class="callout">
+      <b>แนะนำ:</b> ตัด TX เหลือ 1 ตัว, RX เหลือ 6 ตัว (arm ละ 2, กลับไปที่ 40/80mm เดิม ตัด 140mm ออก)
+      ใช้โหมด envelope+threshold (แบบที่ทดสอบผ่านแล้วตอนต้น) ไม่ใช่ raw chirp — นี่คือ Phase 1 ที่ทำงานได้จริงบน Nano
+    </div>
+  </div>
+
+  <div class="panel platform-card esp32">
+    <h3>ESP32 <span class="badge warn">เกือบพอ</span></h3>
+    <table>
+      <tr><td>ADC1 (ใช้ตอน WiFi เปิด)</td><td>8 channel</td></tr>
+      <tr><td>ADC2 (ชนกับ WiFi)</td><td>10 channel (เสี่ยงถ้าใช้ WiFi ด้วย)</td></tr>
+      <tr><td>RX ที่ใส่ได้จริง (ไม่พึ่ง ADC2)</td><td><b>8</b> ตัว (ยังขาด 1 จาก 9 ที่ออกแบบไว้)</td></tr>
+      <tr><td>อัตรา sample ต่อช่อง (DMA)</td><td>~100-500 kS/s — พอสำหรับ chirp</td></tr>
+      <tr><td>จับ raw chirp 40kHz ได้ไหม</td><td><b>ได้</b></td></tr>
+      <tr><td>MIMO coded TX</td><td><b>3 ตัวได้เต็มรูปแบบ</b></td></tr>
+    </table>
+    <div class="callout">
+      <b>แนะนำ:</b> 3 TX + 8 RX (ตัด far ออก 1 ตัวจาก 3 แขน เหลือ 2 แขนที่มี far, หรือใช้ ADC2 อีก 1 ช่อง
+      ถ้ายอมเสี่ยง WiFi กระตุก) — เพียงพอสำหรับ Phase 2-3 เต็มรูปแบบ (MIMO + chirp/pulse compression)
+    </div>
+  </div>
+
+  <div class="panel platform-card ads">
+    <h3>ESP32 + ADS1115 <span class="badge ok">ครบ 3TX+9RX</span></h3>
+    <table>
+      <tr><td>ช่องเพิ่มจาก ADS1115 (I2C)</td><td>4 channel</td></tr>
+      <tr><td>ความเร็ว ADS1115</td><td><b>~860 SPS เท่านั้น</b> (ช้ามาก)</td></tr>
+      <tr><td>จับ raw chirp บน ADS1115 ได้ไหม</td><td><b>ไม่ได้เด็ดขาด</b> (ช้ากว่าที่ต้องการ &gt;100 เท่า)</td></tr>
+      <tr><td>ใช้ทำอะไรได้</td><td>envelope (สัญญาณช้าหลัง detector) เท่านั้น</td></tr>
+      <tr><td>MIMO coded TX</td><td>3 ตัว (ใช้ ESP32 ควบคุม)</td></tr>
+    </table>
+    <div class="callout">
+      <b>แนะนำ (hybrid):</b> ใช้ ESP32 ADC1 จับ raw waveform 8 ช่อง (near+mid ทั้ง 3 แขน = 6 ช่อง + far อีก 2)
+      สำหรับ chirp/pulse-compression เต็มรูปแบบ ส่วน RX "far" 140mm ที่เหลือ (3 ตัว) ต่อผ่าน ADS1115 แบบ
+      <b>envelope-only</b> (หยาบกว่า แต่พอบอกว่ามี/ไม่มีวัตถุระยะไกลได้) — ครบทั้ง 3TX+9RX ตามที่ออกแบบไว้
+      แต่คุณภาพข้อมูลไม่เท่ากันทุกช่อง
+    </div>
+  </div>
+</div>
+
+<h2>Circuit BOM (สำหรับแบบเต็ม 3 TX + 9 RX)</h2>
+<div class="panel" style="max-width:620px;">
+  <table>
+    <tr><td>TX driver (TC4427A + R อนุกรม)</td><td><b>3 ชุด</b> (ต้องออกแบบ/ถอดรหัส code แยกกันด้วย)</td></tr>
+    <tr><td>MCP6024 (quad op-amp, 2 RX channel/ชิป)</td><td><b>5 ชิป</b> (9 ช่อง ÷ 2 ปัดขึ้น)</td></tr>
+    <tr><td>วงจร VREF 2.5V</td><td>1 ชุด (ใช้ร่วมกันได้ทุกช่อง ไม่ต้องเพิ่มตามจำนวน RX)</td></tr>
+  </table>
+</div>
+
+<script>
+(() => {
+  const LAMBDA = 8.575; // mm at 40kHz
+  const BODY_MM = 16;
+  const armAngles = [90, 210, 330];
+  const armNames = ['บน', 'ล่างซ้าย', 'ล่างขวา'];
+  const radii = [40, 80, 140];
+  const rxColors = ['#4fd1c5', '#38a6ff', '#9b6bff'];
+  const rxLabel = ['near', 'mid', 'far'];
+
+  // ---- TX cluster (tight triangle, center of the whole plate) ------------
+  const R_TX = 14;
+  const txPoints = armAngles.map((deg, i) => {
+    const rad = deg * Math.PI / 180;
+    return { id: `TX${i + 1}`, x: R_TX * Math.cos(rad), y: R_TX * Math.sin(rad), color: '#f6a94a' };
+  });
+
+  // ---- RX: 3 per arm, at 40/80/140mm -------------------------------------
+  const rxPoints = [];
+  let rxN = 1;
+  armAngles.forEach((deg, ai) => {
+    const rad = deg * Math.PI / 180;
+    radii.forEach((r, ri) => {
+      rxPoints.push({
+        id: `R${rxN}`, arm: armNames[ai], radiusLabel: rxLabel[ri],
+        x: r * Math.cos(rad), y: r * Math.sin(rad), color: rxColors[ri],
+      });
+      rxN++;
+    });
+  });
+
+  const allPoints = [...txPoints.map(p => ({ ...p, arm: 'TX กลาง' })), ...rxPoints];
+
+  // ---- Render plate --------------------------------------------------------
+  const plate = document.getElementById('plate');
+  const maxR = Math.max(...radii) + 20;
+  const VIEW = 620, SCALE = (VIEW - 80) / (2 * maxR), CX = VIEW / 2, CY = VIEW / 2;
+  const toPx = (x, y) => ({ x: CX + x * SCALE, y: CY - y * SCALE });
+
+  let s = '';
+  const pl = toPx(-maxR, maxR), pr = toPx(maxR, -maxR);
+  s += `<rect x="${pl.x}" y="${pl.y}" width="${pr.x - pl.x}" height="${pr.y - pl.y}" rx="12" fill="#1a1a1a" stroke="#3a3a3a" stroke-width="2"/>`;
+
+  // faint arm lines + range rings
+  radii.forEach(r => {
+    const c0 = toPx(0, 0);
+    s += `<circle cx="${c0.x}" cy="${c0.y}" r="${r * SCALE}" fill="none" stroke="#223049" stroke-dasharray="2,5"/>`;
+  });
+  armAngles.forEach((deg, ai) => {
+    const rad = deg * Math.PI / 180;
+    const c0 = toPx(0, 0), end = toPx((Math.max(...radii) + 10) * Math.cos(rad), (Math.max(...radii) + 10) * Math.sin(rad));
+    s += `<line x1="${c0.x}" y1="${c0.y}" x2="${end.x}" y2="${end.y}" stroke="#33415e" stroke-width="1" opacity="0.5"/>`;
+  });
+
+  // radius labels along the "up" arm
+  radii.forEach(r => {
+    const p = toPx(6, r);
+    s += `<text x="${p.x}" y="${p.y}" fill="#8ea0bd" font-size="10">${r}mm</text>`;
+  });
+
+  // points
+  allPoints.forEach(p => {
+    const px = toPx(p.x, p.y);
+    s += `<circle cx="${px.x}" cy="${px.y}" r="${(BODY_MM / 2) * SCALE}" fill="none" stroke="${p.color}" stroke-width="1" opacity="0.4"/>`;
+    s += `<circle cx="${px.x}" cy="${px.y}" r="6" fill="${p.color}" stroke="#0b1220" stroke-width="1.5"/>`;
+    s += `<text x="${px.x + 10}" y="${px.y - 8}" fill="#e6edf7" font-size="11" font-weight="bold">${p.id}</text>`;
+  });
+  plate.innerHTML = s;
+
+  // ---- Coordinate table ------------------------------------------------------
+  const tb = document.querySelector('#coord-table tbody');
+  allPoints.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><span class="dot" style="background:${p.color}"></span>${p.id}</td><td>${p.arm}${p.radiusLabel ? ' ('+p.radiusLabel+')' : ''}</td><td>${p.x.toFixed(1)}</td><td>${p.y.toFixed(1)}</td>`;
+    tb.appendChild(tr);
+  });
+  const plateSize = 2 * (Math.max(...radii) + BODY_MM / 2 + 10);
+  document.getElementById('plate-size').innerHTML =
+    `<b>ขนาดแผงขั้นต่ำ:</b> เส้นผ่านศูนย์กลางประมาณ ${Math.ceil(plateSize)}mm (~${(plateSize/10).toFixed(0)}cm) ` +
+    `เจาะรู 12 ตำแหน่งตามพิกัดนี้ (รูละ 16mm) — ใหญ่กว่าแบบเดิม (1TX+6RX, ~19×17cm) เพราะขยายรัศมีไป 140mm`;
+
+  // ---- Platform-specific variants (same SCALE as the full plate above, so
+  // physical size differences are directly comparable at a glance) ----------
+  function renderMiniPlate(svgId, txList, rxList) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
+    const VIEW2 = 300, SCALE2 = (VIEW2 - 50) / (2 * maxR), CX2 = VIEW2 / 2, CY2 = VIEW2 / 2;
+    const p2 = (x, y) => ({ x: CX2 + x * SCALE2, y: CY2 - y * SCALE2 });
+    let m = '';
+    const pl2 = p2(-maxR, maxR), pr2 = p2(maxR, -maxR);
+    m += `<rect x="${pl2.x}" y="${pl2.y}" width="${pr2.x - pl2.x}" height="${pr2.y - pl2.y}" rx="8" fill="#1a1a1a" stroke="#3a3a3a" stroke-width="1.5"/>`;
+    radii.forEach(r => {
+      const c0 = p2(0, 0);
+      m += `<circle cx="${c0.x}" cy="${c0.y}" r="${r * SCALE2}" fill="none" stroke="#223049" stroke-dasharray="2,4"/>`;
+    });
+    [...txList, ...rxList].forEach(pt => {
+      const px = p2(pt.x, pt.y);
+      m += `<circle cx="${px.x}" cy="${px.y}" r="${(BODY_MM / 2) * SCALE2}" fill="none" stroke="${pt.color}" stroke-width="1" opacity="0.4"/>`;
+      m += `<circle cx="${px.x}" cy="${px.y}" r="4.5" fill="${pt.color}" stroke="#0b1220" stroke-width="1"/>`;
+    });
+    svg.innerHTML = m;
+  }
+
+  // Nano: single TX at true center + near/mid only (no far) per arm
+  const nanoTx = [{ id: 'TX', x: 0, y: 0, color: '#f6a94a' }];
+  const nanoRx = rxPoints.filter(p => p.radiusLabel !== 'far');
+  renderMiniPlate('plate-nano', nanoTx, nanoRx);
+
+  // ESP32 solo: full 3-TX cluster + far kept on 2 arms, dropped on the 3rd (ล่างขวา)
+  const esp32Rx = rxPoints.filter(p => !(p.radiusLabel === 'far' && p.arm === 'ล่างขวา'));
+  renderMiniPlate('plate-esp32', txPoints, esp32Rx);
+
+  // Full ESP32+ADS1115 hybrid: everything
+  renderMiniPlate('plate-full', txPoints, rxPoints);
+
+  // ---- Diminishing returns table ---------------------------------------------
+  const drBody = document.getElementById('dr-table');
+  const steps = [40, 60, 80, 100, 120, 140, 160];
+  let prevTheta = null;
+  steps.forEach(r => {
+    const D = 2 * r;
+    const theta = (LAMBDA / D) * (180 / Math.PI);
+    const delta = prevTheta === null ? '-' : (theta - prevTheta).toFixed(2) + '°';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r}</td><td>${D}</td><td>${theta.toFixed(2)}</td><td>${delta}</td>`;
+    drBody.appendChild(tr);
+    prevTheta = theta;
+  });
+})();
+</script>
+</body>
+</html>

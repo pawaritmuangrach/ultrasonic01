@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="696" viewBox="0 0 680 696" font-family="Segoe UI, system-ui, sans-serif" fill="#343a40"><title>ผังภาครับ แผ่นที่ 2 อินพุตและสเตจขยายที่หนึ่ง</title><desc>ทรานสดิวเซอร์ที่แถว 16 ผ่านคาปาไปแถว 18 ไบแอสด้วยตัวต้านทานขึ้นแถว 14 แล้วลงเข้าขา 3 ที่แถว 22 ตัวต้านทานป้อนกลับจากขา 1 ลงแถว 28 จัมเปอร์จากขา 2 ลงแถว 28 ตามด้วยตัวต้านทานลงแถว 31 คาปาลงแถว 33 แล้วต่อกราวด์</desc><rect x="0" y="0" width="680" height="696" fill="#ffffff"/><text x="20" y="30" font-size="17" font-weight="700" fill="#1971c2">ผังภาครับ 2 — อินพุตและสเตจขยายที่ 1</text><text x="20" y="48" font-size="12" fill="#6c757d">ทรานสดิวเซอร์แถว 16 · Cin แถว 16-18 · R ไบแอส 10k แถว 18-14 · Rf1/Rg1/Cg1</text><g transform="translate(0,56)">
+
+<rect x="110" y="100" width="398" height="490" rx="6" fill="#ffffff" stroke="#ced4da"/>
+<rect x="308" y="100" width="24" height="490" fill="#e9ecef"/>
+<rect x="126" y="122" width="16" height="450" rx="8" fill="#ffc9c9"/>
+<rect x="148" y="122" width="16" height="450" rx="8" fill="#a5d8ff"/>
+<line x1="118" y1="110" x2="118" y2="582" stroke="#e03131" stroke-width="2.5"/>
+<line x1="172" y1="110" x2="172" y2="582" stroke="#343a40" stroke-width="2.5"/>
+
+<g font-size="12" text-anchor="middle" fill="#6c757d"><text x="210" y="122">A</text><text x="232" y="122">B</text><text x="254" y="122">C</text><text x="276" y="122">D</text><text x="298" y="122">E</text></g>
+
+<g fill="#e9ecef"><rect x="202" y="138" width="104" height="20" rx="10"/><rect x="202" y="172" width="104" height="20" rx="10"/><rect x="202" y="206" width="104" height="20" rx="10"/><rect x="202" y="240" width="104" height="20" rx="10"/><rect x="202" y="274" width="104" height="20" rx="10"/><rect x="202" y="308" width="104" height="20" rx="10"/><rect x="202" y="478" width="104" height="20" rx="10"/><rect x="202" y="512" width="104" height="20" rx="10"/><rect x="202" y="546" width="104" height="20" rx="10"/></g>
+
+<rect x="286" y="236" width="68" height="232" rx="4" fill="#dee2e6" stroke="#868e96" stroke-width="1.5"/>
+<path d="M326 236 A7 7 0 0 1 312 236" fill="none" stroke="#343a40" stroke-width="1.5"/>
+<g font-size="13" text-anchor="middle"><text x="300" y="255">1</text><text x="300" y="289">2</text><text x="300" y="323">3</text><text x="300" y="357">4</text><text x="300" y="391">5</text><text x="300" y="425">6</text><text x="300" y="459">7</text></g>
+
+<g fill="#ffd8a8" stroke="#e8590c" stroke-width="1.5"><rect x="22" y="164" width="78" height="36" rx="5"/><text font-size="12" x="61" y="179" text-anchor="middle">TCT40</text><text font-size="12" x="61" y="193" text-anchor="middle">-16R</text></g>
+<path d="M100 182 L206 182" fill="none" stroke="#1971c2" stroke-width="2.5"/><circle cx="210" cy="182" r="5" fill="#1971c2"/>
+<path d="M61 200 L61 610 L156 610 L156 572" fill="none" stroke="#343a40" stroke-width="2.5"/><circle cx="156" cy="572" r="5" fill="#343a40"/>
+
+<path d="M232 182 L232 192 M232 206 L232 216" fill="none" stroke="#1971c2" stroke-width="2.5"/><line x1="219" y1="192" x2="245" y2="192" stroke="#1971c2" stroke-width="3.5"/><line x1="219" y1="206" x2="245" y2="206" stroke="#1971c2" stroke-width="3.5"/><circle cx="232" cy="182" r="5" fill="#1971c2"/><circle cx="232" cy="216" r="5" fill="#1971c2"/>
+
+<path d="M254 216 L254 202 M254 162 L254 148" fill="none" stroke="#e8590c" stroke-width="2.5"/><rect x="244" y="162" width="20" height="40" rx="3" fill="#ffd8a8" stroke="#e8590c" stroke-width="1.5"/><circle cx="254" cy="216" r="5" fill="#e8590c"/><circle cx="254" cy="148" r="5" fill="#e8590c"/>
+<path d="M124 148 L206 148" fill="none" stroke="#e8590c" stroke-width="2.5" stroke-dasharray="6 4"/><circle cx="210" cy="148" r="5" fill="#e8590c"/>
+
+<path d="M276 216 L276 318" fill="none" stroke="#1971c2" stroke-width="2.5"/><circle cx="276" cy="216" r="5" fill="#1971c2"/><circle cx="276" cy="318" r="5" fill="#1971c2"/>
+
+<path d="M210 250 L210 304 M210 434 L210 488" fill="none" stroke="#1971c2" stroke-width="2.5"/><rect x="200" y="304" width="20" height="130" rx="3" fill="#ffd8a8" stroke="#e8590c" stroke-width="1.5"/><circle cx="210" cy="250" r="5" fill="#1971c2"/><circle cx="210" cy="488" r="5" fill="#1971c2"/>
+
+<path d="M232 284 L232 488" fill="none" stroke="#1971c2" stroke-width="2.5"/><circle cx="232" cy="284" r="5" fill="#1971c2"/><circle cx="232" cy="488" r="5" fill="#1971c2"/>
+
+<path d="M254 488 L254 500 M254 510 L254 522" fill="none" stroke="#1971c2" stroke-width="2.5"/><rect x="244" y="500" width="20" height="10" rx="3" fill="#ffd8a8" stroke="#e8590c" stroke-width="1.5"/><circle cx="254" cy="488" r="5" fill="#1971c2"/><circle cx="254" cy="522" r="5" fill="#1971c2"/>
+
+<path d="M276 522 L276 532 M276 546 L276 556" fill="none" stroke="#1971c2" stroke-width="2.5"/><line x1="263" y1="532" x2="289" y2="532" stroke="#1971c2" stroke-width="3.5"/><line x1="263" y1="546" x2="289" y2="546" stroke="#1971c2" stroke-width="3.5"/><circle cx="276" cy="522" r="5" fill="#1971c2"/><circle cx="276" cy="556" r="5" fill="#1971c2"/>
+
+<path d="M298 556 L298 576 L156 576" fill="none" stroke="#343a40" stroke-width="2.5"/><circle cx="298" cy="556" r="5" fill="#343a40"/><circle cx="156" cy="576" r="5" fill="#343a40"/>
+
+<line stroke-width="1" x1="268" y1="180" x2="418" y2="156" stroke="#adb5bd" stroke-dasharray="4 3"/><text font-size="14" font-weight="600" x="424" y="154">R 10k</text>
+<line stroke-width="1" x1="248" y1="199" x2="418" y2="216" stroke="#adb5bd" stroke-dasharray="4 3"/><text font-size="14" font-weight="600" x="424" y="220">C 100nF</text>
+<text font-size="14" font-weight="600" x="118" y="152" text-anchor="end" fill="#e8590c">VREF</text>
+<line stroke-width="1" x1="222" y1="400" x2="418" y2="400" stroke="#adb5bd" stroke-dasharray="4 3"/><text font-size="14" font-weight="600" x="424" y="404">Rf1 100k</text>
+<line stroke-width="1" x1="266" y1="505" x2="418" y2="500" stroke="#adb5bd" stroke-dasharray="4 3"/><text font-size="14" font-weight="600" x="424" y="504">Rg1 10k</text>
+<line stroke-width="1" x1="292" y1="539" x2="418" y2="548" stroke="#adb5bd" stroke-dasharray="4 3"/><text font-size="14" font-weight="600" x="424" y="552">C 1nF</text>
+
+<g fill="#ffffff"><rect x="174" y="134" width="28" height="20" rx="4"/><rect x="174" y="168" width="28" height="20" rx="4"/><rect x="174" y="202" width="28" height="20" rx="4"/><rect x="174" y="236" width="28" height="20" rx="4"/><rect x="174" y="270" width="28" height="20" rx="4"/><rect x="174" y="304" width="28" height="20" rx="4"/><rect x="174" y="338" width="28" height="20" rx="4"/><rect x="174" y="372" width="28" height="20" rx="4"/><rect x="174" y="406" width="28" height="20" rx="4"/><rect x="174" y="440" width="28" height="20" rx="4"/><rect x="174" y="474" width="28" height="20" rx="4"/><rect x="174" y="508" width="28" height="20" rx="4"/><rect x="174" y="542" width="28" height="20" rx="4"/></g>
+<g font-size="13" text-anchor="end" fill="#6c757d"><text x="198" y="150">14</text><text x="198" y="184">16</text><text x="198" y="218">18</text><text x="198" y="252">20</text><text x="198" y="286">21</text><text x="198" y="320">22</text><text x="198" y="354">23</text><text x="198" y="388">24</text><text x="198" y="422">25</text><text x="198" y="456">26</text><text x="198" y="490">28</text><text x="198" y="524">31</text><text x="198" y="558">33</text></g>
+</g></svg>

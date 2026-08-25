@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<title>2-TX Beamforming: Element Spacing Comparison</title>
+<style>
+  :root {
+    --bg: #0b1220;
+    --panel: #121a2b;
+    --panel-border: #223049;
+    --text: #e6edf7;
+    --muted: #8ea0bd;
+    --accent: #4fd1c5;
+    --accent2: #f6a94a;
+    --danger: #f56565;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
+    padding: 16px 20px 40px;
+  }
+  h1 { font-size: 18px; color: var(--accent); margin: 0 0 6px; }
+  #intro {
+    font-size: 12.5px; color: var(--muted); line-height: 1.6; max-width: 1100px; margin-bottom: 18px;
+  }
+  #intro b { color: var(--text); }
+  #intro code { background: #0e1725; padding: 1px 5px; border-radius: 4px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; } }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .panel h2 { font-size: 13.5px; margin: 0 0 4px; color: var(--text); }
+  .panel .tag {
+    display: inline-block; font-size: 10.5px; padding: 1px 7px; border-radius: 9px;
+    background: #17321f; color: #7ee787; margin-left: 6px; vertical-align: middle;
+  }
+  .panel .tag.warn { background: #3a2a10; color: var(--accent2); }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; font-size: 11.5px; color: var(--muted); margin: 8px 0; }
+  .controls label { display: flex; align-items: center; gap: 4px; }
+  .controls input {
+    width: 55px; background: #0e1725; border: 1px solid var(--panel-border);
+    color: var(--text); border-radius: 4px; padding: 3px 5px; font-size: 11.5px;
+  }
+  canvas.field { width: 100%; height: auto; background: #000; border-radius: 6px; display: block; }
+  canvas.beam { width: 100%; height: auto; background: #0e1725; border-radius: 6px; display: block; margin-top: 8px; }
+  .lobes { font-size: 11.5px; margin-top: 6px; color: var(--text); }
+  .lobes .label { color: var(--muted); }
+  .lobes .angle { color: var(--accent2); font-weight: 600; }
+  .caption { font-size: 11.5px; color: var(--muted); line-height: 1.5; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<h1>2-TX Beamforming: ผลของระยะห่างทรานสดิวเซอร์ต่อรูปแบบลำคลื่น (40 kHz)</h1>
+<div id="intro">
+  เปรียบเทียบ 3 กรณีของการยิงคลื่นพร้อมกันจากทรานสดิวเซอร์ 2 ตัว (ซ้าย-ขวา) ที่ 40 kHz (λ ≈ <b>8.575 mm</b>,
+  c = 343 m/s): <b>(A)</b> ระยะห่าง = λ/2 ≈ 4.3mm ยิงพร้อมกัน — ทางทฤษฎีคือระยะที่ไม่เกิดลำคลื่นหลอก
+  <b>(B)</b> ระยะห่าง = 16mm (ขนาดจริงของทรานสดิวเซอร์ทรงกระบอกมาตรฐาน) ยิงพร้อมกัน
+  <b>(C)</b> ระยะห่าง 16mm เท่ากัน แต่ยิงซ้ายก่อนขวาโดยหน่วงเวลา Δt เพื่อบังคับทิศทาง (steering)
+  ภาพบนคือ wavefield จริง (สว่าง = สันคลื่นสูง/ต่ำ) ภาพล่างคือ far-field beam pattern
+  (ความเข้มของคลื่นเทียบกับมุม θ วัดจากแนวตั้งฉากกับเส้นฐาน) — ยอดแหลมแต่ละอันในกราฟ = ทิศทางที่มีลำคลื่นแรง
+  ลองปรับค่าระยะห่าง/มุม steering ในแต่ละช่องเพื่อทดลองเองได้ (<code>sinθ = c·Δt / d</code>)
+  <br/><br/>
+  <b>ทำไมบางที่ดูเหมือน "คลื่นเดียว" ทั้งที่มี 2 แหล่งกำเนิด:</b> เส้นสว่างที่เห็นไม่ใช่วงคลื่นของแหล่งใดแหล่งหนึ่ง
+  โดยตรง แต่เป็น<b>ผลรวม (superposition)</b> ของคลื่นทั้งสองที่บวกกัน ณ จุดนั้นๆ — บริเวณกลางภาพ (ตรงหน้า
+  ทั้งสองแหล่งพอดี) ระยะทางจากแหล่งซ้ายและขวาแทบเท่ากัน สันคลื่นทั้งคู่จึงมาถึงพร้อมกันเสมอ รวมกันเป็นเส้นสว่าง
+  เส้นเดียวที่ดูต่อเนื่องเหมือนมาจากแหล่งเดียว (นี่คือลำคลื่นหลัก/main lobe) ส่วนด้านข้างที่เอียงออกจากแนวกลาง
+  ระยะจากสองแหล่งเริ่มต่างกันมากขึ้นเรื่อยๆ ทำให้สันคลื่นมาไม่พร้อมกัน เกิดการหักล้าง (destructive) สลับกับ
+  การเสริมกัน (constructive) เป็นลายเส้นโค้งแยกออกจากกัน — ปรับ slider "ความคมของเส้น" ด้านล่างเพื่อดูเส้น
+  คลื่นแบบคมชัดใกล้เคียงวิดีโอ beamforming ที่คุณส่งมา
+</div>
+
+<div class="controls" style="max-width:1100px; margin-bottom:14px;">
+  <label>ความคมของเส้น (sharpness) <input type="range" id="global-sharpness" min="1" max="14" step="0.5" value="5" style="width:160px;" /></label>
+  <span id="sharpness-val" style="color:var(--muted); font-size:11.5px;">5</span>
+  <label style="margin-left:18px;">แสดงผล:
+    <select id="view-mode" style="background:#0e1725; color:var(--text); border:1px solid var(--panel-border); border-radius:4px; padding:3px 6px; font-size:11.5px;">
+      <option value="interference">ผลรวมคลื่นจริง (interference / superposition)</option>
+      <option value="source1">วงคลื่นแหล่งซ้ายอย่างเดียว (source 1 raw)</option>
+      <option value="source2">วงคลื่นแหล่งขวาอย่างเดียว (source 2 raw)</option>
+      <option value="overlay">ทั้งสองแหล่งซ้อนกัน (วาดวงคลื่นเฉยๆ ไม่รวมคลื่น)</option>
+    </select>
+  </label>
+</div>
+
+<div class="grid" id="panels"></div>
+
+<script>
+(() => {
+  const C_MM_PER_S = 343000; // mm/s
+  const F_HZ = 40000;
+  const LAMBDA_MM = C_MM_PER_S / F_HZ;
+
+  const FIELD_HALFWIDTH_MM = 55;
+  const FIELD_GRID = 200; // px per axis for the wavefield heatmap
+  const BEAM_W = 480, BEAM_H = 160;
+  let RING_SHARPNESS = 5; // higher = thinner/crisper bright fringe lines, like the reference video
+  let VIEW_MODE = 'interference'; // 'interference' | 'source1' | 'source2' | 'overlay'
+
+  const configs = [
+    { id: 'A', title: 'A) d = λ/2 ≈ 4.3mm, ยิงพร้อมกัน', tag: 'ทฤษฎี: ไม่มี grating lobe', tagClass: '',
+      spacing: 4.3, steer: 0,
+      caption: 'ระยะห่างนี้เล็กกว่าที่ทรานสดิวเซอร์ทรงกระบอกมาตรฐานจะวางได้จริง (ตัวถังชนกัน) แต่แสดงไว้เป็นข้อมูลอ้างอิงว่า "ถ้าทำได้" หน้าตาจะเป็นแบบนี้ — มีลำคลื่นเดียวชี้ตรงข้างหน้า (0°)' },
+    { id: 'B', title: 'B) d = 16mm (ระยะจริงของเซนเซอร์), ยิงพร้อมกัน', tag: 'ระยะจริงที่ต่อได้', tagClass: 'warn',
+      spacing: 16, steer: 0,
+      caption: 'ระยะห่างจริงของทรานสดิวเซอร์ทรงกระบอกมาตรฐาน (~16mm เส้นผ่านศูนย์กลาง) กว้างกว่า λ/2 เกือบ 4 เท่า เกิดลำคลื่นหลอก (grating lobe) เพิ่มขึ้นมาที่มุมอื่นนอกจาก 0° ด้วย' },
+    { id: 'C', title: 'C) d = 16mm, ยิงซ้ายก่อนขวา (หน่วงเวลา Δt)', tag: 'พยายาม steer ด้วย delay', tagClass: 'warn',
+      spacing: 16, steer: 20,
+      caption: 'ตั้งใจ steer ไปที่มุม 20° ด้วยการหน่วงเวลา แต่เพราะระยะห่างยังกว้างกว่า λ/2 จึงเกิดลำคลื่นหลอกเพิ่มขึ้นมาอีกที่มุมอื่นพร้อมกัน ไม่ได้มีแค่ลำเดียวที่ 20° ตามที่ตั้งใจ' },
+  ];
+
+  function buildPanel(cfg) {
+    const el = document.createElement('div');
+    el.className = 'panel';
+    el.innerHTML = `
+      <h2>${cfg.title} <span class="tag ${cfg.tagClass}">${cfg.tag}</span></h2>
+      <div class="controls">
+        <label>d (mm) <input type="number" step="0.1" value="${cfg.spacing}" data-role="spacing" /></label>
+        <label>steer θ (deg) <input type="number" step="1" value="${cfg.steer}" data-role="steer" /></label>
+        <label>Δt = <span data-role="dt">-</span> us</label>
+      </div>
+      <canvas class="field" data-role="field" width="${FIELD_GRID}" height="${FIELD_GRID}"></canvas>
+      <canvas class="beam" data-role="beam" width="${BEAM_W}" height="${BEAM_H}"></canvas>
+      <div class="lobes" data-role="lobes"></div>
+      <div class="caption">${cfg.caption}</div>
+    `;
+    return el;
+  }
+
+  const panelsRoot = document.getElementById('panels');
+  const states = configs.map(cfg => {
+    const el = buildPanel(cfg);
+    panelsRoot.appendChild(el);
+    return {
+      cfg,
+      el,
+      spacingInput: el.querySelector('[data-role="spacing"]'),
+      steerInput: el.querySelector('[data-role="steer"]'),
+      dtSpan: el.querySelector('[data-role="dt"]'),
+      fieldCanvas: el.querySelector('[data-role="field"]'),
+      beamCanvas: el.querySelector('[data-role="beam"]'),
+      lobesDiv: el.querySelector('[data-role="lobes"]'),
+      fieldCtx: null,
+      beamCtx: null,
+      imageData: null,
+    };
+  });
+
+  states.forEach(st => {
+    st.fieldCtx = st.fieldCanvas.getContext('2d');
+    st.beamCtx = st.beamCanvas.getContext('2d');
+    st.imageData = st.fieldCtx.createImageData(FIELD_GRID, FIELD_GRID);
+    st.spacingInput.addEventListener('input', () => renderBeam(st));
+    st.steerInput.addEventListener('input', () => renderBeam(st));
+  });
+
+  function deltaTForSteer(spacingMm, steerDeg) {
+    // seconds; positive steerDeg steers toward +x (right) by firing left(-x) source later...
+    // convention: source2 (right, +x) fires deltaT AFTER source1 (left) to steer toward +x.
+    return (spacingMm * Math.sin(steerDeg * Math.PI / 180)) / C_MM_PER_S;
+  }
+
+  function computeBeamPattern(spacingMm, steerDeg) {
+    const deltaT = deltaTForSteer(spacingMm, steerDeg);
+    const phi2 = 2 * Math.PI * F_HZ * deltaT;
+    const angles = [];
+    const intensities = [];
+    for (let deg = -90; deg <= 90; deg++) {
+      const theta = deg * Math.PI / 180;
+      const dPhi = (2 * Math.PI * spacingMm / LAMBDA_MM) * Math.sin(theta) - phi2;
+      const I = 2 + 2 * Math.cos(dPhi); // 0..4
+      angles.push(deg);
+      intensities.push(I);
+    }
+    return { angles, intensities, deltaT };
+  }
+
+  function findLobes(angles, intensities) {
+    const lobes = [];
+    for (let i = 1; i < intensities.length - 1; i++) {
+      if (intensities[i] > intensities[i - 1] && intensities[i] > intensities[i + 1] && intensities[i] > 3.5) {
+        lobes.push(angles[i]);
+      }
+    }
+    // include exact edges if they happen to be maxima
+    if (intensities[0] > intensities[1] && intensities[0] > 3.5) lobes.unshift(angles[0]);
+    if (intensities[intensities.length - 1] > intensities[intensities.length - 2] && intensities[intensities.length - 1] > 3.5) lobes.push(angles[angles.length - 1]);
+    return lobes;
+  }
+
+  function renderBeam(st) {
+    const spacing = parseFloat(st.spacingInput.value) || 0.1;
+    const steer = parseFloat(st.steerInput.value) || 0;
+    const { angles, intensities, deltaT } = computeBeamPattern(spacing, steer);
+    st.dtSpan.textContent = (deltaT * 1e6).toFixed(2);
+
+    const ctx = st.beamCtx;
+    const w = BEAM_W, h = BEAM_H;
+    ctx.clearRect(0, 0, w, h);
+
+    const marginL = 30, marginB = 16, marginT = 6, marginR = 6;
+    const plotW = w - marginL - marginR, plotH = h - marginT - marginB;
+    const xForDeg = (deg) => marginL + ((deg + 90) / 180) * plotW;
+    const yForI = (I) => marginT + (1 - I / 4) * plotH;
+
+    // gridlines
+    ctx.strokeStyle = '#223049';
+    ctx.fillStyle = '#8ea0bd';
+    ctx.font = '9px monospace';
+    ctx.lineWidth = 1;
+    [-90, -60, -30, 0, 30, 60, 90].forEach(deg => {
+      const x = xForDeg(deg);
+      ctx.beginPath(); ctx.moveTo(x, marginT); ctx.lineTo(x, marginT + plotH); ctx.stroke();
+      ctx.fillText(deg + 'deg', x - 10, h - 4);
+    });
+    ctx.beginPath(); ctx.moveTo(marginL, marginT); ctx.lineTo(marginL, marginT + plotH); ctx.stroke();
+
+    // curve
+    ctx.strokeStyle = '#4fd1c5';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    angles.forEach((deg, i) => {
+      const x = xForDeg(deg), y = yForI(intensities[i]);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // lobes
+    const lobes = findLobes(angles, intensities);
+    ctx.strokeStyle = '#f6a94a';
+    ctx.setLineDash([2, 3]);
+    lobes.forEach(deg => {
+      const x = xForDeg(deg);
+      ctx.beginPath(); ctx.moveTo(x, marginT); ctx.lineTo(x, marginT + plotH); ctx.stroke();
+    });
+    ctx.setLineDash([]);
+
+    st.lobesDiv.innerHTML = '<span class="label">พบลำคลื่นแรงที่มุม:</span> ' +
+      (lobes.length ? lobes.map(d => `<span class="angle">${d}°</span>`).join(', ') : '(ไม่พบในช่วง ±90°)') +
+      ` &nbsp;(${lobes.length} ทิศทาง)`;
+  }
+
+  function renderField(st, animPhase) {
+    const spacing = parseFloat(st.spacingInput.value) || 0.1;
+    const steer = parseFloat(st.steerInput.value) || 0;
+    const deltaT = deltaTForSteer(spacing, steer);
+    const phi2 = 2 * Math.PI * F_HZ * deltaT;
+
+    const s1x = -spacing / 2, s2x = spacing / 2;
+    const g = FIELD_GRID;
+    const half = FIELD_HALFWIDTH_MM;
+    const data = st.imageData.data;
+
+    for (let iy = 0; iy < g; iy++) {
+      // y=0 at bottom row (sources baseline), increasing upward (forward)
+      const y = ((g - 1 - iy) / (g - 1)) * half;
+      for (let ix = 0; ix < g; ix++) {
+        const x = -half + (ix / (g - 1)) * 2 * half;
+        const r1 = Math.hypot(x - s1x, y);
+        const r2 = Math.hypot(x - s2x, y);
+        const th1 = (2 * Math.PI * r1 / LAMBDA_MM) - animPhase;
+        const th2 = (2 * Math.PI * r2 / LAMBDA_MM) - phi2 - animPhase;
+        // Sharpen: clip the negative half-cycle to black, then power-curve
+        // the positive part so only the strongest crests read as thin bright
+        // lines (matching the crisp ring look of the reference video) instead
+        // of a smooth blurry gradient.
+        const ring1 = Math.pow(Math.max(0, Math.cos(th1)), RING_SHARPNESS);
+        const ring2 = Math.pow(Math.max(0, Math.cos(th2)), RING_SHARPNESS);
+        let bright;
+        if (VIEW_MODE === 'source1') {
+          bright = ring1; // only the left transducer's own wavefronts
+        } else if (VIEW_MODE === 'source2') {
+          bright = ring2; // only the right transducer's own wavefronts
+        } else if (VIEW_MODE === 'overlay') {
+          bright = Math.max(ring1, ring2); // both sources' raw rings, no wave summing
+        } else {
+          const u = Math.cos(th1) + Math.cos(th2); // -2..2, true superposition
+          const t = Math.max(0, u) / 2; // 0..1, destructive -> 0
+          bright = Math.pow(t, RING_SHARPNESS);
+        }
+        const v = Math.max(0, Math.min(255, Math.round(bright * 255)));
+        const idx = (iy * g + ix) * 4;
+        data[idx] = v;
+        data[idx + 1] = v;
+        data[idx + 2] = v;
+        data[idx + 3] = 255;
+      }
+    }
+    st.fieldCtx.putImageData(st.imageData, 0, 0);
+
+    // mark source positions
+    const px = (x) => ((x + half) / (2 * half)) * g;
+    const py = g - 1;
+    st.fieldCtx.fillStyle = '#ffffff';
+    [s1x, s2x].forEach(sx => {
+      st.fieldCtx.beginPath();
+      st.fieldCtx.arc(px(sx), py, 2.5, 0, Math.PI * 2);
+      st.fieldCtx.fill();
+    });
+  }
+
+  states.forEach(st => renderBeam(st));
+
+  const sharpnessSlider = document.getElementById('global-sharpness');
+  const sharpnessVal = document.getElementById('sharpness-val');
+  sharpnessSlider.addEventListener('input', () => {
+    RING_SHARPNESS = parseFloat(sharpnessSlider.value);
+    sharpnessVal.textContent = RING_SHARPNESS;
+  });
+
+  const viewModeSelect = document.getElementById('view-mode');
+  viewModeSelect.addEventListener('change', () => {
+    VIEW_MODE = viewModeSelect.value;
+  });
+
+  let animPhase = 0;
+  function loop() {
+    animPhase += 0.06; // purely visual pulsing speed, decoupled from real 40kHz
+    states.forEach(st => renderField(st, animPhase));
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

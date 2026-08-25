@@ -1,0 +1,398 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="802" viewBox="0 0 960 802" font-family="Tahoma, Segoe UI, sans-serif" fill="#343a40">
+<rect width="960" height="802" fill="#ffffff"/>
+<text x="20" y="30" font-size="18" font-weight="700" fill="#1971c2">ขา ESP32 ทั้ง 19 คู่ — รูไหนอยู่บอร์ดไหน</text>
+<text x="20" y="52" font-size="12.5" fill="#6c757d">แถวเดียวกันมีอยู่บนบอร์ดทั้งสองอัน และหมายถึงคนละขา — "แถว 60" ฝั่งซ้ายคือ 5V ฝั่งขวาคือ CLK</text>
+<rect x="60" y="94" width="240" height="612" rx="6" fill="#ffffff" stroke="#ced4da"/>
+<text x="180.0" y="84" font-size="13" font-weight="700" text-anchor="middle" fill="#495057">บอร์ดซ้าย — RX</text>
+<rect x="376" y="94" width="240" height="612" rx="6" fill="#ffffff" stroke="#ced4da"/>
+<text x="496.0" y="84" font-size="13" font-weight="700" text-anchor="middle" fill="#495057">บอร์ดขวา — TX</text>
+<rect x="62" y="108" width="16" height="592" rx="8" fill="#ffc9c9"/>
+<rect x="84" y="108" width="16" height="592" rx="8" fill="#a5d8ff"/>
+<rect x="514" y="108" width="16" height="592" rx="8" fill="#a5d8ff"/>
+<rect x="536" y="108" width="16" height="592" rx="8" fill="#ffc9c9"/>
+<text x="70" y="102" font-size="14" font-weight="700" text-anchor="middle" fill="#e03131">+</text>
+<text x="92" y="102" font-size="14" font-weight="700" text-anchor="middle" fill="#1971c2">–</text>
+<text x="522" y="102" font-size="14" font-weight="700" text-anchor="middle" fill="#1971c2">–</text>
+<text x="544" y="102" font-size="14" font-weight="700" text-anchor="middle" fill="#e03131">+</text>
+<text x="150" y="102" font-size="12" text-anchor="middle" fill="#868e96">F</text>
+<text x="172" y="102" font-size="12" text-anchor="middle" fill="#868e96">G</text>
+<text x="194" y="102" font-size="12" text-anchor="middle" fill="#868e96">H</text>
+<text x="216" y="102" font-size="12" text-anchor="middle" fill="#868e96">I</text>
+<text x="238" y="102" font-size="12" text-anchor="middle" fill="#868e96">J</text>
+<text x="386" y="102" font-size="12" text-anchor="middle" fill="#868e96">A</text>
+<text x="408" y="102" font-size="12" text-anchor="middle" fill="#868e96">B</text>
+<text x="430" y="102" font-size="12" text-anchor="middle" fill="#868e96">C</text>
+<text x="452" y="102" font-size="12" text-anchor="middle" fill="#868e96">D</text>
+<text x="474" y="102" font-size="12" text-anchor="middle" fill="#868e96">E</text>
+<rect x="224" y="106" width="176" height="596" rx="7" fill="#343a40"/>
+<text x="312" y="92" font-size="13" font-weight="700" text-anchor="middle" fill="#343a40">ESP32 DevKit</text>
+<text x="312" y="724" font-size="11.5" text-anchor="middle" fill="#868e96">▼ ปลายนี้คือช่อง USB</text>
+<text x="44" y="136" font-size="12.5" text-anchor="end" fill="#6c757d">42</text>
+<circle cx="150" cy="132" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="132" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="132" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="132" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="132" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="132" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="132" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="132" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="132" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="132" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="132" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="132" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="132" r="5.5" fill="#2f9e44"/>
+<circle cx="386" cy="132" r="5.5" fill="#adb5bd"/>
+<text x="250" y="136" font-size="11" fill="#2f9e44" font-weight="700">3V3</text>
+<text x="374" y="136" font-size="11" text-anchor="end" fill="#ffffff" font-weight="400">GND</text>
+<text x="44" y="166" font-size="12.5" text-anchor="end" fill="#6c757d">43</text>
+<circle cx="150" cy="162" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="162" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="162" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="162" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="162" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="162" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="162" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="162" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="162" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="162" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="162" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="162" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="162" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="162" r="5.5" fill="#adb5bd"/>
+<text x="250" y="166" font-size="11" fill="#ffffff" font-weight="400">EN</text>
+<text x="374" y="166" font-size="11" text-anchor="end" fill="#ffffff" font-weight="400">IO23</text>
+<text x="44" y="196" font-size="12.5" text-anchor="end" fill="#6c757d">44</text>
+<circle cx="150" cy="192" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="192" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="192" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="192" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="192" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="192" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="192" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="192" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="192" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="192" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="192" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="192" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="192" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="192" r="5.5" fill="#adb5bd"/>
+<text x="250" y="196" font-size="11" fill="#ffffff" font-weight="400">SVP</text>
+<text x="374" y="196" font-size="11" text-anchor="end" fill="#ffffff" font-weight="400">IO22</text>
+<text x="44" y="226" font-size="12.5" text-anchor="end" fill="#6c757d">45</text>
+<circle cx="150" cy="222" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="222" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="222" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="222" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="222" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="222" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="222" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="222" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="222" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="222" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="222" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="222" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="222" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="222" r="5.5" fill="#e03131"/>
+<text x="250" y="226" font-size="11" fill="#ffffff" font-weight="400">SVN</text>
+<text x="374" y="226" font-size="11" text-anchor="end" fill="#e03131" font-weight="700">TX0</text>
+<text x="44" y="256" font-size="12.5" text-anchor="end" fill="#6c757d">46</text>
+<circle cx="150" cy="252" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="252" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="252" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="252" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="252" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="252" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="252" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="252" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="252" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="252" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="252" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="252" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="252" r="5.5" fill="#2f9e44"/>
+<circle cx="386" cy="252" r="5.5" fill="#e03131"/>
+<text x="250" y="256" font-size="11" fill="#2f9e44" font-weight="700">IO34</text>
+<text x="374" y="256" font-size="11" text-anchor="end" fill="#e03131" font-weight="700">RX0</text>
+<text x="44" y="286" font-size="12.5" text-anchor="end" fill="#6c757d">47</text>
+<circle cx="150" cy="282" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="282" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="282" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="282" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="282" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="282" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="282" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="282" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="282" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="282" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="282" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="282" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="282" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="282" r="5.5" fill="#adb5bd"/>
+<text x="250" y="286" font-size="11" fill="#ffffff" font-weight="400">IO35</text>
+<text x="374" y="286" font-size="11" text-anchor="end" fill="#ffffff" font-weight="400">IO21</text>
+<text x="44" y="316" font-size="12.5" text-anchor="end" fill="#6c757d">48</text>
+<circle cx="150" cy="312" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="312" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="312" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="312" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="312" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="312" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="312" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="312" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="312" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="312" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="312" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="312" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="312" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="312" r="5.5" fill="#2f9e44"/>
+<text x="250" y="316" font-size="11" fill="#ffffff" font-weight="400">IO32</text>
+<text x="374" y="316" font-size="11" text-anchor="end" fill="#2f9e44" font-weight="700">GND</text>
+<text x="44" y="346" font-size="12.5" text-anchor="end" fill="#6c757d">49</text>
+<circle cx="150" cy="342" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="342" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="342" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="342" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="342" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="342" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="342" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="342" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="342" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="342" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="342" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="342" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="342" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="342" r="5.5" fill="#adb5bd"/>
+<text x="250" y="346" font-size="11" fill="#ffffff" font-weight="400">IO33</text>
+<text x="374" y="346" font-size="11" text-anchor="end" fill="#ffffff" font-weight="400">IO19</text>
+<text x="44" y="376" font-size="12.5" text-anchor="end" fill="#6c757d">50</text>
+<circle cx="150" cy="372" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="372" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="372" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="372" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="372" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="372" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="372" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="372" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="372" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="372" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="372" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="372" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="372" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="372" r="5.5" fill="#2f9e44"/>
+<text x="250" y="376" font-size="11" fill="#ffffff" font-weight="400">IO25</text>
+<text x="374" y="376" font-size="11" text-anchor="end" fill="#2f9e44" font-weight="700">IO18</text>
+<text x="44" y="406" font-size="12.5" text-anchor="end" fill="#6c757d">51</text>
+<circle cx="150" cy="402" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="402" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="402" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="402" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="402" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="402" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="402" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="402" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="402" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="402" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="402" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="402" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="402" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="402" r="5.5" fill="#adb5bd"/>
+<text x="250" y="406" font-size="11" fill="#ffffff" font-weight="400">IO26</text>
+<text x="374" y="406" font-size="11" text-anchor="end" fill="#ffffff" font-weight="400">IO5</text>
+<text x="44" y="436" font-size="12.5" text-anchor="end" fill="#6c757d">52</text>
+<circle cx="150" cy="432" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="432" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="432" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="432" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="432" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="432" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="432" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="432" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="432" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="432" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="432" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="432" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="432" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="432" r="5.5" fill="#adb5bd"/>
+<text x="250" y="436" font-size="11" fill="#ffffff" font-weight="400">IO27</text>
+<text x="374" y="436" font-size="11" text-anchor="end" fill="#ffffff" font-weight="400">IO17</text>
+<text x="44" y="466" font-size="12.5" text-anchor="end" fill="#6c757d">53</text>
+<circle cx="150" cy="462" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="462" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="462" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="462" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="462" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="462" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="462" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="462" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="462" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="462" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="462" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="462" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="462" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="462" r="5.5" fill="#adb5bd"/>
+<text x="250" y="466" font-size="11" fill="#ffffff" font-weight="400">IO14</text>
+<text x="374" y="466" font-size="11" text-anchor="end" fill="#ffffff" font-weight="400">IO16</text>
+<text x="44" y="496" font-size="12.5" text-anchor="end" fill="#6c757d">54</text>
+<circle cx="150" cy="492" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="492" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="492" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="492" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="492" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="492" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="492" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="492" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="492" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="492" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="492" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="492" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="492" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="492" r="5.5" fill="#adb5bd"/>
+<text x="250" y="496" font-size="11" fill="#ffffff" font-weight="400">IO12</text>
+<text x="374" y="496" font-size="11" text-anchor="end" fill="#ffffff" font-weight="400">IO4</text>
+<text x="44" y="526" font-size="12.5" text-anchor="end" fill="#6c757d">55</text>
+<circle cx="150" cy="522" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="522" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="522" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="522" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="522" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="522" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="522" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="522" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="522" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="522" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="522" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="522" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="522" r="5.5" fill="#2f9e44"/>
+<circle cx="386" cy="522" r="5.5" fill="#e03131"/>
+<text x="250" y="526" font-size="11" fill="#2f9e44" font-weight="700">GND</text>
+<text x="374" y="526" font-size="11" text-anchor="end" fill="#e03131" font-weight="700">IO0</text>
+<text x="44" y="556" font-size="12.5" text-anchor="end" fill="#6c757d">56</text>
+<circle cx="150" cy="552" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="552" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="552" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="552" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="552" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="552" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="552" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="552" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="552" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="552" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="552" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="552" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="552" r="5.5" fill="#adb5bd"/>
+<circle cx="386" cy="552" r="5.5" fill="#e03131"/>
+<text x="250" y="556" font-size="11" fill="#ffffff" font-weight="400">IO13</text>
+<text x="374" y="556" font-size="11" text-anchor="end" fill="#e03131" font-weight="700">IO2</text>
+<text x="44" y="586" font-size="12.5" text-anchor="end" fill="#6c757d">57</text>
+<circle cx="150" cy="582" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="582" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="582" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="582" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="582" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="582" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="582" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="582" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="582" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="582" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="582" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="582" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="582" r="5.5" fill="#e03131"/>
+<circle cx="386" cy="582" r="5.5" fill="#e03131"/>
+<text x="250" y="586" font-size="11" fill="#e03131" font-weight="700">SD2</text>
+<text x="374" y="586" font-size="11" text-anchor="end" fill="#e03131" font-weight="700">IO15</text>
+<text x="44" y="616" font-size="12.5" text-anchor="end" fill="#6c757d">58</text>
+<circle cx="150" cy="612" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="612" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="612" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="612" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="612" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="612" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="612" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="612" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="612" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="612" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="612" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="612" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="612" r="5.5" fill="#e03131"/>
+<circle cx="386" cy="612" r="5.5" fill="#e03131"/>
+<text x="250" y="616" font-size="11" fill="#e03131" font-weight="700">SD3</text>
+<text x="374" y="616" font-size="11" text-anchor="end" fill="#e03131" font-weight="700">SD1</text>
+<text x="44" y="646" font-size="12.5" text-anchor="end" fill="#6c757d">59</text>
+<circle cx="150" cy="642" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="642" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="642" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="642" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="642" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="642" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="642" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="642" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="642" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="642" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="642" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="642" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="642" r="5.5" fill="#e03131"/>
+<circle cx="386" cy="642" r="5.5" fill="#e03131"/>
+<text x="250" y="646" font-size="11" fill="#e03131" font-weight="700">CMD</text>
+<text x="374" y="646" font-size="11" text-anchor="end" fill="#e03131" font-weight="700">SD0</text>
+<text x="44" y="676" font-size="12.5" text-anchor="end" fill="#6c757d">60</text>
+<circle cx="150" cy="672" r="3.2" fill="#ced4da"/>
+<circle cx="172" cy="672" r="3.2" fill="#ced4da"/>
+<circle cx="194" cy="672" r="3.2" fill="#ced4da"/>
+<circle cx="216" cy="672" r="3.2" fill="#ced4da"/>
+<circle cx="408" cy="672" r="3.2" fill="#ced4da"/>
+<circle cx="430" cy="672" r="3.2" fill="#ced4da"/>
+<circle cx="452" cy="672" r="3.2" fill="#ced4da"/>
+<circle cx="474" cy="672" r="3.2" fill="#ced4da"/>
+<circle cx="70" cy="672" r="3.2" fill="#ffffff"/>
+<circle cx="92" cy="672" r="3.2" fill="#ffffff"/>
+<circle cx="522" cy="672" r="3.2" fill="#ffffff"/>
+<circle cx="544" cy="672" r="3.2" fill="#ffffff"/>
+<circle cx="238" cy="672" r="5.5" fill="#2f9e44"/>
+<circle cx="386" cy="672" r="5.5" fill="#e03131"/>
+<text x="250" y="676" font-size="11" fill="#2f9e44" font-weight="700">5V</text>
+<text x="374" y="676" font-size="11" text-anchor="end" fill="#e03131" font-weight="700">CLK</text>
+<path d="M194,132 L194,116 L70,116" fill="none" stroke="#e03131" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="70" cy="116" r="5" fill="#e03131"/>
+<circle cx="194" cy="132" r="5" fill="#e03131"/>
+<path d="M194,522 L194,507 L92,507" fill="none" stroke="#343a40" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="92" cy="507" r="5" fill="#343a40"/>
+<circle cx="194" cy="522" r="5" fill="#343a40"/>
+<path d="M194,672 L194,698 L544,698 L544,672" fill="none" stroke="#e03131" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="194" cy="672" r="6" fill="#e03131"/>
+<circle cx="544" cy="672" r="6" fill="#e03131"/>
+<path d="M408,312 L408,297 L522,297" fill="none" stroke="#343a40" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="522" cy="297" r="5" fill="#343a40"/>
+<circle cx="408" cy="312" r="5" fill="#343a40"/>
+<path d="M408,372 L474,372" fill="none" stroke="#2f9e44" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="408" cy="372" r="5" fill="#2f9e44"/>
+<text x="436" y="359" font-size="11" font-weight="700" text-anchor="middle" fill="#2f9e44">ไปแถว 28 รู A</text>
+<path d="M194,252 L150,252" fill="none" stroke="#f08c00" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="194" cy="252" r="5" fill="#f08c00"/>
+<text x="188" y="239" font-size="11" font-weight="700" text-anchor="middle" fill="#f08c00">มาจากแถว 34 รู I</text>
+<rect x="124" y="657" width="128" height="30" rx="6" fill="none" stroke="#f08c00" stroke-width="2.5"/>
+<rect x="362" y="657" width="132" height="30" rx="6" fill="none" stroke="#e03131" stroke-width="2.5" stroke-dasharray="6 4"/>
+<rect x="640" y="88" width="300" height="140" rx="7" fill="#ebfbee" stroke="#2f9e44"/>
+<text x="654" y="111" font-size="13" font-weight="700" fill="#212529">รูที่ต้องต่อ ทั้งหมด 6 รู</text>
+<text x="654" y="132" font-size="12" fill="#212529">บอร์ดซ้าย  42H → ราง +      (3V3)</text>
+<text x="654" y="151" font-size="12" fill="#212529">บอร์ดซ้าย  55H → ราง –      (GND)</text>
+<text x="654" y="170" font-size="12" fill="#212529">บอร์ดซ้าย  46H ← แถว 34 รู I (GPIO34)</text>
+<text x="654" y="189" font-size="12" fill="#212529">บอร์ดซ้าย  60H → ราง + ของบอร์ดขวา  (5V)</text>
+<text x="654" y="208" font-size="12" fill="#212529">บอร์ดขวา   48B → ราง –      (GND)</text>
+<text x="654" y="227" font-size="12" fill="#212529">บอร์ดขวา   50B → แถว 28 รู A (IO18)</text>
+<rect x="640" y="322" width="300" height="140" rx="7" fill="#fff5f5" stroke="#e03131"/>
+<text x="654" y="345" font-size="13" font-weight="700" fill="#212529">จุดสีแดง = ห้ามต่ออะไรทั้งนั้น</text>
+<text x="654" y="366" font-size="12" fill="#212529">ฝั่งซ้าย  SD2 SD3 CMD  (แถว 57-59)</text>
+<text x="654" y="385" font-size="12" fill="#212529">ฝั่งขวา  TX0 RX0  (แถว 45-46)</text>
+<text x="654" y="404" font-size="12" fill="#212529">ฝั่งขวา  IO0 IO2 IO15 SD1 SD0 CLK</text>
+<text x="654" y="423" font-size="12" fill="#212529">            (แถว 55-60)</text>
+<text x="654" y="442" font-size="12" fill="#212529">ทั้งหมดนี้คือสายแฟลชในตัวชิป สายอัปโหลด</text>
+<text x="654" y="461" font-size="12" fill="#212529">และขาที่ชิปอ่านตอนบูต แตะเมื่อไหร่ชิปเงียบ</text>
+<rect x="640" y="512" width="300" height="159" rx="7" fill="#fff4e6" stroke="#f08c00"/>
+<text x="654" y="535" font-size="13" font-weight="700" fill="#212529">จุดที่สับสนง่ายที่สุด</text>
+<text x="654" y="556" font-size="12" fill="#212529">แถว 60 มีอยู่บนบอร์ดทั้งสองอัน</text>
+<text x="654" y="575" font-size="12" fill="#212529"></text>
+<text x="654" y="594" font-size="12" fill="#212529">ซ้าย  แถว 60 = 5V   ← เอาไฟจากตรงนี้</text>
+<text x="654" y="613" font-size="12" fill="#212529">ขวา   แถว 60 = CLK  ← สายแฟลช ห้ามแตะ</text>
+<text x="654" y="632" font-size="12" fill="#212529"></text>
+<text x="654" y="651" font-size="12" fill="#212529">สาย 5V เริ่มที่บอร์ดซ้าย ไปจบที่รางแดง</text>
+<text x="654" y="670" font-size="12" fill="#212529">ของบอร์ดขวา — เป็นสายเส้นเดียวที่ข้ามบอร์ด</text>
+</svg>

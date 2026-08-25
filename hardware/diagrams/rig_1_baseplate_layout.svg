@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="600" viewBox="0 0 920 600" font-family="Tahoma, Segoe UI, sans-serif">
+<rect width="920" height="600" fill="#ffffff"/>
+
+<!-- base plate -->
+<rect x="30" y="55" width="860" height="415" rx="10" fill="#fff8f0" stroke="#b08968" stroke-width="2" stroke-dasharray="9 5"/>
+<text x="44" y="46" font-size="15" font-weight="bold" fill="#7f5539">แผ่นฐาน — ไม้อัด / อะคริลิก / แผ่นพลาสติก ~ 300 × 220 มม. ยึดทุกอย่างลงบนนี้ แล้วยกทั้งแผ่น</text>
+
+<!-- RX breadboard -->
+<rect x="80" y="100" width="620" height="105" rx="5" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+<line x1="88" y1="110" x2="692" y2="110" stroke="#e03131" stroke-width="2"/>
+<line x1="88" y1="118" x2="692" y2="118" stroke="#1971c2" stroke-width="2"/>
+<line x1="88" y1="187" x2="692" y2="187" stroke="#1971c2" stroke-width="2"/>
+<line x1="88" y1="195" x2="692" y2="195" stroke="#e03131" stroke-width="2"/>
+<line x1="88" y1="152" x2="692" y2="152" stroke="#ced4da" stroke-width="6"/>
+<text x="92" y="140" font-size="14" font-weight="bold" fill="#1971c2">บอร์ด RX — ภาครับ  (ออปแอมป์ + ทรานสดิวเซอร์ R)</text>
+
+<!-- TX breadboard -->
+<rect x="80" y="265" width="620" height="105" rx="5" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+<line x1="88" y1="275" x2="692" y2="275" stroke="#e03131" stroke-width="2"/>
+<line x1="88" y1="283" x2="692" y2="283" stroke="#1971c2" stroke-width="2"/>
+<line x1="88" y1="352" x2="692" y2="352" stroke="#1971c2" stroke-width="2"/>
+<line x1="88" y1="360" x2="692" y2="360" stroke="#e03131" stroke-width="2"/>
+<line x1="88" y1="317" x2="692" y2="317" stroke="#ced4da" stroke-width="6"/>
+<text x="92" y="340" font-size="14" font-weight="bold" fill="#e03131">บอร์ด TX — ภาคส่ง  (74HCT04 + ทรานสดิวเซอร์ T)  ไฟ 5V</text>
+
+<!-- 5V jumper crossing -->
+<path d="M318,200 C255,200 238,240 245,275" fill="none" stroke="#f08c00" stroke-width="2.5"/>
+<circle cx="245" cy="275" r="4" fill="#f08c00"/>
+<text x="96" y="228" font-size="12" fill="#e67700">5V ข้ามฝั่ง — เส้นเดียว</text>
+<text x="96" y="244" font-size="12" fill="#e67700">มีคาปฯ รับที่ปลายทางแล้ว</text>
+
+<!-- GND star wires -->
+<path d="M340,200 L340,187" stroke="#2f9e44" stroke-width="2.5"/>
+<circle cx="340" cy="187" r="4" fill="#2f9e44"/>
+<path d="M430,270 L430,283" stroke="#2f9e44" stroke-width="2.5"/>
+<circle cx="430" cy="283" r="4" fill="#2f9e44"/>
+
+<!-- ESP32 -->
+<rect x="270" y="222" width="32" height="26" rx="3" fill="#868e96" stroke="#495057"/>
+<rect x="300" y="200" width="170" height="70" rx="4" fill="#343a40" stroke="#212529" stroke-width="1.5"/>
+<text x="385" y="240" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffffff">ESP32 DevKit</text>
+<g fill="#ffd43b">
+<circle cx="310" cy="200" r="3"/><circle cx="318" cy="200" r="3"/><circle cx="326" cy="200" r="3"/><circle cx="334" cy="200" r="3"/><circle cx="342" cy="200" r="3"/><circle cx="350" cy="200" r="3"/><circle cx="358" cy="200" r="3"/><circle cx="366" cy="200" r="3"/><circle cx="374" cy="200" r="3"/><circle cx="382" cy="200" r="3"/><circle cx="390" cy="200" r="3"/><circle cx="398" cy="200" r="3"/><circle cx="406" cy="200" r="3"/><circle cx="414" cy="200" r="3"/><circle cx="422" cy="200" r="3"/><circle cx="430" cy="200" r="3"/><circle cx="438" cy="200" r="3"/><circle cx="446" cy="200" r="3"/><circle cx="454" cy="200" r="3"/>
+<circle cx="310" cy="270" r="3"/><circle cx="318" cy="270" r="3"/><circle cx="326" cy="270" r="3"/><circle cx="334" cy="270" r="3"/><circle cx="342" cy="270" r="3"/><circle cx="350" cy="270" r="3"/><circle cx="358" cy="270" r="3"/><circle cx="366" cy="270" r="3"/><circle cx="374" cy="270" r="3"/><circle cx="382" cy="270" r="3"/><circle cx="390" cy="270" r="3"/><circle cx="398" cy="270" r="3"/><circle cx="406" cy="270" r="3"/><circle cx="414" cy="270" r="3"/><circle cx="422" cy="270" r="3"/><circle cx="430" cy="270" r="3"/><circle cx="438" cy="270" r="3"/><circle cx="446" cy="270" r="3"/><circle cx="454" cy="270" r="3"/>
+</g>
+
+<!-- USB label -->
+<line x1="286" y1="222" x2="286" y2="176" stroke="#868e96" stroke-width="1.2"/>
+<rect x="86" y="158" width="200" height="22" rx="4" fill="#ffffff" stroke="#ced4da"/>
+<text x="278" y="174" text-anchor="end" font-size="12" fill="#495057">USB ต้องยื่นพ้นขอบแผ่นฐาน</text>
+
+<!-- annotations right -->
+<line x1="470" y1="205" x2="720" y2="150" stroke="#868e96" stroke-width="1.2"/>
+<rect x="716" y="118" width="166" height="52" rx="5" fill="#d0ebff" stroke="#1971c2"/>
+<text x="726" y="138" font-size="12" font-weight="bold" fill="#1971c2">ขาแถวบน = ฝั่ง ADC</text>
+<text x="726" y="156" font-size="12" fill="#1971c2">GPIO34 / 35 / 32 / 33</text>
+
+<line x1="470" y1="265" x2="720" y2="320" stroke="#868e96" stroke-width="1.2"/>
+<rect x="716" y="300" width="166" height="52" rx="5" fill="#ffe3e3" stroke="#e03131"/>
+<text x="726" y="320" font-size="12" font-weight="bold" fill="#e03131">ขาแถวล่าง = ฝั่งดิจิทัล</text>
+<text x="726" y="338" font-size="12" fill="#e03131">ย้าย TX ไป GPIO18 / 23</text>
+
+<line x1="430" y1="290" x2="600" y2="240" stroke="#2f9e44" stroke-width="1.2"/>
+<rect x="596" y="212" width="112" height="36" rx="5" fill="#d3f9d8" stroke="#2f9e44"/>
+<text x="606" y="235" font-size="12" font-weight="bold" fill="#2b8a3e">GND คนละขา</text>
+
+<!-- note box -->
+<rect x="80" y="386" width="800" height="78" rx="6" fill="#fff4e6" stroke="#f08c00"/>
+<text x="94" y="406" font-size="13" font-weight="bold" fill="#e67700">สามข้อที่ต้องทำตอนย้ายขึ้นแผ่นฐาน</text>
+<text x="94" y="426" font-size="12" fill="#212529">1. ยึดบอร์ดทั้งสองลงแผ่นฐานให้แน่น "ก่อน" เสียบ ESP32 — ถ้าบอร์ดขยับได้ ขา ESP32 จะงอหรือหลุดสัมผัสโดยไม่รู้ตัว</text>
+<text x="94" y="444" font-size="12" fill="#212529">2. ระยะห่างสองบอร์ดไม่ต้องเป็นเลขลงตัว — วาง ESP32 ทาบ เลื่อนบอร์ดจนขาลงพอดีทั้งสองแถว แล้วค่อยยึด</text>
+<text x="94" y="462" font-size="12" fill="#212529">3. รางไฟของบอร์ด 60 แถวขาดกลางบอร์ด — ต่อสะพานทั้งราง + และราง − ใหม่ทุกครั้งที่ย้ายบอร์ด</text>
+</svg>

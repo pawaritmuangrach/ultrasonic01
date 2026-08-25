@@ -1,0 +1,12 @@
+# ให้ git จัดการตัวจบบรรทัดเอง: เก็บเป็น LF ใน repo เช็คเอาต์เป็น CRLF บนวินโดวส์
+* text=auto
+
+# ไฟล์ไบนารี — ห้ามแตะตัวจบบรรทัด ไม่งั้นไฟล์เสีย
+*.stl binary
+*.step binary
+*.png binary
+*.npz binary
+*.pdf binary
+
+# SVG กับ CSV เป็นข้อความ แต่ทำ diff แล้วรกมาก จึงบอก git ว่าไม่ต้อง diff
+*.svg -diff

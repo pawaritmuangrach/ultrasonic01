@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="720" viewBox="0 0 1060 720" font-family="Segoe UI, Tahoma, sans-serif">
+<rect width="1060" height="720" fill="#ffffff"/>
+<text x="30" y="38" font-size="22" font-weight="700" fill="#1971c2">ช่อง 3 + 4 บน MCP6004 ตัวเดียว — ยึดขาชิปเป็นหลัก</text>
+<text x="30" y="62" font-size="13.5" fill="#868e96">ครึ่งซ้าย (ขา 1-7) = ช่อง 3 A80 → GPIO32 · ครึ่งขวา (ขา 8-14) = ช่อง 4 C80 → GPIO33 · ค่าทุกตัวเท่าช่อง 2</text>
+
+<!-- CHIP -->
+<rect x="450" y="150" width="160" height="380" rx="8" fill="#343a40"/>
+<circle cx="530" cy="162" r="9" fill="#1a1d20"/>
+<text x="530" y="145" font-size="12" fill="#868e96" text-anchor="middle">รอยบาก (บน)</text>
+<text x="530" y="348" font-size="14" fill="#adb5bd" text-anchor="middle" font-weight="700">MCP6004</text>
+
+<!-- left pins 1-7 -->
+<g font-size="12" font-weight="700" fill="#fff">
+<circle cx="450" cy="185" r="9" fill="#e8590c"/><text x="450" y="189" text-anchor="middle">1</text>
+<circle cx="450" cy="235" r="9" fill="#e8590c"/><text x="450" y="239" text-anchor="middle">2</text>
+<circle cx="450" cy="285" r="9" fill="#e8590c"/><text x="450" y="289" text-anchor="middle">3</text>
+<circle cx="450" cy="335" r="9" fill="#868e96"/><text x="450" y="339" text-anchor="middle">4</text>
+<circle cx="450" cy="385" r="9" fill="#e8590c"/><text x="450" y="389" text-anchor="middle">5</text>
+<circle cx="450" cy="435" r="9" fill="#e8590c"/><text x="450" y="439" text-anchor="middle">6</text>
+<circle cx="450" cy="485" r="9" fill="#e8590c"/><text x="450" y="489" text-anchor="middle">7</text>
+</g>
+<g font-size="11" fill="#e8a678" text-anchor="end">
+<text x="436" y="182">OUTA</text><text x="436" y="232">INA−</text><text x="436" y="282">INA+</text>
+<text x="436" y="382">INB+</text><text x="436" y="432">INB−</text><text x="436" y="482">OUTB</text>
+</g>
+<text x="436" y="332" font-size="11" fill="#ffd8a8" text-anchor="end" font-weight="700">VDD 3.3V</text>
+
+<!-- right pins 8-14 -->
+<g font-size="12" font-weight="700" fill="#fff">
+<circle cx="610" cy="485" r="9" fill="#1971c2"/><text x="610" y="489" text-anchor="middle">8</text>
+<circle cx="610" cy="435" r="9" fill="#1971c2"/><text x="610" y="439" text-anchor="middle">9</text>
+<circle cx="610" cy="385" r="9" fill="#1971c2"/><text x="610" y="389" text-anchor="middle">10</text>
+<circle cx="610" cy="335" r="9" fill="#868e96"/><text x="610" y="339" text-anchor="middle">11</text>
+<circle cx="610" cy="285" r="9" fill="#1971c2"/><text x="610" y="289" text-anchor="middle">12</text>
+<circle cx="610" cy="235" r="9" fill="#1971c2"/><text x="610" y="239" text-anchor="middle">13</text>
+<circle cx="610" cy="185" r="9" fill="#1971c2"/><text x="610" y="189" text-anchor="middle">14</text>
+</g>
+<g font-size="11" fill="#8ec5f0" text-anchor="start">
+<text x="624" y="482">OUTC</text><text x="624" y="432">INC−</text><text x="624" y="382">INC+</text>
+<text x="624" y="282">IND+</text><text x="624" y="232">IND−</text><text x="624" y="182">OUTD</text>
+</g>
+<text x="624" y="332" font-size="11" fill="#a5d8ff" text-anchor="start" font-weight="700">VSS GND</text>
+
+<!-- ===== CHANNEL 3 (left) ===== -->
+<text x="40" y="150" font-size="16" font-weight="700" fill="#e8590c">ช่อง 3 · A80 → GPIO32 (ออปแอมป์ A+B)</text>
+<!-- input to pin3 -->
+<circle cx="70" cy="285" r="16" fill="none" stroke="#e8590c" stroke-width="2.5"/>
+<text x="70" y="290" font-size="11" font-weight="700" fill="#e8590c" text-anchor="middle">A80</text>
+<line x1="86" y1="285" x2="130" y2="285" stroke="#343a40" stroke-width="2"/>
+<rect x="130" y="277" width="34" height="16" rx="3" fill="#d0ebff" stroke="#1971c2"/>
+<text x="147" y="272" font-size="10" fill="#1971c2" text-anchor="middle">Cin 100n</text>
+<line x1="164" y1="285" x2="200" y2="285" stroke="#343a40" stroke-width="2"/>
+<text x="200" y="278" font-size="10" fill="#f08c00">R_bias 10k→VREF</text>
+<line x1="200" y1="285" x2="441" y2="285" stroke="#2f9e44" stroke-width="2"/>
+<!-- stage1 feedback A: Rf OUTA(1)->INA-(2), Rg INA-->gnd -->
+<path d="M441,185 L410,185 L410,235 L441,235" fill="none" stroke="#e03131" stroke-width="2"/>
+<rect x="393" y="202" width="34" height="16" rx="3" fill="#ffe8cc" stroke="#f08c00"/>
+<text x="410" y="197" font-size="9.5" fill="#e8590c" text-anchor="middle">Rf1 100k</text>
+<line x1="410" y1="235" x2="410" y2="255" stroke="#343a40" stroke-width="1.5"/>
+<text x="360" y="259" font-size="9.5" fill="#495057">Rg1 10k + Cg1 1n → GND</text>
+<!-- OUTA(1)->INB+(5) -->
+<path d="M441,185 L340,185 L340,385 L441,385" fill="none" stroke="#2f9e44" stroke-width="2"/>
+<text x="300" y="290" font-size="9.5" fill="#2f9e44" transform="rotate(-90 300 290)">OUTA→INB+</text>
+<!-- stage2 feedback B: Rf OUTB(7)->INB-(6), out->GPIO -->
+<path d="M441,485 L410,485 L410,435 L441,435" fill="none" stroke="#e03131" stroke-width="2"/>
+<rect x="393" y="452" width="34" height="16" rx="3" fill="#ffe8cc" stroke="#f08c00"/>
+<text x="410" y="447" font-size="9.5" fill="#e8590c" text-anchor="middle">Rf2 100k</text>
+<text x="330" y="459" font-size="9.5" fill="#495057">Rg2 10k + Cg2 1n → GND</text>
+<!-- OUTB->output -->
+<line x1="441" y1="485" x2="240" y2="485" stroke="#f08c00" stroke-width="2.5"/>
+<rect x="300" y="477" width="30" height="16" rx="3" fill="#ffe8cc" stroke="#f08c00"/>
+<text x="315" y="472" font-size="9" fill="#e8590c" text-anchor="middle">2.2k</text>
+<text x="250" y="479" font-size="9.5" fill="#495057">C_out 1n→GND</text>
+<circle cx="230" cy="485" r="5" fill="#f08c00"/>
+<text x="222" y="505" font-size="12" font-weight="700" fill="#e8590c" text-anchor="end">→ GPIO32</text>
+
+<!-- ===== CHANNEL 4 (right) ===== -->
+<text x="1020" y="150" font-size="16" font-weight="700" fill="#1971c2" text-anchor="end">ช่อง 4 · C80 → GPIO33 (ออปแอมป์ C+D)</text>
+<!-- input to pin10 (INC+) -->
+<circle cx="990" cy="385" r="16" fill="none" stroke="#1971c2" stroke-width="2.5"/>
+<text x="990" y="390" font-size="11" font-weight="700" fill="#1971c2" text-anchor="middle">C80</text>
+<line x1="974" y1="385" x2="930" y2="385" stroke="#343a40" stroke-width="2"/>
+<rect x="896" y="377" width="34" height="16" rx="3" fill="#d0ebff" stroke="#1971c2"/>
+<text x="913" y="372" font-size="10" fill="#1971c2" text-anchor="middle">Cin 100n</text>
+<line x1="896" y1="385" x2="860" y2="385" stroke="#343a40" stroke-width="2"/>
+<text x="860" y="378" font-size="10" fill="#f08c00" text-anchor="end">VREF←R_bias 10k</text>
+<line x1="860" y1="385" x2="619" y2="385" stroke="#2f9e44" stroke-width="2"/>
+<!-- stage1 feedback C: Rf OUTC(8)->INC-(9) -->
+<path d="M619,485 L650,485 L650,435 L619,435" fill="none" stroke="#e03131" stroke-width="2"/>
+<rect x="633" y="452" width="34" height="16" rx="3" fill="#ffe8cc" stroke="#f08c00"/>
+<text x="650" y="447" font-size="9.5" fill="#1971c2" text-anchor="middle">Rf1 100k</text>
+<text x="700" y="459" font-size="9.5" fill="#495057">Rg1 10k + Cg1 1n → GND</text>
+<!-- OUTC(8)->IND+(12) -->
+<path d="M619,485 L720,485 L720,285 L619,285" fill="none" stroke="#2f9e44" stroke-width="2"/>
+<text x="758" y="390" font-size="9.5" fill="#2f9e44" transform="rotate(90 758 390)">OUTC→IND+</text>
+<!-- stage2 feedback D: Rf OUTD(14)->IND-(13) -->
+<path d="M619,185 L650,185 L650,235 L619,235" fill="none" stroke="#e03131" stroke-width="2"/>
+<rect x="633" y="202" width="34" height="16" rx="3" fill="#ffe8cc" stroke="#f08c00"/>
+<text x="650" y="197" font-size="9.5" fill="#1971c2" text-anchor="middle">Rf2 100k</text>
+<text x="700" y="230" font-size="9.5" fill="#495057">Rg2 10k + Cg2 1n → GND</text>
+<!-- OUTD(14)->output -->
+<line x1="619" y1="185" x2="820" y2="185" stroke="#f08c00" stroke-width="2.5"/>
+<rect x="730" y="177" width="30" height="16" rx="3" fill="#ffe8cc" stroke="#f08c00"/>
+<text x="745" y="172" font-size="9" fill="#1971c2" text-anchor="middle">2.2k</text>
+<text x="790" y="179" font-size="9.5" fill="#495057">C_out 1n→GND</text>
+<circle cx="830" cy="185" r="5" fill="#f08c00"/>
+<text x="838" y="205" font-size="12" font-weight="700" fill="#1971c2">→ GPIO33</text>
+
+<!-- ===== shared power/vref ===== -->
+<rect x="30" y="560" width="1000" height="140" rx="10" fill="#f8f9fa" stroke="#adb5bd" stroke-width="1.5"/>
+<text x="48" y="588" font-size="15" font-weight="700" fill="#343a40">ที่ใช้ร่วมกันทั้งชิป (ต่อครั้งเดียว)</text>
+<text x="48" y="614" font-size="12.5" fill="#495057">• ขา 4 (VDD) → ราง 3.3V   ·   ขา 11 (VSS) → ราง GND   ·   คาปาบายพาส 100nF + 10µF คร่อมรางติดชิป</text>
+<text x="48" y="638" font-size="12.5" fill="#f08c00">• VREF: มาจากบอร์ด RX แถว 2 (ตัวแบ่งเดียว) → แยกเข้า R_bias ของทั้งช่อง 3 และ 4 — ห้ามสร้างตัวแบ่งใหม่</text>
+<text x="48" y="662" font-size="12.5" fill="#e03131">• ต่อระหว่างสเตจ: ช่อง 3 = ขา1→ขา5 · ช่อง 4 = ขา8→ขา12   (OUT สเตจ1 → +IN สเตจ2)</text>
+<text x="48" y="686" font-size="12.5" fill="#2f9e44">• เช็คก่อนจ่ายไฟ: มัลติมิเตอร์ปี๊บ — ขา4↔3.3V, ขา11↔GND ต้องปี๊บ · ขา4↔ขา11 ต้องเงียบ (ไม่ลัด)</text>
+</svg>

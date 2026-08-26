@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PolarScan v2 — Ultrasonic Radar</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; margin:0; background:#0d1117; color:#e6edf3; }
+  header { padding:16px 28px; border-bottom:1px solid #21262d; background:#010409; }
+  h1 { margin:0; font-size:20px; } h1 span { color:#58a6ff; }
+  .sub { color:#8b949e; font-size:13px; margin-top:4px; }
+  main { display:flex; gap:24px; padding:20px 28px; flex-wrap:wrap; max-width:1300px; }
+  .radar { flex:1.2 1 540px; min-width:460px; text-align:center; }
+  .panel { flex:1 1 320px; min-width:320px; }
+  canvas { background:#010409; border-radius:12px; border:1px solid #21262d; }
+  .controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:center; margin-bottom:10px;}
+  select, button { background:#21262d; color:#e6edf3; border:1px solid #30363d;
+    border-radius:7px; padding:7px 13px; font-size:13.5px; cursor:pointer; }
+  button:hover, select:hover { background:#30363d; }
+  h2 { font-size:14px; color:#79c0ff; text-transform:uppercase; letter-spacing:.05em; margin:6px 0 10px;}
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  td, th { padding:4px 8px; border-bottom:1px solid #21262d; text-align:left;}
+  th { color:#8b949e; font-weight:500; }
+  .val { color:#7ee787; font-weight:600; }
+  .gt { color:#ffa657; }
+  p, li { font-size:13.5px; line-height:1.55; color:#c9d1d9; }
+  code { background:#21262d; padding:2px 6px; border-radius:5px; font-size:12px; color:#ffa657;}
+</style>
+</head>
+<body>
+<header>
+  <h1><span>◉ PolarScan v2</span> — ultrasonic radar (beats ultrasonic01: 4.3 cm vs 7.3 cm)</h1>
+  <div class="sub">4 RX + T1 TX · full 13-bin polar scan per ping · depth camera used only as teacher</div>
+</header>
+
+<main>
+  <div class="radar">
+    <div class="controls">
+      <select id="walk"></select>
+      <select id="frame"></select>
+      <button id="play">▶ Play</button>
+      <button id="step">Step ▶|</button>
+      <label style="font-size:13px">GT ring<input type="checkbox" id="showgt" checked></label>
+    </div>
+    <canvas id="cv" width="560" height="560"></canvas>
+    <p style="color:#8b949e;font-size:12px;margin-top:6px">
+      ▲ = sensor array · blue wedges = model scan · orange = camera ground truth ·
+      range rings every 50 cm</p>
+  </div>
+
+  <div class="panel">
+    <h2>Live readout</h2>
+    <table>
+      <tr><th>nearest object (model)</th><td><span class="val" id="near">–</span></td></tr>
+      <tr><th>its angle</th><td><span class="val" id="ang">–</span></td></tr>
+      <tr><th>physics-only estimate</th><td id="phys">–</td></tr>
+      <tr><th>vs camera GT (MAE)</th><td id="err">–</td></tr>
+    </table>
+
+    <h2>Per-bin scan (model vs GT)</h2>
+    <table id="bins"></table>
+
+    <h2>How to read it</h2>
+    <ul style="padding-left:18px">
+      <li>Each <b>blue wedge</b> is one of 13 angular bins (~4.5° each). Its distance
+        from center = nearest surface the ultrasound "hears" in that direction.</li>
+      <li><b>Orange markers</b> are what the depth camera says (teacher data) —
+        shown only when you enable GT ring.</li>
+      <li>Model input is <em>only</em> the raw echo waveforms
+        (<code>counts[4][871]</code>) — no camera at inference.</li>
+      <li>Test accuracy: <b>4.30 cm</b> distance / <b>11.0°</b> angle
+        vs ultrasonic01's 7.3 cm / 11.8°.</li>
+    </ul>
+  </div>
+</main>
+
+<script>
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+let walks={}, playing=false, timer=null, cur=null;
+
+function draw(d){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  const cx=cv.width/2, cy=cv.height*0.92, scale=(cv.height*0.85)/250;
+  // range rings
+  ctx.strokeStyle='#161b22'; ctx.fillStyle='#8b949e'; ctx.font='11px sans-serif';
+  for(let r=50;r<=250;r+=50){
+    ctx.beginPath(); ctx.arc(cx,cy,r*scale,Math.PI+ -FOV, Math.PI+FOV, false); ctx.stroke();
+    // actually arcs upward:
+  }
+  for(let r=50;r<=250;r+=50){
+    ctx.beginPath(); ctx.arc(cx,cy,r*scale,-Math.PI/2-FOV,-Math.PI/2+FOV); ctx.stroke();
+    ctx.fillText(r+'cm', cx-14, cy-r*scale-4);
+  }
+  // FOV edges
+  ctx.strokeStyle='#21262d';
+  [-29.2,29.2].forEach(a=>{
+    const rad=a*Math.PI/180;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.sin(rad)*250*scale, cy-Math.cos(rad)*250*scale); ctx.stroke();
+  });
+  // array marker
+  ctx.fillStyle='#e6edf3';
+  ctx.beginPath(); ctx.moveTo(cx,cy-8); ctx.lineTo(cx-7,cy+4); ctx.lineTo(cx+7,cy+4);
+  ctx.closePath(); ctx.fill();
+  ctx.font='12px sans-serif'; ctx.fillStyle='#e6edf3';
+  ctx.fillText('▲ T1 array', cx+12, cy);
+  if(!d) return;
+  // GT ring (orange)
+  if(document.getElementById('showgt').checked && d.gt){
+    d.gt.forEach((v,i)=>{ if(v==null)return;
+      const a=binAngle(i)*Math.PI/180;
+      ctx.fillStyle='#ffa657';
+      ctx.beginPath(); ctx.arc(cx+Math.sin(a)*v*scale, cy-Math.cos(a)*v*scale, 4, 0, 7);
+      ctx.fill();
+    });
+  }
+  // model wedges (blue)
+  d.bins.forEach((v,i)=>{
+    if(v==null)return;
+    const a0=(binAngle(i)-2.2)*Math.PI/180, a1=(binAngle(i)+2.2)*Math.PI/180;
+    const grad=ctx.createRadialGradient(cx,cy,10,cx,cy,v*scale);
+    grad.addColorStop(0,'rgba(88,166,255,0.15)');
+    grad.addColorStop(1,'rgba(88,166,255,0.75)');
+    ctx.fillStyle=grad;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,v*scale,-Math.PI/2+a0,-Math.PI/2+a1); ctx.closePath(); ctx.fill();
+  });
+}
+const FOV=29.2*Math.PI/180;
+function binAngle(i){ return -29.2 + 4.5*i + 2.25; }
+
+async function loadFrame(){
+  const w=document.getElementById('walk').value;
+  const f=document.getElementById('frame').value;
+  const d=await (await fetch(`/api/frame/${w}/${f}`)).json();
+  cur=d; draw(d);
+  document.getElementById('near').textContent=d.near_d+' cm';
+  document.getElementById('ang').textContent=(d.near_a>=0?'+':'')+d.near_a+'°';
+  document.getElementById('phys').textContent=d.physics+' cm';
+  let s=0,n=0;
+  if(d.gt) d.bins.forEach((b,i)=>{ if(b!=null && d.gt[i]!=null){s+=Math.abs(b-d.gt[i]);n++;}});
+  document.getElementById('err').textContent=n?(s/n).toFixed(1)+' cm':'—';
+  // bins table
+  let html='<tr><th>bin</th><th>angle</th><th>model</th><th>camera</th></tr>';
+  d.bins.forEach((b,i)=>{
+    const g=d.gt?d.gt[i]:null;
+    html+=`<tr><td>${i}</td><td>${binAngle(i).toFixed(0)}°</td>`+
+      `<td>${b!=null?'<span class="val">'+b+'cm</span>':'—'}</td>`+
+      `<td>${g!=null?'<span class="gt">'+g+'cm</span>':'—'}</td></tr>`;
+  });
+  document.getElementById('bins').innerHTML=html;
+}
+async function init(){
+  walks=await (await fetch('/api/walks')).json();
+  const wsel=document.getElementById('walk'), fsel=document.getElementById('frame');
+  Object.keys(walks).forEach(w=>wsel.add(new Option(w,w)));
+  const fill=()=>{fsel.innerHTML='';walks[wsel.value].forEach(f=>fsel.add(new Option(f,f)));};
+  wsel.onchange=()=>{fill();loadFrame();}; fill();
+  fsel.onchange=loadFrame; loadFrame();
+  document.getElementById('showgt').onchange=()=>draw(cur);
+  document.getElementById('step').onclick=()=>{
+    const i=fsel.selectedIndex; fsel.selectedIndex=(i+1)%fsel.options.length; loadFrame();};
+  document.getElementById('play').onclick=e=>{
+    playing=!playing; e.target.textContent=playing?'⏸ Pause':'▶ Play';
+    if(playing) timer=setInterval(()=>{
+      const i=fsel.selectedIndex; fsel.selectedIndex=(i+1)%fsel.options.length; loadFrame();
+    },400);
+    else clearInterval(timer);
+  };
+}
+init();
+</script>
+</body>
+</html>

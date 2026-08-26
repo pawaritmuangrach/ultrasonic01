@@ -239,6 +239,9 @@ def main():
     import json
     rule.write_text(json.dumps({
         "pins": PINS, "slope": float(ca[0]), "intercept": float(ca[1]),
+        # สัมประสิทธิ์ที่ฟิตจาก **ชุดเทรนล้วน** (ไม่เห็นช่วงที่กันไว้เลย)
+        # ใช้ตอนเล่นย้อนช่วงที่กันไว้ ไม่งั้นผลจะสวยเกินจริงเพราะโมเดลเคยเห็นเฟรมนั้นมาแล้ว
+        "holdout_slope": float(co[0]), "holdout_intercept": float(co[1]),
         "min_amp": a.min_amp, "smooth": a.smooth, "zones": edges,
         "zone_names": zname, "trained_on": names, "n_frames": int(keep.sum()),
         "holdout": names[ti], "mae_deg": mae, "baseline_deg": base,

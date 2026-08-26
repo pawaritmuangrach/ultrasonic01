@@ -1,0 +1,3 @@
+Test set: walk_s5
+Model  MAE: 1.84 cm
+Physics baseline MAE: 129.32 cm

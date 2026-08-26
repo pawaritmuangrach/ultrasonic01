@@ -211,7 +211,7 @@ def _history(img, x0, y0, w, h, hist):
 
 
 def render(depth, lab, pdeg, pz, tz, amps, pins, rule, log4, hist, stats, fps,
-           fresh=True, stale=0, rng=0.0):
+           fresh=True, stale=0, rng=0.0, progress=None, foot=None, banner=None):
     import cv2
     global _CANVAS
     if _CANVAS is None or _CANVAS.shape != (H, W, 3):
@@ -258,6 +258,15 @@ def render(depth, lab, pdeg, pz, tz, amps, pins, rule, log4, hist, stats, fps,
               (rx + rw - bw_ + 9, 399), 0.44, (20, 22, 26), 1)
     _history(img, PAD, 566, W - 2 * PAD, 120, hist)
 
+    # แถบความคืบหน้า (ใช้ตอนเล่นย้อนไฟล์ · เล่นสดจะไม่ส่งมา)
+    if progress is not None:
+        frac, cur, total = progress
+        bx0, bx1, by = PAD, W - PAD, 697
+        cv2.rectangle(img, (bx0, by), (bx1, by + 7), (52, 57, 66), -1)
+        cv2.rectangle(img, (bx0, by), (bx0 + int((bx1 - bx0) * frac), by + 7),
+                      PRED, -1)
+        _text(img, f"frame {cur} / {total}", (bx0, by - 5), 0.4, (150, 156, 166))
+
     n, hit, se = stats
     y = 720
     cv2.rectangle(img, (PAD, y - 20), (W - PAD, y + 22), PANEL, -1)
@@ -272,8 +281,13 @@ def render(depth, lab, pdeg, pz, tz, amps, pins, rule, log4, hist, stats, fps,
         bx = PAD + 14 + i * 250
         _text(img, k, (bx, y - 2), 0.4, (140, 146, 156))
         _text(img, v, (bx, y + 18), 0.58, c, 2)
-    _text(img, "q quit | s save | space pause | r reset score", (PAD, H - 10), 0.44,
-          (110, 116, 126))
+    _text(img, foot or "q quit | s save | space pause | r reset score",
+          (PAD, H - 10), 0.44, (110, 116, 126))
+    if banner:
+        txt, col = banner
+        w_ = cv2.getTextSize(txt, cv2.FONT_HERSHEY_SIMPLEX, 0.45, 1)[0][0]
+        cv2.rectangle(img, (W - PAD - w_ - 18, 16), (W - PAD, 40), col, -1)
+        _text(img, txt, (W - PAD - w_ - 9, 33), 0.45, (20, 22, 26), 1)
     return img
 
 

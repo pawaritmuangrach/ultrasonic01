@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ultrasonic-as-Camera — Live Mapping</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; margin: 0; background:#0d1117; color:#e6edf3; }
+  header { padding: 18px 28px; border-bottom: 1px solid #21262d; background:#010409; }
+  h1 { margin:0; font-size:20px; } h1 span { color:#58a6ff; }
+  .sub { color:#8b949e; font-size:13px; margin-top:4px; }
+  main { display:flex; flex-wrap:wrap; gap:20px; padding:22px 28px; max-width:1400px; }
+  section { background:#161b22; border:1px solid #21262d; border-radius:10px; padding:18px; }
+  .explain { flex:1 1 340px; min-width:320px; }
+  .live { flex:1.4 1 520px; min-width:420px; }
+  h2 { font-size:15px; margin:14px 0 8px; color:#79c0ff; text-transform:uppercase; letter-spacing:.05em;}
+  ol li, ul li { margin-bottom:7px; font-size:14px; line-height:1.5; color:#c9d1d9;}
+  code { background:#21262d; padding:2px 6px; border-radius:5px; font-size:12.5px; color:#ffa657;}
+  canvas { width:100%; image-rendering:pixelated; border-radius:8px; background:#000; }
+  .controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:10px 0; }
+  select, button, label.btn {
+    background:#21262d; color:#e6edf3; border:1px solid #30363d; border-radius:7px;
+    padding:7px 12px; font-size:13.5px; cursor:pointer;
+  }
+  button:hover, select:hover, label.btn:hover { background:#30363d; }
+  input[type=checkbox]{ accent-color:#58a6ff; transform:scale(1.25); margin-left:4px;}
+  .stats { display:flex; gap:16px; margin-top:12px; font-size:13px; color:#8b949e; flex-wrap:wrap;}
+  .stats b { color:#7ee787; font-size:16px; display:block; }
+  #drop { border:2px dashed #30363d; border-radius:8px; padding:14px; text-align:center;
+          font-size:13px; color:#8b949e; margin-top:12px; transition:.2s;}
+  #drop.over { border-color:#58a6ff; color:#58a6ff; }
+  .legend { display:inline-flex; align-items:center; gap:8px; margin-top:8px; font-size:12px; color:#8b949e;}
+  .bar { height:10px; width:120px; border-radius:5px;
+         background:linear-gradient(90deg,#30123b,#414487,#2a788e,#22a884,#7ad151,#fde725); }
+  .tag { display:inline-block; background:#1f6feb33; color:#79c0ff; border-radius:5px;
+         padding:1px 8px; font-size:11.5px; margin-right:6px;}
+</style>
+</head>
+<body>
+<header>
+  <h1><span>◉ Ultrasonic-as-Camera</span> — live mapping demo</h1>
+  <div class="sub">4 receivers (A140·A80 left · C80·C140 right) + T1 transmitter → rviz-style top-down map · depth camera used only as training teacher</div>
+</header>
+
+<main>
+  <section class="explain">
+    <h2>How it works</h2>
+    <ol>
+      <li><b>Listen.</b> T1 fires an ultrasonic burst (~66 kHz sampling). Each of the
+        4 receivers records a <i>raw echo</i> of 871 samples — that's the model's only input.
+        <div style="margin-top:6px"><span class="tag">input</span><code>us_XXXXXX.npz → counts[4][871]</code></div></li>
+      <li><b>Hear shape, not noise.</b> The echo is baseline-corrected and turned into a
+        Hilbert <b>envelope</b>, then resampled to 128 range bins (bin&nbsp;i ≈ distance
+        i·200/128 cm). Physics does half the work: the time axis <em>is</em> distance.</li>
+      <li><b>Predict.</b> A small 1D-CNN encoder reads the four range profiles (+ ToF &amp;
+        amplitude hints) and decodes a <b>64×48 top-down grid</b>: 3 m wide × 2.4 m deep,
+        each cell ≈ 5 cm, colored by obstacle distance in cm.</li>
+      <li><b>How it learned.</b> During training only, a depth camera provided ground-truth
+        maps (back-projected to the same grid). The CNN was trained to imitate them from
+        ultrasound alone — <i>sensor distillation</i>. At runtime no camera is needed.</li>
+      <li><b>Accuracy.</b> Held-out walk test: mean error <b style="color:#7ee787">≈ 1.8 cm</b>
+        per cell vs 129 cm for naive ToF ray-painting.</li>
+    </ol>
+
+    <h2>How you feed it</h2>
+    <ul>
+      <li>Pick any recorded frame from the dropdown on the right, or</li>
+      <li>drop / browse your own <code>us_XXXXXX.npz</code> file (format:
+        <code>counts[4][871] uint16</code>, channel order A140, A80, C80, C140).</li>
+    </ul>
+  </section>
+
+  <section class="live">
+    <h2>Live map</h2>
+    <div class="controls">
+      <select id="walk"></select>
+      <select id="frame"></select>
+      <button id="play">▶ Play</button>
+      <button id="step">Step ▶|</button>
+      <label class="btn">Upload npz<input type="file" id="file" accept=".npz" hidden></label>
+      <label style="font-size:13px">GT overlay<input type="checkbox" id="gt"></label>
+    </div>
+    <canvas id="map" width="640" height="480"></canvas>
+    <div class="legend"><span>0cm</span><div class="bar"></div><span>250cm</span>
+      <span style="margin-left:auto">top-down · +Y forward · X right</span></div>
+    <div class="stats">
+      <div><b id="fps">–</b>inference fps</div>
+      <div><b id="tof">–</b>ToF per ch (cm)</div>
+      <div><b id="near">–</b>nearest predicted cell</div>
+      <div><b id="err">–</b>vs GT MAE</div>
+    </div>
+    <div id="drop">…or drop a us_*.npz file here</div>
+  </section>
+</main>
+
+<script>
+const cv = document.getElementById('map'), ctx = cv.getContext('2d');
+let walks = {}, cfg = null, playing = false, timer = null;
+
+function color(v){ // turbo-ish colormap 0..250cm
+  const t = Math.max(0, Math.min(1, v/250));
+  const stops=[[0,48,18,59],[0.25,65,68,135],[0.45,42,120,142],[0.65,34,168,132],[0.85,122,209,81],[1,253,231,37]];
+  for(let i=1;i<stops.length;i++){
+    if(t<=stops[i][0]){
+      const [t0,r0,g0,b0]=stops[i-1],[t1,r1,g1,b1]=stops[i],u=(t-t0)/(t1-t0);
+      return `rgb(${r0+(r1-r0)*u|0},${g0+(g1-g0)*u|0},${b0+(b1-b0)*u|0})`;
+    }}
+  return 'rgb(253,231,37)';
+}
+function draw(g, gt){
+  const W=cfg.grid[0], H=cfg.grid[1];
+  ctx.fillStyle='#000'; ctx.fillRect(0,0,cv.width,cv.height);
+  const cw=cv.width/W, ch=cv.height/H;
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    let v=g[y][x]; if(v==null||v<=0)continue;
+    if(document.getElementById('gt').checked && gt && gt[y][x]!=null){
+      // blend: draw GT as outlined dimmer cell where they differ
+    }
+    ctx.fillStyle=color(v); ctx.fillRect(x*cw,y*ch,cw-0.5,ch-0.5);
+  }
+  if(document.getElementById('gt').checked && gt){
+    ctx.strokeStyle='#ffffff55';
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      if(gt[y][x]!=null){ctx.strokeRect(x*cw+.5,y*ch+.5,cw-1,ch-1);}
+    }
+  }
+  // array marker
+  ctx.fillStyle='#fff'; ctx.fillRect(cv.width/2-14, 2, 28, 6);
+  ctx.font='11px sans-serif'; ctx.fillText('▲ T1', cv.width/2+18, 10);
+}
+async function loadFrame(walk, fname){
+  const r = await fetch(`/api/frame/${walk}/${fname}`);
+  const d = await r.json();
+  draw(d.grid, d.gt);
+  document.getElementById('tof').textContent = d.tof.join(' / ');
+  let near=Infinity; d.grid.forEach(r=>r.forEach(v=>{if(v>0&&v<near)near=v;}));
+  document.getElementById('near').textContent = isFinite(near)? near.toFixed(0)+' cm':'—';
+  // GT MAE
+  let s=0,n=0;
+  if(d.gt) d.grid.forEach((row,y)=>row.forEach((v,x)=>{
+    const g=d.gt[y]?.[x]; if(v!=null&&v>0&&g!=null&&g>0){s+=Math.abs(v-g);n++;}}));
+  document.getElementById('err').textContent = n? (s/n).toFixed(1)+' cm':'—';
+}
+async function init(){
+  cfg = await (await fetch('/api/config')).json();
+  walks = await (await fetch('/api/walks')).json();
+  const wsel=document.getElementById('walk'), fsel=document.getElementById('frame');
+  Object.keys(walks).forEach(w=>wsel.add(new Option(w,w)));
+  function fillFrames(){ fsel.innerHTML=''; walks[wsel.value].forEach(f=>fsel.add(new Option(f,f))); }
+  wsel.onchange=fillFrames; fillFrames();
+  const first=()=>loadFrame(wsel.value,fsel.value);
+  wsel.onchange=()=>{fillFrames();first();};
+  fsel.onchange=first; first();
+  document.getElementById('step').onclick=()=>{
+    const i=fsel.selectedIndex; fsel.selectedIndex=(i+1)%fsel.options.length; first();};
+  document.getElementById('play').onclick=e=>{
+    playing=!playing; e.target.textContent=playing?'⏸ Pause':'▶ Play';
+    if(playing) timer=setInterval(()=>{
+      const i=fsel.selectedIndex; fsel.selectedIndex=(i+1)%fsel.options.length; first();
+    }, 350);
+    else clearInterval(timer);
+  };
+}
+document.getElementById('gt').onchange=()=>{}; // redraw handled next frame
+init();
+
+// upload own npz
+async function upload(file){
+  const fd=new FormData? file : null;
+  const r=await fetch('/api/predict',{method:'POST',body:file});
+  const d=await r.json();
+  if(d.error){alert(d.error);return;}
+  draw(d.grid,null);
+  document.getElementById('err').textContent='no GT (own file)';
+}
+const dp=document.getElementById('drop');
+dp.ondragover=e=>{e.preventDefault();dp.classList.add('over');};
+dp.ondragleave=()=>dp.classList.remove('over');
+dp.ondrop=e=>{e.preventDefault();dp.classList.remove('over');
+  if(e.dataTransfer.files[0])upload(e.dataTransfer.files[0]);};
+document.getElementById('file').onchange=e=>{
+  if(e.target.files[0])upload(e.target.files[0]);};
+</script>
+</body>
+</html>

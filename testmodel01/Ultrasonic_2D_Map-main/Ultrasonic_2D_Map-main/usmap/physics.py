@@ -65,21 +65,71 @@ def common_peak(envs, rate):
     return k, index_to_cm(k, rate), ref
 
 
+# ระยะห่างหัวรับตามแกน X (cm) -> เพดาน TDOA ทางกายภาพของแต่ละคู่
+def _rx_x():
+    from .config import RECEIVERS, CHANNEL_NAMES
+    return [RECEIVERS[n]["xy"][0] for n in CHANNEL_NAMES]
+
+
+def max_lag_us(pair):
+    """TDOA มากที่สุดที่คู่นี้เป็นไปได้ = ระยะห่างหัวรับ / ความเร็วเสียง
+    (เกิดตอนเป้าอยู่ในแนวเดียวกับเส้นเชื่อมหัวรับพอดี) ค่าที่เกินนี้เป็นไปไม่ได้"""
+    xs = _rx_x()
+    return abs(xs[pair[0]] - xs[pair[1]]) / C_CM_S * 1e6
+
+
+def pair_tdoa(e0, e1, rate, k, pair, win_us=1000):
+    """TDOA ระหว่างเปลือกคลื่นสองช่อง -> (ไมโครวินาที, ความเชื่อมั่น 0-1)
+
+    เขียนแทน gcc_phat เดิมซึ่งวัดจริงแล้วใช้ไม่ได้ (walk_s1: 60% ของเฟรมได้ 0 ทั้ง 6 คู่
+    ที่เหลือได้ค่าถึง ±782 us ทั้งที่อาเรย์กว้าง 12 cm รองรับได้แค่ ±350 us) สามสาเหตุ:
+
+    1. **PHAT whitening บนเปลือกคลื่น** — PHAT หารด้วยขนาดสเปกตรัมเพื่อให้ยอดคมขึ้น
+       ซึ่งได้ผลกับสัญญาณที่มีแบนด์กว้าง แต่เปลือกคลื่นเรียบมาก การหารแบบนั้นจึงไป
+       ขยายสัญญาณรบกวนความถี่สูงที่ไม่มีข้อมูลหน่วงเวลาอยู่เลย ยอดเลยไปโผล่มั่ว
+       -> ใช้สหสัมพันธ์ไขว้แบบปกติ (normalized) ไม่ whiten
+    2. **ไม่จำกัดช่วง lag** — เดิม zero-pad เป็น 128 จุดแล้วหา argmax ทั้งเส้น ทำให้
+       lag ออกมาได้ถึง ±64 แซมเปิล (±965 us) ทั้งที่หน้าต่างที่ตัดมาซ้อนกันแค่ ±19
+       -> ค้นเฉพาะช่วง ±max_lag_us ของคู่นั้น ค่าที่เป็นไปไม่ได้จึงเกิดไม่ได้
+    3. **ไม่มีการประมาณย่อยแซมเปิล** — ที่ 66 kHz หนึ่งแซมเปิล = 15 us ซึ่งหยาบมาก
+       เทียบกับช่วงทั้งหมด ±73 us ของคู่ที่ชิดกัน -> ใส่พาราโบลาหาจุดยอด
+
+    คืนความเชื่อมั่นมาด้วย (ค่าสหสัมพันธ์ที่จุดยอด) เพราะเฟรมที่เสียงกลับอ่อน
+    ค่าที่ได้ไม่ควรถูกเชื่อเท่ากับเฟรมที่ชัด
+    """
+    L = int(np.ceil(max_lag_us(pair) * 1e-6 * rate)) + 1
+    w = int(win_us * 1e-6 * rate)
+    lo, hi = max(0, k - w), min(len(e0), len(e1), k + w)
+    a = np.asarray(e0[lo:hi], float)
+    b = np.asarray(e1[lo:hi], float)
+    if len(a) < 3 * L + 8:            # หน้าต่างต้องยาวพอให้เลื่อนได้เต็มช่วง
+        return 0.0, 0.0
+    a = a - a.mean()
+    b = b - b.mean()
+    na, nb = np.linalg.norm(a), np.linalg.norm(b)
+    if na < 1e-12 or nb < 1e-12:
+        return 0.0, 0.0
+    lags = np.arange(-L, L + 1)
+    cc = np.empty(len(lags))
+    for j, m in enumerate(lags):
+        if m >= 0:
+            x, y = a[m:], (b[:len(b) - m] if m else b)
+        else:
+            x, y = a[:len(a) + m], b[-m:]
+        cc[j] = float(np.dot(x, y)) / (na * nb)
+    j = int(np.argmax(cc))
+    off = 0.0
+    if 0 < j < len(cc) - 1:
+        y0, y1, y2 = cc[j - 1], cc[j], cc[j + 1]
+        den = y0 - 2 * y1 + y2
+        if abs(den) > 1e-12:
+            off = float(np.clip(0.5 * (y0 - y2) / den, -1.0, 1.0))
+    return float((lags[j] + off) / rate * 1e6), float(max(cc[j], 0.0))
+
+
 def gcc_phat(e0, e1, rate, k, win_us=300):
-    """GCC-PHAT delay between two envelopes around shared peak window.
-    Returns delay in microseconds (positive = e1 later than e0)."""
-    w = max(3, int(win_us * 1e-6 * rate))
-    lo, hi = max(0, k - w), min(min(len(e0), len(e1)), k + w)
-    a = e0[lo:hi] - e0[lo:hi].mean()
-    b = e1[lo:hi] - e1[lo:hi].mean()
-    if len(a) < 8:
-        return 0.0
-    n = 1 << (2 * len(a) - 1).bit_length()
-    X = np.fft.rfft(a, n); Y = np.fft.rfft(b, n)
-    cc = np.fft.irfft(X * np.conj(Y) / (np.abs(X * np.conj(Y)) + 1e-9), n)
-    lag = int(np.argmax(cc)) if int(np.argmax(cc)) < len(cc) // 2 \
-        else int(np.argmax(cc)) - len(cc)
-    return lag / rate * 1e6
+    """เก็บชื่อเดิมไว้ให้โค้ดเก่าเรียกได้ — เรียกต่อไปยังตัวที่แก้แล้ว"""
+    return pair_tdoa(e0, e1, rate, k, (0, 1), win_us=max(win_us, 1000))[0]
 
 
 def physics_features(npz_path):
@@ -94,7 +144,13 @@ def physics_features(npz_path):
     noise = np.array([np.median(e[_gate_idx(rate, len(e))[0]:_gate_idx(rate, len(e))[1]])
                       for e in envs])
     snr = amps / np.maximum(noise, 1e-12)
-    tdoa = np.array([gcc_phat(envs[a], envs[b], rate, k) for a, b in PAIRS])
+    _t = [pair_tdoa(envs[a], envs[b], rate, k, (a, b)) for a, b in PAIRS]
+    tdoa = np.array([v for v, _ in _t])
+    tconf = np.array([c for _, c in _t])
+    # หารด้วยเพดานของคู่ตัวเอง -> อยู่ในช่วง -1..+1 เท่ากันทุกคู่
+    # ของเดิมป้อนเป็นไมโครวินาทีดิบ (ถึง ±782) เข้าชั้น Linear ที่ฟีเจอร์อื่นอยู่แถว 0-25
+    # ตัวที่ใหญ่กว่าเป็นสิบเท่าจะครอบงำการเรียนรู้ช่วงต้น
+    tnorm = np.clip(tdoa / np.array([max_lag_us(p) for p in PAIRS]), -1.0, 1.0)
 
     # range-profile (128 bins over gate) per channel, normalized
     prof = range_profile_from_envs(envs, rate)
@@ -102,7 +158,9 @@ def physics_features(npz_path):
         "rate": rate, "dist_cm": dist_cm, "ref": ref,
         "amps": (amps / max(amps.max(), 1e-9)).astype(np.float32),
         "snr": snr.astype(np.float32),
-        "tdoa_us": tdoa.astype(np.float32),
+        "tdoa_us": tdoa.astype(np.float32),          # ไมโครวินาทีจริง ไว้ดู/ดีบัก
+        "tdoa": tnorm.astype(np.float32),            # ตัวที่ป้อนโมเดล (-1..1)
+        "tdoa_conf": tconf.astype(np.float32),
         "prof": prof,
         "envs": envs, "k": k,
     }

@@ -18,6 +18,8 @@
 | **กฎ rule base (ไม่ใช้ ML)** | `python car/rules.py --name walk --test 1` |
 | **ยืนทดสอบผลสด ๆ** | `python car/predict.py --port COM5` |
 | **เล่นย้อนดูโมเดลทำงาน (ไม่ต้องต่อฮาร์ดแวร์)** | `python car/replay.py --section 1` |
+| **แผนที่เรดาร์สด 13 ช่อง (PolarScan)** | `python car/live_polar.py --port COM5` |
+| **แผนที่เรดาร์ จากข้อมูลที่อัดไว้** | `python car/live_polar.py --replay walk_s5` |
 | **อัดเป็นวิดีโอ** | `python car/replay.py --section 1 --save out.mp4` |
 | **ดูสด (แผนที่ 2D)** | `python car/live.py --port COM5` |
 | **ดูสด (กลุ่มจุดทุกเอคโค่)** | `python car/live2.py --port COM5` |

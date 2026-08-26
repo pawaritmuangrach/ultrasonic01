@@ -32,7 +32,7 @@ def make_sample(us_path, depth_path):
         near_d, near_a = np.nan, np.nan
     return {
         "prof": f["prof"],                       # (4,128)
-        "tdoa": f["tdoa_us"],                    # (6,)
+        "tdoa": f["tdoa"],                       # (6,) นอร์มัลไลซ์ -1..1 แล้ว
         "amps": f["amps"], "snr": f["snr"],
         "dist_cm": f["dist_cm"],
         "label": dist, "valid": valid,

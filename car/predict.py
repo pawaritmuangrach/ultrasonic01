@@ -344,6 +344,8 @@ def main():
     print("ซ้อมเส้นทางคำนวณก่อนเปิดกล้อง ...", flush=True)
     _warmup(Path(HERE) / "data", nsamp=us.samples, rate=us.rate)
     pr = nnp if a.model == 'nn' else Predictor(rule)
+    if a.model == "nn":
+        pr.warmup(us.samples)     # ต้องอยู่ก่อน Astra() — ดูเหตุผลใน NNPredictor.warmup
     print(f"เปิดกล้อง depth {w}x{h} ...", flush=True)
     cam = Astra(want_rgb=False, depth_size=(w, h))
     gc.disable()          # GC ชนกับ OpenNI ทำให้ heap พัง — ดูเหตุผลใน record.py

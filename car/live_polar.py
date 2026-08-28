@@ -242,6 +242,7 @@ class Model:
         if not p.exists():
             sys.exit(f"ยังไม่มีโมเดลที่ {p}\n"
                      f"ต้องเทรนก่อน:  cd {USMAP} && python -m usmap.polar_train")
+        torch.set_num_threads(1)   # เธรดพูล torch ชนกับเธรดกล้อง — ดู warmup()
         ck = torch.load(p, map_location="cpu", weights_only=False)
         self.net = PolarNet()
         self.net.load_state_dict(ck["model"])
@@ -249,6 +250,20 @@ class Model:
         self.torch = torch
         self.edges = np.linspace(-FOV_H_DEG / 2, FOV_H_DEG / 2, N_ANG + 1)
         self.trained = ck.get("metrics", {})
+
+    def warmup(self, nsamp=677, rate=66300.0):
+        """ซ้อมเส้นทางคำนวณทั้งเส้น **ก่อนเปิดกล้อง**
+
+        torch เตรียม kernel ตอน conv ครั้งแรก และ usmap.physics ยัง import
+        โมดูลย่อยตอนถูกเรียกครั้งแรกด้วย ถ้าไปเกิดตอนเธรด OpenNI ทำงานอยู่
+        โปรเซสตายเงียบ ๆ บน Windows (เจอมาแล้วกับ numpy, GC และ torch)
+        """
+        rng = np.random.default_rng(0)
+        counts = (2048 + rng.normal(0, 30, (4, int(nsamp)))).astype(np.uint16)
+        try:
+            self(counts, rate)
+        except Exception as e:            # เสียงปลอมอาจไม่ผ่านด่านหายอดคลื่น
+            print(f"  (ซ้อมด้วยข้อมูลปลอมไม่ผ่าน: {e} — ของจริงยังทำงานได้)")
 
     def __call__(self, counts, rate):
         from usmap.physics import (envelopes, common_peak, pair_tdoa, PAIRS,
@@ -369,6 +384,7 @@ def main():
     us.ping()
     print("ซ้อมเส้นทางคำนวณก่อนเปิดกล้อง ...", flush=True)
     _warmup(Path(HERE) / "data", nsamp=us.samples, rate=us.rate)
+    model.warmup(us.samples, us.rate)    # ต้องอยู่ก่อน Astra() — ดู Model.warmup
     print(f"เปิดกล้อง depth {w}x{h} ...", flush=True)
     cam = Astra(want_rgb=False, depth_size=(w, h))
     gc.disable()             # GC ชนกับ OpenNI ทำให้ heap พัง — ดูเหตุผลใน record.py

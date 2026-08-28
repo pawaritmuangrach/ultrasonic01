@@ -262,6 +262,9 @@ class NNPredictor:
     def __init__(self, path=None, smooth=9, zones=(-12.0, 4.0), min_pp_mv=60.0):
         import torch
         from collections import deque
+        # โมเดลเล็ก (142k พารามิเตอร์) เธรดพูลของ torch ไม่ได้ช่วยให้เร็วขึ้น
+        # แต่เป็นอีกตัวที่ไปชนกับเธรด native ของกล้อง — ปิดทิ้งดีกว่า
+        torch.set_num_threads(1)
         self.torch = torch
         p = Path(path) if path else (DATA / "_nn_model.pt")
         if not p.exists():
@@ -279,6 +282,24 @@ class NNPredictor:
         self.amps = [0.0] * 4
         self.log4 = 0.0          # ไม่มีความหมายกับโมเดลนี้ แต่หน้าจอเดิมขอมา
         self.rng = None      # โมเดลนี้ไม่ได้คำนวณระยะ หน้าจอจะโชว์ 'no range'
+        self.stale = 0
+        self.warmup()
+
+    def warmup(self, nsamp=677):
+        """ซ้อม forward หนึ่งรอบด้วยข้อมูลปลอม **ก่อนเปิดกล้อง**
+
+        torch เตรียม kernel/บัฟเฟอร์ตอน conv ครั้งแรก ไม่ใช่ตอน load_state_dict
+        ถ้างานก้อนนั้นไปเกิดตอนเธรด OpenNI อ่านเฟรมอยู่ โปรเซสตายเงียบ ๆ บน Windows
+        — บั๊กชนิดเดียวกับ numpy และ GC ที่ record._warmup กับ gc.disable() แก้ไว้แล้ว
+
+        เรียกซ้ำได้ ควรเรียกอีกรอบด้วยจำนวนจุดจริงจากเซ็นเซอร์ เพราะ torch
+        เลือกวิธีคำนวณตามรูปร่างข้อมูล รูปร่างใหม่ = จัดของใหม่อีกรอบ
+        """
+        rng = np.random.default_rng(0)
+        self.push({"counts": (2048 + rng.normal(0, 30, (4, int(nsamp)))).astype(np.uint16),
+                   "pins": list(self.PINS)})
+        self.buf.clear()                 # ล้างข้อมูลปลอมทิ้ง อย่าให้ปนผลจริง
+        self.amps = [0.0] * 4
         self.stale = 0
 
     def push(self, ping):

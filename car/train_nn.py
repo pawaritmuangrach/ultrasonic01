@@ -243,3 +243,65 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# ------------------------------------------------- ใช้งานจริง (สด/เล่นย้อน)
+class NNPredictor:
+    """ห่อโมเดลให้มีหน้าตาเหมือน predict.Predictor เป๊ะ
+
+    มี push(ping)->(องศา, สด) · zone(องศา) · amps · log4 · rng · stale
+    เพื่อให้ predict.py กับ replay.py สลับใช้ได้โดยไม่ต้องแก้ลูปแสดงผล
+
+    **เกลี่ยแบบย้อนหลังล้วน** เหมือน rules.py — วัดแล้วช่วยจริง:
+    ทีละเฟรม 4.42 องศา (โซน 87%) -> เกลี่ย 9 เฟรม 3.82 องศา (โซน 93%)
+    ทั้งที่โมเดลเทรนแบบทีละเฟรม เพราะความผิดพลาดรายเฟรมไม่สัมพันธ์กัน มัธยฐานจึงกลบได้
+    """
+
+    PINS = [34, 33, 32, 35]      # ลำดับที่โมเดลถูกเทรนมา ห้ามสลับ
+
+    def __init__(self, path=None, smooth=9, zones=(-12.0, 4.0), min_pp_mv=60.0):
+        import torch
+        from collections import deque
+        self.torch = torch
+        p = Path(path) if path else (DATA / "_nn_model.pt")
+        if not p.exists():
+            sys.exit(f"ยังไม่มีโมเดลที่ {p} — ต้องเทรนก่อน: "
+                     f"python car/train_nn.py --test 1")
+        ck = torch.load(p, map_location="cpu", weights_only=False)
+        self.net = make_model(torch, torch.nn)
+        self.net.load_state_dict(ck["model"])
+        self.net.eval()
+        self.holdout = int(ck.get("holdout", -1))
+        self.params = int(ck.get("params", 0))
+        self.buf = deque(maxlen=max(int(smooth), 1))
+        self.zones = list(zones)
+        self.min_pp = min_pp_mv
+        self.amps = [0.0] * 4
+        self.log4 = 0.0          # ไม่มีความหมายกับโมเดลนี้ แต่หน้าจอเดิมขอมา
+        self.rng = None      # โมเดลนี้ไม่ได้คำนวณระยะ หน้าจอจะโชว์ 'no range'
+        self.stale = 0
+
+    def push(self, ping):
+        c = ping["counts"]
+        idx = {int(v): i for i, v in enumerate(ping["pins"])}
+        x = np.stack([c[idx[p]] for p in self.PINS])[None]      # (1,4,N)
+        xs, sc = prep(x)
+        # ความแรงดิบ (ไม่ผ่าน DSP) — ไว้โชว์แท่งและจับเฟรมที่เสียงกลับอ่อน
+        v = x[0].astype(np.float32)
+        self.amps = [float((v[i].max() - v[i].min()) / 4095 * 3.3 * 1000)
+                     for i in range(v.shape[0])]
+        fresh = max(self.amps) >= self.min_pp
+        T = self.torch.from_numpy
+        with self.torch.no_grad():
+            deg = float(self.net(T(xs).float(), T(sc).float())[0])
+        if fresh:
+            self.buf.append(deg)
+            self.stale = 0
+        else:
+            self.stale += 1
+        if not self.buf:
+            return None, False
+        return float(np.median(self.buf)), fresh
+
+    def zone(self, deg):
+        return int(np.searchsorted(self.zones, deg))

@@ -79,22 +79,37 @@ def main():
     ap.add_argument("--section", type=int, default=1, help="ช่วงที่จะเล่น (นับจาก 1)")
     ap.add_argument("--fps", type=float, default=15.0, help="ความเร็วเล่น (fps ที่อัดมา)")
     ap.add_argument("--save", default=None, help="อัดเป็นวิดีโอแทนการเปิดหน้าต่าง")
+    ap.add_argument("--model", choices=["rule", "nn"], default="rule",
+                    help="rule = กฎ 2 พารามิเตอร์ · nn = โมเดล ML จากคลื่นดิบ")
     a = ap.parse_args()
 
     import cv2
     rule_all = P.load_rule(a.name)
     rule, held = prep(rule_all, a.name, a.section)
+    nnp = None
+    if a.model == "nn":
+        import train_nn as TN
+        nnp = TN.NNPredictor()
+        # โมเดล ML เทรนกันช่วงไหนไว้ ก็ต้องเช็คกับช่วงนั้น ไม่ใช่ของ rules.py
+        held = (nnp.holdout == a.section - 1)
+        rule = dict(rule, slope=float("nan"), intercept=float("nan"),
+                    mae_deg=3.82, zone_acc=0.93, n_frames=0,
+                    holdout=f"{a.name}_s{nnp.holdout+1}")
     sec_name, frames = load_section(a.name, a.section)
 
     print(f"เล่น {sec_name}: {len(frames)} เฟรม")
-    print(f"  กฎ: มุม = {rule['slope']:+.2f} * log4 {rule['intercept']:+.2f}")
+    if nnp is not None:
+        print(f"  โมเดล ML จากคลื่นดิบ · {nnp.params:,} พารามิเตอร์ · "
+              f"เกลี่ย {nnp.buf.maxlen} เฟรม")
+    else:
+        print(f"  กฎ: มุม = {rule['slope']:+.2f} * log4 {rule['intercept']:+.2f}")
     if held:
         print(f"  ** ช่วงนี้ถูกกันไว้ทดสอบ — ใช้สัมประสิทธิ์ที่ฟิตจากช่วงอื่นล้วน")
         print(f"     ตัวเลขที่เห็นจึงเป็นผลกับข้อมูลที่โมเดลไม่เคยเห็น (ซื่อสัตย์)")
     else:
         print(f"  ** ช่วงนี้อยู่ในชุดเทรน — ตัวเลขจะดีเกินจริง ดูไว้เทียบเฉย ๆ")
 
-    pr = P.Predictor(rule)
+    pr = nnp if nnp is not None else P.Predictor(rule)
     n = hit = 0
     serr = 0.0
     i, paused, speed = 0, False, 1.0
@@ -155,7 +170,10 @@ def main():
                         c["stats"], a.fps * speed, c["fresh"], c["stale"],
                         c["rng"],
                         progress=((k + 1) / len(frames), k + 1, len(frames)),
-                        foot=foot, banner=banner)
+                        foot=foot, banner=banner,
+                        title=("REPLAY  -  ML model on raw waveforms"
+                               if nnp is not None else
+                               "REPLAY  -  rule base from ultrasonic only"))
 
     def reset():
         """กลับไปเฟรมแรก — cache ยังใช้ได้ ไม่ต้องคำนวณใหม่"""

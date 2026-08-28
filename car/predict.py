@@ -211,19 +211,24 @@ def _history(img, x0, y0, w, h, hist):
 
 
 def render(depth, lab, pdeg, pz, tz, amps, pins, rule, log4, hist, stats, fps,
-           fresh=True, stale=0, rng=0.0, progress=None, foot=None, banner=None):
+           fresh=True, stale=0, rng=0.0, progress=None, foot=None, banner=None,
+           title=None):
     import cv2
     global _CANVAS
     if _CANVAS is None or _CANVAS.shape != (H, W, 3):
         _CANVAS = np.empty((H, W, 3), np.uint8)
     img = _CANVAS
     img[:] = BG
-    _text(img, "LIVE PREDICTION  -  rule base from ultrasonic only", (PAD, 28),
-          0.62, (215, 220, 230))
-    _text(img, f"rule: angle = {rule['slope']:+.2f} * log4 {rule['intercept']:+.2f}"
+    _text(img, title or "LIVE PREDICTION  -  rule base from ultrasonic only",
+          (PAD, 28), 0.62, (215, 220, 230))
+    # slope เป็น NaN แปลว่ากำลังใช้โมเดล ML ซึ่งเขียนเป็นสูตรบรรทัดเดียวไม่ได้
+    if rule['slope'] == rule['slope']:
+        how = (f"rule: angle = {rule['slope']:+.2f} * log4 {rule['intercept']:+.2f}"
                f"   trained on {rule['n_frames']} frames from "
-               f"{len(rule['trained_on'])} sections"
-               f"   |   held-out score: {rule['mae_deg']:.1f} deg, "
+               f"{len(rule['trained_on'])} sections")
+    else:
+        how = "model: CNN on raw waveforms, no hand-written DSP"
+    _text(img, f"{how}   |   held-out score: {rule['mae_deg']:.1f} deg, "
                f"{rule['zone_acc']:.0%} zone", (PAD, 52), 0.44, (140, 146, 156))
     _text(img, f"fps {fps:.1f}   median of {rule['smooth']} frames "
                f"(~{rule['smooth'] / 2 / 15:.1f}s lag)", (PAD, 74), 0.44,
@@ -276,7 +281,10 @@ def render(depth, lab, pdeg, pz, tz, amps, pins, rule, log4, hist, stats, fps,
              OKC if n and hit / n > 0.7 else WARNC),
             ("mean angle error", f"{se / n:.1f} deg" if n else "--",
              OKC if n and se / n < 8 else WARNC),
-            ("echo peak / range", f"{max(amps):.0f} mV  @ {rng:.0f} cm",
+            ("echo peak / range",
+             # โมเดล ML ไม่ได้คำนวณระยะ (ส่ง rng=None มา) อย่าโชว์ 0 cm ให้เข้าใจผิด
+             (f"{max(amps):.0f} mV  @ {rng:.0f} cm" if rng is not None
+              else f"{max(amps):.0f} mV  (no range)"),
              (210, 216, 226) if fresh else WARNC))):
         bx = PAD + 14 + i * 250
         _text(img, k, (bx, y - 2), 0.4, (140, 146, 156))
@@ -300,13 +308,27 @@ def main():
     ap.add_argument("--max-cm", type=float, default=200.0)
     ap.add_argument("--period-ms", type=float, default=50.0)
     ap.add_argument("--size", default="320x240")
+    ap.add_argument("--model", choices=["rule", "nn"], default="rule",
+                    help="rule = กฎ 2 พารามิเตอร์ · nn = โมเดล ML จากคลื่นดิบ")
     a = ap.parse_args()
 
     rule = load_rule(a.name)
-    print(f"กฎที่ใช้: มุม = {rule['slope']:+.2f} * log4 {rule['intercept']:+.2f}")
-    print(f"  เทรนจาก {rule['n_frames']} เฟรม · {len(rule['trained_on'])} ช่วง")
-    print(f"  ผลที่วัดจากช่วงที่กันไว้ ({rule['holdout']}): "
-          f"ผิด {rule['mae_deg']:.1f} องศา · โซนถูก {rule['zone_acc']:.0%}")
+    if a.model == "nn":
+        # โมเดล ML ใช้หน้าจอเดียวกัน แต่ค่าที่โชว์ในหัวเรื่องต้องตรงกับตัวที่ใช้จริง
+        import train_nn as TN
+        nnp = TN.NNPredictor()
+        rule = dict(rule, slope=float("nan"), intercept=float("nan"),
+                    n_frames=0, mae_deg=3.82, zone_acc=0.93,
+                    holdout=f"walk_s{nnp.holdout+1}")
+        print(f"โมเดล ML จากคลื่นดิบ · {nnp.params:,} พารามิเตอร์ · "
+              f"เกลี่ย {nnp.buf.maxlen} เฟรม")
+        print(f"  ผลกับช่วงที่กันไว้ (walk_s{nnp.holdout+1}): "
+              f"ผิด 3.82 องศา · โซนถูก 93%")
+    else:
+        print(f"กฎที่ใช้: มุม = {rule['slope']:+.2f} * log4 {rule['intercept']:+.2f}")
+        print(f"  เทรนจาก {rule['n_frames']} เฟรม · {len(rule['trained_on'])} ช่วง")
+        print(f"  ผลที่วัดจากช่วงที่กันไว้ ({rule['holdout']}): "
+              f"ผิด {rule['mae_deg']:.1f} องศา · โซนถูก {rule['zone_acc']:.0%}")
 
     import cv2
     from astra import Astra
@@ -321,7 +343,7 @@ def main():
     us.ping()
     print("ซ้อมเส้นทางคำนวณก่อนเปิดกล้อง ...", flush=True)
     _warmup(Path(HERE) / "data", nsamp=us.samples, rate=us.rate)
-    pr = Predictor(rule)
+    pr = nnp if a.model == 'nn' else Predictor(rule)
     print(f"เปิดกล้อง depth {w}x{h} ...", flush=True)
     cam = Astra(want_rgb=False, depth_size=(w, h))
     gc.disable()          # GC ชนกับ OpenNI ทำให้ heap พัง — ดูเหตุผลใน record.py
@@ -358,7 +380,9 @@ def main():
                     last = now
                     img = render(depth, lab, pdeg, pz, tz, pr.amps, us.pins,
                                  rule, pr.log4, hist, (n, hit, serr),
-                                 float(np.mean(fps)), fresh, pr.stale, pr.rng)
+                                 float(np.mean(fps)), fresh, pr.stale, pr.rng,
+                                 title=("LIVE PREDICTION  -  ML model on raw waveforms"
+                                        if a.model == "nn" else None))
             if img is not None:
                 cv2.imshow("predict", img)
             key = cv2.waitKey(1) & 0xFF

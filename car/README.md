@@ -18,8 +18,10 @@
 | **กฎ rule base (ไม่ใช้ ML)** | `python car/rules.py --name walk --test 1` |
 | **โมเดล ML ล้วนจากคลื่นดิบ** | `python car/train_nn.py --test 1` |
 | **รันไขว้ทุกช่วง** | `python car/cv_nn.py` |
-| **ยืนทดสอบผลสด ๆ** | `python car/predict.py --port COM5` |
-| **เล่นย้อนดูโมเดลทำงาน (ไม่ต้องต่อฮาร์ดแวร์)** | `python car/replay.py --section 1` |
+| **ยืนทดสอบผลสด ๆ (กฎ)** | `python car/predict.py --port COM5` |
+| **ยืนทดสอบผลสด ๆ (โมเดล ML)** | `python car/predict.py --port COM5 --model nn` |
+| **เล่นย้อน (กฎ)** | `python car/replay.py --section 1` |
+| **เล่นย้อน (โมเดล ML)** | `python car/replay.py --section 5 --model nn` |
 | **แผนที่เรดาร์สด 13 ช่อง (PolarScan)** — อธิบายการเทรนที่ [`explain_polar_model.md`](../explain_polar_model.md) | `python car/live_polar.py --port COM5` |
 | **แผนที่เรดาร์ จากข้อมูลที่อัดไว้** | `python car/live_polar.py --replay walk_s5` |
 | **อัดเป็นวิดีโอ** | `python car/replay.py --section 1 --save out.mp4` |

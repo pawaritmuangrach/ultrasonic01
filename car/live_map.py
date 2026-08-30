@@ -181,7 +181,10 @@ def run_loop(src, pr, held, thr, fps_target, foot, live=False):
         img = render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps, bn, foot, thr,
                      echo=max(pr.amps) if live else None)
         cv2.imshow("map", img)
-        k = cv2.waitKey(max(1, int(1000 / fps_target)) if not paused else 0) & 0xFF
+        # โหมดสดไม่ต้องหน่วง จังหวะถูกกำหนดด้วยคาบยิงของเซ็นเซอร์อยู่แล้ว (50 ms)
+        # หน่วงซ้ำ = คูณสองครั้ง เคยทำให้เหลือ 0.9 fps เพราะส่ง fps_target=1 มาหาร
+        wait = 0 if paused else (1 if live else max(1, int(1000 / fps_target)))
+        k = cv2.waitKey(wait) & 0xFF
         if k in (27, ord("q")):
             break
         if k == ord(" "):
@@ -274,7 +277,7 @@ def main():
     foot = "q quit  |  space pause  |  s save"
     if a.port:
         a.pr = pr
-        run, el = run_loop(live_src(a), pr, None, a.thr, 1, foot, live=True)
+        run, el = run_loop(live_src(a), pr, None, a.thr, a.fps, foot, live=True)
     else:
         held = (pr.holdout == a.section)
         run, el = run_loop(replay_src(a.name, a.section), pr, held, a.thr, a.fps, foot)

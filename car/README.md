@@ -22,6 +22,11 @@
 | **ยืนทดสอบผลสด ๆ (โมเดล ML)** | `python car/predict.py --port COM5 --model nn` |
 | **เล่นย้อน (กฎ)** | `python car/replay.py --section 1` |
 | **เล่นย้อน (โมเดล ML)** | `python car/replay.py --section 5 --model nn` |
+| **สร้างแคชภาพ depth (ทำครั้งเดียว)** | `python car/mapdata.py` |
+| **เทรนโมเดลภาพ depth** | `python car/train_map.py --test 1` |
+| **ตรวจว่าโมเดลภาพ depth เห็นอะไรจริง** | `python car/check_map.py` |
+| **ดูภาพ depth จากเสียงสด ๆ** | `python car/live_map.py --port COM5` |
+| **ดูภาพ depth เล่นย้อน** | `python car/live_map.py --name walk2 --section 1` |
 | **แผนที่เรดาร์สด 13 ช่อง (PolarScan)** — อธิบายการเทรนที่ [`explain_polar_model.md`](../explain_polar_model.md) | `python car/live_polar.py --port COM5` |
 | **แผนที่เรดาร์ จากข้อมูลที่อัดไว้** | `python car/live_polar.py --replay walk_s5` |
 | **อัดเป็นวิดีโอ** | `python car/replay.py --section 1 --save out.mp4` |

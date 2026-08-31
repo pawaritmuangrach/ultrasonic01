@@ -7,6 +7,7 @@
   *.drl          ตำแหน่งและขนาดรูเจาะ                          (ส่งโรงงาน)
   preview.png    ภาพตรวจด้วยตา ก่อนส่งจริง
   assembly.png   ผังลงชิ้นส่วน ไว้ถือตอนบัดกรี
+  *.kicad_pcb    เปิดใน KiCad หรือนำเข้า EasyEDA (File > Import > KiCad)
   BOM.md         รายการชิ้นส่วน
   nets.md        ตารางว่าขาไหนต่อกับขาไหน  (ไว้ไล่วัดด้วยมิเตอร์)
 """
@@ -22,6 +23,7 @@ import geom                                               # noqa: E402
 import layout                                             # noqa: E402
 import netlist as N                                       # noqa: E402
 from gerber import write, bom_rows                        # noqa: E402
+from kicad import export as kicad_export, summary as kicad_summary  # noqa: E402
 from router import route_board                            # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -121,6 +123,9 @@ def build(name, verbose=True):
     d = os.path.join(OUT, name)
     os.makedirs(d, exist_ok=True)
     files = write(d, name, pl, r, w, h, x0, y0)
+    # ไฟล์ KiCad พาชื่อเน็ตไปด้วย ต่างจาก Gerber ที่มีแต่รูปทองแดง
+    # EasyEDA นำเข้าแล้วตรวจการเชื่อมต่อกับรัน DRC ให้ได้ = ตัวตรวจที่ไม่ใช่ของเราเอง
+    kicad_export(os.path.join(d, f"{name}.kicad_pcb"), pl, r, w, h, x0, y0)
     preview(os.path.join(d, "preview.png"), pl, r, w, h, x0, y0)
     preview(os.path.join(d, "assembly.png"), pl, r, w, h, x0, y0, assembly=True)
     with open(os.path.join(d, "nets.md"), "w", encoding="utf-8") as f:

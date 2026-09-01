@@ -63,10 +63,13 @@ def _pin(num, name, etype, x, y, ang, length=2.54):
             f"        )")
 
 
-def _angle(dx, dy):
-    """ทิศจากปลายขาเข้าหาตัวสัญลักษณ์ · พิกัดแบบ y ขึ้นบน"""
-    if abs(dx) >= abs(dy):
-        return 180 if dx > 0 else 0
+def _ang_x(dx):
+    """ขาเกาะขอบซ้ายหรือขวา · ทิศชี้เข้าหาตัวสัญลักษณ์ตามแกน x"""
+    return 180 if dx > 0 else 0
+
+
+def _ang_y(dy):
+    """ขาเกาะขอบบนหรือล่าง · ทิศชี้เข้าหาตัวสัญลักษณ์ตามแกน y"""
     return 270 if dy > 0 else 90
 
 
@@ -90,37 +93,117 @@ def _circle(x, y, r):
 
 
 # ---------------------------------------------------------------- สัญลักษณ์
-def body_graphics(kind, offs):
-    """รูปร่างของสัญลักษณ์ · offs คือตำแหน่งขาในพิกัดสัญลักษณ์ (y ขึ้นบน)"""
-    pts = list(offs.values())
-    if kind == "res":
-        (ax, ay), (bx, by) = pts[0], pts[1]
-        if abs(bx - ax) >= abs(by - ay):
-            return [_rect(-2.54, -1.27, 2.54, 1.27)]
-        return [_rect(-1.27, -2.54, 1.27, 2.54)]
-    if kind == "cap":
-        (ax, ay), (bx, by) = pts[0], pts[1]
-        if abs(bx - ax) >= abs(by - ay):
-            return [_poly([(-0.635, -2.2), (-0.635, 2.2)]),
-                    _poly([(0.635, -2.2), (0.635, 2.2)])]
-        return [_poly([(-2.2, 0.635), (2.2, 0.635)]),
-                _poly([(-2.2, -0.635), (2.2, -0.635)])]
+def symbol_geometry(kind, offs):
+    """คืน (รูปร่าง, ความยาวขาแต่ละขา) โดยคำนวณจากตำแหน่งขาจริง
+
+    **บั๊กที่แก้ตรงนี้**: เดิมเขียนขนาดตัวสัญลักษณ์เป็นค่าคงที่ทั่ว ๆ ไป
+    และตั้งความยาวขาไว้ 2.54 มม. เท่ากันหมด แต่ระยะระหว่างขาจริงกว้างกว่านั้นมาก
+    ขาจึงลากไปไม่ถึงตัวสัญลักษณ์ เหลือช่องว่าง 3 ถึง 18 มม. ที่ทุกขา
+    เปิดมาแล้วเห็นเป็นเส้นขาดเป็นท่อน ๆ ทั้งที่ทางไฟฟ้าต่อกันถูกหมด
+
+    กติกาใหม่: ตัวสัญลักษณ์กว้างเท่าไร ขาก็ยาวเท่าที่เหลือพอดี
+    ทั้งสองอย่างคำนวณจากตำแหน่งขา จึงไม่มีทางไม่บรรจบกันอีก
+    """
+    def axis(dx, dy):
+        return ("x", dx) if abs(dx) >= abs(dy) else ("y", dy)
+
+    g, L, A = [], {}, {}
     if kind == "opamp":
-        return [_poly([(-5.08, 5.84), (-5.08, -5.84), (5.08, 0),
-                       (-5.08, 5.84)], "background")]
-    if kind == "inv":
-        return [_poly([(-4.45, 3.81), (-4.45, -3.81), (2.54, 0),
-                       (-4.45, 3.81)], "background"),
-                _circle(3.43, 0, 0.889)]
-    if kind == "term":
-        return [_rect(-3.94, -4.32, 3.94, 4.32, "background"),
-                _circle(0, 2.29, 1.14), _circle(0, -2.29, 1.14)]
-    if kind in ("opwr", "icpwr"):
-        return [_rect(-6.35, -4.45, 6.35, 4.45, "background")]
-    if kind == "header":
-        ys = [q[1] for q in pts]
-        return [_rect(-6.1, min(ys) - 2.29, 6.1, max(ys) + 2.29, "background")]
-    return [_rect(-2.54, -2.54, 2.54, 2.54)]
+        # สามเหลี่ยม ฐานอยู่ที่ 0 ปลายอยู่ที่ 20.83 · ขาเข้าซ้าย ขาออกขวา
+        g = [_poly([(0, 11.68), (0, -11.68), (20.83, 0), (0, 11.68)],
+                   "background")]
+        # ขาเข้าอยู่ซ้าย ขาออกอยู่ขวา · ทั้งคู่ลากตามแนวนอนเข้าหาสามเหลี่ยม
+        # ไม่ใช่ตามแกนที่ระยะมากกว่า ซึ่งเป็นแนวตั้งสำหรับขาเข้า
+        for n, (dx, _dy) in offs.items():
+            L[n] = round(abs(dx) if dx < 0 else dx - 20.83, 3)
+            A[n] = _ang_x(dx)
+    elif kind == "inv":
+        g = [_poly([(-8.89, 7.62), (-8.89, -7.62), (5.33, 0), (-8.89, 7.62)],
+                   "background"), _circle(7.11, 0, 1.78)]
+        for n, (dx, _dy) in offs.items():
+            L[n] = round(abs(dx) - 8.89, 3)
+            A[n] = _ang_x(dx)
+    elif kind == "res":
+        ax, v = axis(*offs["1"])
+        d = abs(v)
+        g = [_rect(-d / 2, -3.3, d / 2, 3.3) if ax == "x"
+             else _rect(-3.3, -d / 2, 3.3, d / 2)]
+        L = {n: round(d / 2, 3) for n in offs}
+        A = {n: (_ang_x(o[0]) if ax == "x" else _ang_y(o[1]))
+             for n, o in offs.items()}
+    elif kind == "cap":
+        ax, v = axis(*offs["1"])
+        d = abs(v)
+        g = ([_poly([(-1.27, -4.32), (-1.27, 4.32)]),
+              _poly([(1.27, -4.32), (1.27, 4.32)])] if ax == "x"
+             else [_poly([(-4.32, 1.27), (4.32, 1.27)]),
+                   _poly([(-4.32, -1.27), (4.32, -1.27)])])
+        L = {n: round(d - 1.27, 3) for n in offs}
+        A = {n: (_ang_x(o[0]) if ax == "x" else _ang_y(o[1]))
+             for n, o in offs.items()}
+    elif kind == "term":
+        g = [_rect(-7.87, -8.64, 7.87, 8.64, "background"),
+             _circle(0, 4.57, 2.29), _circle(0, -4.57, 2.29)]
+        L = {n: round(abs(dx) - 7.87, 3) for n, (dx, _dy) in offs.items()}
+        A = {n: _ang_x(dx) for n, (dx, _dy) in offs.items()}
+    elif kind in ("opwr", "icpwr"):
+        wx = 12.7 if kind == "opwr" else 15.24
+        wy = max(abs(dy) for _dx, dy in offs.values()) - 2.54
+        g = [_rect(-wx, -wy, wx, wy, "background")]
+        L = {n: 2.54 for n in offs}
+        A = {n: _ang_y(dy) for n, (_dx, dy) in offs.items()}
+    elif kind == "header":
+        ys = [dy for _dx, dy in offs.values()]
+        g = [_rect(-12.19, min(ys) - 2.29, 12.19, max(ys) + 2.29, "background")]
+        # ขาเรียงลงมาเป็นแถวยาว แต่ทุกขาลากตามแนวนอนเข้าหากล่อง
+        L = {n: round(abs(dx) - 12.19, 3) for n, (dx, _dy) in offs.items()}
+        A = {n: _ang_x(dx) for n, (dx, _dy) in offs.items()}
+    else:
+        g = [_rect(-2.54, -2.54, 2.54, 2.54)]
+        L = {n: 2.54 for n in offs}
+        A = {n: _ang_x(o[0]) for n, o in offs.items()}
+    # ขาต้องยาวเป็นบวกเสมอ ถ้าคำนวณได้ติดลบแปลว่าตัวสัญลักษณ์ใหญ่คลุมขาไปแล้ว
+    bad = {n: v for n, v in L.items() if v < 0.5}
+    if bad:
+        raise SystemExit(f"ขาสั้นเกินไปบนสัญลักษณ์ {kind}: {bad} "
+                         f"— ตัวสัญลักษณ์ทับตำแหน่งขา")
+    check_leads_reach(kind, offs, L, A, g)
+    return g, L, A
+
+
+def check_leads_reach(kind, offs, L, A, g):
+    """ปลายในของขาทุกขา ต้องแตะขอบตัวสัญลักษณ์จริง
+
+    ตัวกันไม่ให้บั๊กเดิมกลับมา: เดิมขนาดตัวกับความยาวขาถูกกำหนดแยกกัน
+    พอไม่ตรงกันก็เหลือช่องว่าง 3 ถึง 18 มม. ที่ทุกขา เปิดมาเห็นเป็นเส้นขาด
+    ทั้งที่ตัวตรวจอีกสามตัวผ่านหมด เพราะทางไฟฟ้าถูกต้อง ผิดแค่รูปที่ตาเห็น
+    """
+    import re
+    xs, ys = [], []
+    for line in g:
+        vals = [float(v) for v in re.findall(r"-?\d+\.?\d*", line)]
+        if line.lstrip().startswith("(circle"):
+            cx, cy, r = vals[0], vals[1], vals[2]
+            xs += [cx - r, cx + r]
+            ys += [cy - r, cy + r]
+        else:
+            xs += vals[0::2][:len(vals) // 2]
+            ys += vals[1::2][:len(vals) // 2]
+    if not xs:
+        return
+    x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+    for n, (dx, dy) in offs.items():
+        ex, ey = {0: (dx + L[n], dy), 180: (dx - L[n], dy),
+                  90: (dx, dy + L[n]), 270: (dx, dy - L[n])}[A[n]]
+        # เกณฑ์คือ "ต้องไม่มีช่องว่าง" ไม่ใช่ "ต้องจบบนขอบพอดี"
+        # ขาที่ลากเลยขอบเข้าไปข้างในตัวสัญลักษณ์ ตาก็ยังเห็นเป็นเส้นต่อเนื่อง
+        # ที่เป็นปัญหาคือลากไปไม่ถึงขอบ แล้วเหลือช่องว่างคั่น
+        inside = (x0 - 0.4 <= ex <= x1 + 0.4) and (y0 - 0.4 <= ey <= y1 + 0.4)
+        if not inside:
+            raise SystemExit(
+                f"ขา {n} ของสัญลักษณ์ {kind} ลากไปจบที่ ({ex:.2f},{ey:.2f}) "
+                f"ซึ่งยังไม่ถึงตัวที่ x {x0:.2f}..{x1:.2f} y {y0:.2f}..{y1:.2f}"
+                f" — จะเห็นเป็นเส้นขาด")
 
 
 ETYPE = {"res": "passive", "cap": "passive", "term": "passive",
@@ -215,10 +298,11 @@ def build_symbols(insts):
                    f'{_eff(hide=True)})')
         for unit, (kind, offs) in sorted(units.items()):
             out.append(f'      (symbol {_q(f"{name}_{unit}_1")}')
-            out += body_graphics(kind, offs)
+            gfx, plen, pang = symbol_geometry(kind, offs)
+            out += gfx
             for num, (dx, dy) in sorted(offs.items(), key=lambda kv: int(kv[0])):
                 out.append(_pin(num, "~", pin_etype(kind, num, offs),
-                                dx, dy, _angle(dx, dy)))
+                                dx, dy, pang[num], plen[num]))
             out.append("      )")
         out.append("    )")
     return out, lib

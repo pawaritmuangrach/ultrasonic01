@@ -176,7 +176,7 @@ def banner_for(held):
             else ("TRAINED ON THIS  -  score inflated", WARN))
 
 
-def run_loop(src, pr, thr, fps_target, foot, live=False, cam_on=True):
+def run_loop(src, pr, thr, fps_target, foot, live=False, state=None):
     import cv2
     lut = depth_lut()
     sc = dict(pr.score)
@@ -219,7 +219,7 @@ def run_loop(src, pr, thr, fps_target, foot, live=False, cam_on=True):
         cv2.imshow("map2", render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps,
                                   bn, foot, thr,
                                   echo=max(pr.amps) if live else None,
-                                  cam_on=cam_on))
+                                  cam_on=state["cam"] if state else True))
         wait = 0 if paused else (1 if live else max(1, int(1000 / fps_target)))
         k = cv2.waitKey(wait) & 0xFF
         if k in (27, ord("q")):
@@ -259,7 +259,7 @@ def replay_src(name, section, tail, held_only=False):
                cv2.imread(str(p), cv2.IMREAD_UNCHANGED), i >= cut)
 
 
-def live_src(a):
+def live_src(a, state):
     """โหมดสด — ลำดับสำคัญ: ปิด GC ก่อนแตะกล้อง เปิดคืนหลังปิดกล้องแล้ว
 
     a.no_cam = ใช้เสียงล้วน ไม่เปิดกล้องเลย ซึ่งคือเป้าหมายจริงของงานนี้
@@ -283,10 +283,21 @@ def live_src(a):
         from record import DepthThread
         print(f"เปิดกล้อง depth {w}x{h} ...", flush=True)
         gc.disable()
-        cam = Astra(want_rgb=False, depth_size=(w, h))
-        th = DepthThread(cam, 1)
-        th.start()
-        time.sleep(0.6)
+        try:
+            cam = Astra(want_rgb=False, depth_size=(w, h))
+            th = DepthThread(cam, 1)
+            th.start()
+            time.sleep(0.6)
+        except Exception as e:
+            # กล้องเปิดไม่ได้ไม่ใช่เหตุให้เลิก — โมเดลไม่ได้ใช้กล้องอยู่แล้ว
+            # กล้องมีไว้วาดเฉลยเทียบเท่านั้น ถอยไปโหมดเสียงล้วนต่อได้เลย
+            # และต้องเปิด GC คืนตรงนี้ เพราะ finally ข้างล่างยังไม่เริ่มทำงาน
+            gc.enable()
+            cam = th = None
+            state["cam"] = False
+            print(f"  !! เปิดกล้องไม่ได้ ({e})", flush=True)
+            print("  ไปต่อแบบเสียงล้วน — ช่องซ้ายจะว่างเพราะไม่มีเฉลยให้เทียบ",
+                  flush=True)
     else:
         print("เสียงล้วน ไม่เปิดกล้อง", flush=True)
     print("เปิดหน้าต่างแล้ว — ยืนหน้าเซ็นเซอร์ได้เลย", flush=True)
@@ -345,8 +356,11 @@ def main():
     foot = "q ออก · space หยุด/เล่นต่อ · s เซฟภาพ"
     if a.port:
         a.pr = pr
-        run, el = run_loop(live_src(a), pr, a.thr, a.fps, foot, live=True,
-                           cam_on=not a.no_cam)
+        # ใช้ dict ร่วมกัน เพราะ generator เริ่มทำงานทีหลัง run_loop
+        # ถ้าส่งค่าไปตรง ๆ แล้วกล้องเปิดไม่ได้ทีหลัง จอจะยังเขียนว่ามีกล้องอยู่
+        state = {"cam": not a.no_cam}
+        run, el = run_loop(live_src(a, state), pr, a.thr, a.fps, foot,
+                           live=True, state=state)
     else:
         run, el = run_loop(replay_src(a.name, a.section, pr.tail, a.held_only),
                            pr, a.thr, a.fps, foot)

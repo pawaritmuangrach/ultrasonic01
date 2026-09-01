@@ -21,6 +21,7 @@
 import hashlib
 import os
 
+LIB = "ultrasonic"     # ชื่อคลังสัญลักษณ์ · ต้องใช้ตัวเดียวกันทั้งนิยามและที่อ้างถึง
 SCALE = 0.254          # มม. ต่อพิกเซล · 10 พิกเซล = 2.54 มม. พอดี
 GRID = 1.27
 VERSION = 20230121     # รูปแบบของ KiCad 7 ซึ่งตัวนำเข้าส่วนใหญ่รองรับ
@@ -194,8 +195,15 @@ def build_symbols(insts):
         lib[name][unit] = (kind, offs)
     out = []
     for name, units in sorted(lib.items()):
-        pref = {"R": "R", "C": "C", "TERM": "J", "HDR2": "J"}.get(name[:4], "U")
-        out.append(f'    (symbol {_q(name)} (pin_names (offset 0.508)) '
+        # **ชื่อในนิยามต้องมีชื่อคลังนำหน้าให้ตรงกับที่ชิ้นส่วนอ้างถึง**
+        # เดิมนิยามชื่อ "C_L" แต่ชิ้นส่วนอ้าง "ultrasonic:C_L" ชื่อไม่ตรงกัน
+        # ตัวนำเข้าหานิยามไม่เจอ เลยทิ้งสัญลักษณ์ทุกตัว เหลือแต่สายลอย ๆ
+        # ส่วนชื่อของ unit ข้างในใช้ชื่อเปล่า ไม่ต้องมีคลังนำหน้า ตามรูปแบบ KiCad
+        full = f"{LIB}:{name}"
+        # ตัวอักษรนำหน้าเลขอ้างอิง · ตัดคำต่อท้ายที่บอกทิศออกก่อน
+        pref = {"R": "R", "C": "C", "TERM2": "J",
+                "HDR20": "J"}.get(name.split("_")[0], "U")
+        out.append(f'    (symbol {_q(full)} (pin_names (offset 0.508)) '
                    f'(in_bom yes) (on_board yes)')
         out.append(f'      (property "Reference" {_q(pref)} (at 0 6.35 0) '
                    f'{_eff()})')
@@ -286,7 +294,7 @@ def export(placed, path, project="main8"):
         unit = unit_of(kind, val, tuple(pins))
         ax, ay = snap(anchor[0] * SCALE), snap(anchor[1] * SCALE)
         uid = _uid("s", ref, unit, ax, ay)
-        out.append(f"  (symbol (lib_id {_q('ultrasonic:' + name)}) "
+        out.append(f"  (symbol (lib_id {_q(LIB + ':' + name)}) "
                    f"(at {ax} {ay} 0) (unit {unit})")
         out.append(f"    (in_bom yes) (on_board yes) (dnp no) (uuid {uid})")
         out.append(f"    (property \"Reference\" {_q(ref)} "
@@ -301,9 +309,31 @@ def export(placed, path, project="main8"):
         out.append("  )")
     out.append(")")
 
+    txt = "\n".join(out) + "\n"
+    check_names(txt)
     with open(path, "w", encoding="utf-8") as f:
-        f.write("\n".join(out) + "\n")
+        f.write(txt)
     return len(insts), len(wires), len(labels)
+
+
+def check_names(txt):
+    """ทุกชื่อที่ชิ้นส่วนอ้างถึง ต้องมีนิยามอยู่ในไฟล์เดียวกันจริง
+
+    บั๊กที่ตัวตรวจนี้เกิดมาเพื่อจับ: นิยามตั้งชื่อว่า "C_L" แต่ชิ้นส่วนอ้างถึง
+    "ultrasonic:C_L" ชื่อไม่ตรงกัน ตัวนำเข้าหานิยามไม่เจอเลยทิ้งสัญลักษณ์
+    ทุกตัว เปิดมาเห็นแต่สายลอย ๆ ไม่มีตัวต้านทานหรือชิปสักตัว
+
+    ตัวตรวจเดิมสองตัวผ่านหมด เพราะตัวหนึ่งดูว่าขาอยู่เน็ตถูกไหม อีกตัวดูว่า
+    สายบรรจบกับขาไหม ทั้งคู่ไม่ได้ดูว่า **ปลายทางจะหานิยามสัญลักษณ์เจอไหม**
+    """
+    import re
+    defined = set(re.findall(r'^    \(symbol "([^"]+)"', txt, re.M))
+    used = set(re.findall(r'\(lib_id "([^"]+)"', txt))
+    missing = sorted(used - defined)
+    if missing:
+        raise SystemExit(f"ชิ้นส่วนอ้างถึงนิยามที่ไม่มีอยู่: {', '.join(missing)}"
+                         f" — ตัวนำเข้าจะทิ้งสัญลักษณ์ เหลือแต่สาย")
+    print(f"ตรวจชื่อ: อ้างถึงนิยาม {len(used)} ชื่อ มีครบทุกชื่อ")
 
 
 def check_geometry(insts, wires, labels, nc):

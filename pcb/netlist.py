@@ -14,13 +14,20 @@
 # ชื่อ footprint บอกรูปร่างรูเจาะจริง ตัวเลขคือระยะขาเป็นมิลลิเมตร
 FP = {
     "DIP14": dict(kind="dip", n=14, pitch=2.54, span=7.62, drill=0.9, pad=1.7),
-    "R_AXIAL": dict(kind="axial", pitch=10.16, drill=0.9, pad=1.8),
+    # 7.62 ไม่ใช่ 10.16 — บอร์ดรวมมีตัวต้านทาน 51 ตัว ระยะสั้นลง 2.54 มม.
+    # ต่อตัวประหยัดพื้นที่ไปมาก และ 1/4W ยังงอขาลงได้สบาย
+    "R_AXIAL": dict(kind="axial", pitch=7.62, drill=0.9, pad=1.8),
     "C_DISC": dict(kind="axial", pitch=5.08, drill=0.9, pad=1.8),
     # แป้น 1.7 ไม่ใช่ 2.0 — ที่ระยะขา 2.54 แป้น 2.0 เหลือช่องว่างแค่ 0.54 มม.
     # ซึ่งบางเกินกติกา 0.4 มม. เมื่อปัดลงตาราง · 1.7 ได้ 0.84 มม. สบาย ๆ
     # และยังเหลือเนื้อทองแดงรอบรู 0.4 มม. ตามเกณฑ์
     "C_ELEC": dict(kind="axial", pitch=2.54, drill=0.9, pad=1.7),
     "HDR2": dict(kind="header", n=2, pitch=2.54, drill=1.0, pad=1.8),
+    # เฮดเดอร์ตัวเมีย 20 ขา สำหรับเสียบ Blue Pill · สองแถวห่างกัน 17.78 มม.
+    "HDR20": dict(kind="header", n=20, pitch=2.54, drill=1.0, pad=1.8),
+    # เทอร์มินอลบล็อกขันสกรู KF301 ระยะขา 5.08 มม. รูใหญ่กว่าเพราะขาหนา
+    "TERM2": dict(kind="header", n=2, pitch=5.08, drill=1.2, pad=2.4),
+    "C_BULK": dict(kind="axial", pitch=5.08, drill=1.0, pad=1.9),
     "HDR3": dict(kind="header", n=3, pitch=2.54, drill=1.0, pad=1.8),
     "HDR4": dict(kind="header", n=4, pitch=2.54, drill=1.0, pad=1.8),
 }
@@ -221,3 +228,146 @@ if __name__ == "__main__":
               f"ขา {n_pin:3d} · {'ผ่าน' if not e else 'ผิด ' + str(len(e))}")
         for x in e:
             print("   -", x)
+
+
+# ================================================ บอร์ดรวม: STM32 + 3 TX + 8 RX
+# ขาของ Blue Pill อ่านจากตัวหนังสือบนบอร์ดจริง (รูปที่ผู้ใช้ส่งมา)
+# แถวบนกับแถวล่างห่างกัน 17.78 มม. · 20 ขาต่อแถว · ระยะขา 2.54 มม.
+BP_TOP = ["G", "G", "3.3", "R", "B11", "B10", "B1", "B0", "A7", "A6",
+          "A5", "A4", "A3", "A2", "A1", "A0", "C15", "C14", "C13", "VB"]
+BP_BOT = ["B12", "B13", "B14", "B15", "A8", "A9", "A10", "A11", "A12", "A15",
+          "B3", "B4", "B5", "B6", "B7", "B8", "B9", "5V", "G", "3.3"]
+
+# แมปขา Blue Pill -> เน็ตบนบอร์ด · ขาที่ไม่อยู่ในนี้จะกลายเป็นเน็ตเดี่ยว (ไม่ต่อไปไหน)
+#   A0..A7 = ADC12_IN0..IN7 ทั้งแปดอยู่ติดกันบนแถวบน ลายจึงไม่ต้องข้ามบอร์ด
+#   B6/B7/B8 = TIM4_CH1/2/3 สร้างคลื่น 40 kHz ด้วยฮาร์ดแวร์ จังหวะเป๊ะกว่าสั่งด้วยโค้ด
+#   B3/B4/B5 เลี่ยงไว้ เพราะค่าเริ่มต้นเป็นขา JTAG ต้องปลดก่อนใช้เป็น GPIO
+BP_NET = {"G": "GND", "3.3": "MCU3V3", "5V": "P5V",
+          "A0": "RX1_ADC", "A1": "RX2_ADC", "A2": "RX3_ADC", "A3": "RX4_ADC",
+          "A4": "RX5_ADC", "A5": "RX6_ADC", "A6": "RX7_ADC", "A7": "RX8_ADC",
+          "B6": "TX1_IN", "B7": "TX2_IN", "B8": "TX3_IN"}
+
+# MCP6024 DIP-14 (ขาเหมือน MCP6004 ทุกประการ ต่างที่ GBW 10 MHz ไม่ใช่ 1 MHz)
+OPA = {"A": (2, 3, 1), "B": (6, 5, 7), "C": (9, 10, 8), "D": (13, 12, 14)}
+
+
+def _mcu_rows(parts, nets, nc):
+    """เฮดเดอร์ตัวเมียสองแถวสำหรับเสียบ Blue Pill"""
+    for ref, row in (("JA", BP_TOP), ("JB", BP_BOT)):
+        parts.append((ref, "Blue Pill", "HDR20"))
+        for i, lab in enumerate(row, start=1):
+            pin = f"{ref}.{i}"
+            net = BP_NET.get(lab)
+            if net:
+                nets.setdefault(net, []).append(pin)
+            else:
+                # ขาที่ไม่ได้ใช้ ต้องมีรูและแป้นเหมือนกัน แต่ห้ามต่อถึงกัน
+                # จึงให้เน็ตเดี่ยวของตัวเอง ไม่ใช่รวมเป็นเน็ต NC ก้อนเดียว
+                nc[f"NC_{ref}_{lab}"] = [pin]
+
+
+def _tx_stage(parts, nets, i, gin, gmid_a, gmid_b, gout):
+    """หนึ่งหัวส่ง = สองเกตต่ออนุกรม + ตัวต้านทานอนุกรม + เทอร์มินอล"""
+    parts += [(f"RT{i}", "100R", "R_AXIAL"), (f"T{i}", f"TX{i}", "TERM2")]
+    nets[f"TX{i}_IN"] = nets.get(f"TX{i}_IN", []) + [f"U1.{gin}"]
+    nets[f"TX{i}_MID"] = [f"U1.{gmid_a}", f"U1.{gmid_b}"]
+    nets[f"TX{i}_OUT"] = [f"U1.{gout}", f"RT{i}.1"]
+    nets[f"TX{i}_DRV"] = [f"RT{i}.2", f"T{i}.1"]
+    return [f"T{i}.2"]
+
+
+def _rx_stage(parts, nets, i, chip, sa, sb):
+    """หนึ่งช่องรับ = ออปแอมป์สองสเตจ · คืน (ขาที่ลง GND, ขาที่ไป VREF)"""
+    n1, p1, o1 = OPA[sa]
+    n2, p2, o2 = OPA[sb]
+    U = f"U{chip}"
+    parts += [(f"K{i}", f"RX{i}", "TERM2"),
+              (f"C{i}I", "10nF", "C_DISC"), (f"R{i}B", "1M", "R_AXIAL"),
+              (f"R{i}F1", "33k", "R_AXIAL"), (f"R{i}G1", "1k", "R_AXIAL"),
+              (f"C{i}G1", "100nF", "C_DISC"),
+              (f"R{i}F2", "33k", "R_AXIAL"), (f"R{i}G2", "1k", "R_AXIAL"),
+              (f"C{i}G2", "100nF", "C_DISC"),
+              (f"R{i}O", "1k", "R_AXIAL"), (f"C{i}O", "1nF", "C_DISC")]
+    nets.update({
+        f"RX{i}_IN": [f"K{i}.1", f"C{i}I.1"],
+        f"RX{i}_G": [f"C{i}I.2", f"R{i}B.1", f"{U}.{p1}"],
+        f"RX{i}_S1O": [f"{U}.{o1}", f"R{i}F1.1", f"{U}.{p2}"],
+        f"RX{i}_S1N": [f"{U}.{n1}", f"R{i}F1.2", f"R{i}G1.1"],
+        f"RX{i}_G1": [f"R{i}G1.2", f"C{i}G1.1"],
+        f"RX{i}_S2O": [f"{U}.{o2}", f"R{i}F2.1", f"R{i}O.1"],
+        f"RX{i}_S2N": [f"{U}.{n2}", f"R{i}F2.2", f"R{i}G2.1"],
+        f"RX{i}_G2": [f"R{i}G2.2", f"C{i}G2.1"],
+    })
+    nets.setdefault(f"RX{i}_ADC", []).extend([f"R{i}O.2", f"C{i}O.1"])
+    gnd = [f"K{i}.2", f"C{i}G1.2", f"C{i}G2.2", f"C{i}O.2"]
+    return gnd, [f"R{i}B.2"]
+
+
+def main8():
+    """บอร์ดรวมรุ่นแรก — STM32F103C8T6 + ส่ง 3 หัว + รับ 8 ช่อง บนแผ่นเดียว
+
+    ทำไมย้ายจาก ESP32 มา STM32F103C8T6:
+      ESP32 มีขา ADC1 ที่ใช้กับโหมด DMA ต่อเนื่องได้แค่ 6 ขา ต่อ 8 ช่องไม่ได้เลย
+      STM32F103 มี ADC สองตัว ขาแอนะล็อก 10 ขา (PA0-PA7, PB0, PB1) และรวมกัน
+      ได้เร็วราว 1.4 MHz แปลว่า 8 ช่องยังได้ ~175 kHz ต่อช่อง เร็วกว่าที่ ESP32
+      ทำได้กับ 4 ช่อง (66 kHz) ถึง 2.6 เท่า
+
+    ไฟแอนะล็อกกรองแยกจากไฟดิจิทัล:
+      3.3V มาจากเรกูเลเตอร์บน Blue Pill ซึ่งเลี้ยง MCU ที่วิ่ง 72 MHz อยู่ด้วย
+      วงจรรับขยาย 1156 เท่า สัญญาณรบกวนบนรางไฟจึงถูกขยายไปด้วย
+      จึงคั่นด้วย R 10 โอห์ม + C 100uF ก่อนเข้าภาครับ
+      ที่ 40 kHz คาปามีอิมพีแดนซ์ 0.04 โอห์ม กรองได้ดี แลกกับแรงดันตก 0.2V
+      ที่กระแส 20 mA ซึ่งเหลือ 3.1V ยังเกินขั้นต่ำของ MCP6024 (2.5V)
+    """
+    parts, nets, nc = [], {}, {}
+    _mcu_rows(parts, nets, nc)
+
+    # ---- ภาคส่ง: 74HCT04 หนึ่งตัว 6 เกต = 3 หัว
+    parts += [("U1", "74HCT04", "DIP14"),
+              ("CD1", "100nF", "C_DISC"), ("CB1", "10uF", "C_ELEC"),
+              ("JP", "5V IN", "TERM2")]
+    gnd = ["U1.7", "CD1.2", "CB1.2", "JP.2"]
+    nets["P5V"] = nets.get("P5V", []) + ["U1.14", "CD1.1", "CB1.1", "JP.1"]
+    gnd += _tx_stage(parts, nets, 1, 1, 2, 3, 4)      # เกต 1,2
+    gnd += _tx_stage(parts, nets, 2, 13, 12, 11, 10)  # เกต 6,5
+    gnd += _tx_stage(parts, nets, 3, 5, 6, 9, 8)      # เกต 3,4
+
+    # ---- ไฟแอนะล็อกที่กรองแล้ว
+    parts += [("RF", "10R", "R_AXIAL"), ("CF", "100uF", "C_BULK")]
+    nets["MCU3V3"] = nets.get("MCU3V3", []) + ["RF.1"]
+    nets["A3V3"] = ["RF.2", "CF.1"]
+    gnd.append("CF.2")
+
+    # ---- ภาครับ 8 ช่อง: ชิปละ 2 ช่อง (A+B และ C+D)
+    vref = []
+    for i in range(1, 9):
+        chip = 2 + (i - 1) // 2                      # U2..U5
+        sa, sb = ("A", "B") if i % 2 else ("C", "D")
+        g, v = _rx_stage(parts, nets, i, chip, sa, sb)
+        gnd += g
+        vref += v
+    for u in range(2, 6):
+        parts += [(f"U{u}", "MCP6024", "DIP14"),
+                  (f"CD{u}", "100nF", "C_DISC")]
+        nets["A3V3"] += [f"U{u}.4", f"CD{u}.1"]
+        gnd += [f"U{u}.11", f"CD{u}.2"]
+
+    # ---- VREF: ตัวแบ่งครึ่ง แล้วบัฟเฟอร์ · section ที่เหลือผูกเป็นตัวตาม ไม่ปล่อยลอย
+    parts += [("U6", "MCP6024", "DIP14"), ("CD6", "100nF", "C_DISC"),
+              ("RV1", "10k", "R_AXIAL"), ("RV2", "10k", "R_AXIAL"),
+              ("CV1", "100nF", "C_DISC"), ("CB2", "10uF", "C_ELEC")]
+    nets["A3V3"] += ["U6.4", "CD6.1", "RV1.1"]
+    gnd += ["U6.11", "CD6.2", "RV2.2", "CV1.2", "CB2.2"]
+    nets["MID"] = ["RV1.2", "RV2.1", "U6.3"]
+    nets["VREF"] = vref + ["U6.1", "U6.2", "CV1.1", "CB2.1",
+                           "U6.5", "U6.6", "U6.7",
+                           "U6.10", "U6.9", "U6.8",
+                           "U6.12", "U6.13", "U6.14"]
+    # ต้องรวมเข้ากับของเดิม ไม่ใช่กำหนดทับ — ขา G ของเฮดเดอร์ถูกใส่ไว้ตั้งแต่
+    # _mcu_rows แล้ว ถ้ากำหนดทับจะหายไปสามขา (ตัวตรวจ netlist จับได้)
+    nets["GND"] = nets.get("GND", []) + gnd
+    nets.update(nc)
+    return dict(name="main8", title="STM32F103 + 3 TX + 8 RX", parts=parts, nets=nets)
+
+
+BOARDS["main8"] = main8

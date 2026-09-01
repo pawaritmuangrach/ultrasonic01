@@ -111,12 +111,55 @@ def bom_md(pl, name, extra=""):
     return "\n".join(out) + "\n"
 
 
+def unrouted(name):
+    """ส่งออกไฟล์ KiCad ที่ **วางชิ้นส่วนครบและมีเน็ตครบ แต่ยังไม่เดินลาย**
+
+    ให้เครื่องมือที่มี autorouter จริง (เช่น EasyEDA) เดินลายต่อ
+    ส่วนที่โค้ดนี้ทำได้ดีคือความถูกต้องของ netlist กับการวางชิ้นส่วน
+    ส่วนการเดินลาย 90 เน็ตบนบอร์ด 340 ขา เกินกำลังตัวเดินลายง่าย ๆ ที่ไม่มีการรื้อ
+    """
+    from router import Router
+    b = N.BOARDS[name]()
+    if N.check(b):
+        raise SystemExit(f"netlist ของ {name} ผิด")
+    pl = geom.place(b, layout.PLACE[name])
+    cl = geom.clashes(pl)
+    if cl:
+        raise SystemExit(f"{name}: ขาวางชนกัน {len(cl)} คู่")
+    w, h, x0, y0 = geom.extent(pl)
+    r = Router(w, h, x0, y0)
+    for mx, my in ((x0 + 3.5, y0 + 3.5), (x0 + w - 3.5, y0 + 3.5),
+                   (x0 + 3.5, y0 + h - 3.5), (x0 + w - 3.5, y0 + h - 3.5)):
+        r.add_mount(mx, my)
+    ids = {net: k for k, net in enumerate(pl["nets"], start=1)}
+    for net, pins in pl["nets"].items():
+        for pin in pins:
+            x, y, d, dia = pl["pad"][pin]
+            r.add_pad(pin, x, y, d, dia, ids[net])
+    d = os.path.join(OUT, name)
+    os.makedirs(d, exist_ok=True)
+    out = os.path.join(d, f"{name}-unrouted.kicad_pcb")
+    kicad_export(out, pl, r, w, h, x0, y0)
+    real = [n for n in pl["nets"] if not n.startswith("NC_")]
+    print(f"{name}: {w:.1f} x {h:.1f} mm · ชิ้นส่วน {len(pl['fps'])} · "
+          f"ขา {len(r.pads)} · เน็ตจริง {len(real)} · ยังไม่เดินลาย")
+    print(f"  -> {out}")
+    return out
+
+
 def build(name, verbose=True):
     b = N.BOARDS[name]()
     errs = N.check(b)
     if errs:
         raise SystemExit(f"netlist ของ {name} ผิด: {errs[0]}")
     pl = geom.place(b, layout.PLACE[name])
+    # ตรวจการวางก่อนเดินลาย — ถูกกว่ามากที่จะรู้ตรงนี้ (ไม่ถึงวินาที)
+    # แทนที่จะรอเดินลายจบแล้วอ่านจากข้อความว่าระยะห่างไม่พอ
+    cl = geom.clashes(pl)
+    if cl:
+        raise SystemExit(f"{name}: ขาวางชนกัน {len(cl)} คู่ · เช่น "
+                         f"{cl[0][0]} กับ {cl[0][1]} ห่าง {cl[0][2]} "
+                         f"ต้องการ {cl[0][3]} มม.")
     w, h, x0, y0 = geom.extent(pl)
     t = time.time()
     r, errs = route_board(pl)

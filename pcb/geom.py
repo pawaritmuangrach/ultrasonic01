@@ -108,3 +108,25 @@ def extent(pl, margin=5.5):
     return (round(max(xs) - min(xs) + 2 * margin, 2),
             round(max(ys) - min(ys) + 2 * margin, 2),
             min(xs) - margin, min(ys) - margin)
+
+
+def clashes(pl):
+    """หาขาที่วางชนกันหรือชิดกันเกินเกณฑ์ — ตรวจก่อนเดินลาย
+
+    เดิมกว่าจะรู้ว่าวางชนกันต้องรอเดินลายจบ (บอร์ดรวมใช้เวลา 3 นาที) แล้วอ่าน
+    จากข้อความว่าระยะห่างไม่พอ ซึ่งอ้อมมาก ตรวจตรงนี้ใช้เวลาไม่ถึงวินาที
+
+    เจอจริงตอนทำบอร์ดรวม: ยกพิกัดมาจากบอร์ด rx2 ทั้งชุด แต่เปลี่ยนหัวต่อจาก
+    เฮดเดอร์ 2.54 เป็นเทอร์มินอลขันสกรู 5.08 ขาที่สองจึงยื่นไปชนคาปาตัวถัดไป
+    """
+    items = [(k, v[0], v[1], v[3] / 2) for k, v in pl["pad"].items()]
+    bad = []
+    for a in range(len(items)):
+        ka, xa, ya, ra = items[a]
+        for b in range(a + 1, len(items)):
+            kb, xb, yb, rb = items[b]
+            d = ((xa - xb) ** 2 + (ya - yb) ** 2) ** 0.5
+            need = ra + rb + CLEAR
+            if d < need - 1e-6:
+                bad.append((ka, kb, round(d, 2), round(need, 2)))
+    return sorted(bad, key=lambda t: t[2])

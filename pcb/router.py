@@ -32,16 +32,25 @@ def _shift(a, di, dj):
     return out
 
 
-def _dilate(mask, r_cells):
-    """ขยายพื้นที่ออกทุกทิศเป็นวงกลมรัศมี r_cells"""
+def _disk(r_cells):
     R = int(np.ceil(r_cells))
-    out = mask.copy()
-    for di in range(-R, R + 1):
-        for dj in range(-R, R + 1):
-            if di * di + dj * dj > r_cells * r_cells or (di == 0 and dj == 0):
-                continue
-            out |= _shift(mask, di, dj)
-    return out
+    ii, jj = np.ogrid[-R:R + 1, -R:R + 1]
+    return ii * ii + jj * jj <= r_cells * r_cells
+
+
+def _dilate(mask, r_cells):
+    """ขยายพื้นที่ออกทุกทิศเป็นวงกลมรัศมี r_cells
+
+    ใช้ scipy ซึ่งเป็นภาษาซี — เขียนเป็นลูปเลื่อนอาเรย์ใน Python ได้ผลเท่ากัน
+    แต่บอร์ดรวม 196x185 มม. มีเซลล์ 1.8 ล้านช่อง คูณ 81 ทิศ คูณ 90 เน็ต
+    = หนึ่งหมื่นสามพันล้านครั้ง ซึ่งรอทั้งวันก็ไม่เสร็จ
+    ขยายทีละชั้น ไม่ใช่ทั้งก้อน เพราะทองแดงคนละชั้นไม่ได้ชิดกันในทางกายภาพ
+    """
+    from scipy.ndimage import binary_dilation
+    st = _disk(r_cells)
+    if mask.ndim == 2:
+        return binary_dilation(mask, st)
+    return np.stack([binary_dilation(mask[L], st) for L in range(mask.shape[0])])
 
 
 class Router:
@@ -206,22 +215,50 @@ class Router:
         แต่เร็วกว่ามาก เพราะไม่ต้องทำคิวลำดับความสำคัญทีละเซลล์ใน Python
         (แบบทีละเซลล์ใช้เวลา 319 วินาทีต่อบอร์ด แบบนี้ไม่ถึงวินาที)
         """
-        # ลองด้านล่างก่อน — ชิ้นส่วนอยู่ด้านบน ลายอยู่ด้านล่าง คือแบบที่ทำเองได้
-        # ถ้าทุกเส้นลงด้านล่างหมด บอร์ดกลายเป็นหน้าเดียว พิมพ์ลายรีดลงแผ่นทองแดงได้เลย
-        for layers in ((1,), (0,), (0, 1)):
+        # ลองด้านบนก่อน แล้วค่อยด้านล่าง — ด้านล่างสงวนไว้ให้แผ่นกราวด์
+        # บอร์ดสองชั้นที่มีทั้งอนาล็อกและดิจิทัล วิธีมาตรฐานคือให้ชั้นหนึ่งเป็น
+        # กราวด์เกือบเต็มแผ่น กระแสกลับจะได้วิ่งใต้ลายสัญญาณตรง ๆ วงเล็กที่สุด
+        # ถ้าเทกราวด์ทั้งสองด้าน จะไม่เหลือที่ให้ VREF กับไฟแอนะล็อกวิ่งไปทั้งสี่มุม
+        for layers in ((0,), (1,), (0, 1)):
             path = self._wave(start, goal, free, layers)
             if path is not None:
                 return path
         return None
 
-    def _wave(self, start, goal, free, layers):
+    def _wave(self, start, goal, free, layers, pad=150):
+        """แผ่คลื่นเฉพาะในกรอบรอบจุดเริ่มกับเป้าหมาย ไม่กวาดทั้งบอร์ด
+
+        เน็ตส่วนใหญ่เชื่อมของที่อยู่ใกล้กัน แต่การแผ่คลื่นเดิมทำงานบนอาเรย์
+        เต็มบอร์ด 1.8 ล้านเซลล์ทุกก้าว บอร์ดรวมจึงใช้เวลา 31 นาทีและยังไม่เสร็จ
+        ตัดให้เหลือเฉพาะกรอบที่เกี่ยวข้อง (เผื่อขอบ 30 มม.) เร็วขึ้นหลายสิบเท่า
+        ถ้าหาทางในกรอบไม่เจอ ค่อยขยายเป็นทั้งบอร์ดแล้วลองใหม่
+        """
+        gi = np.nonzero(goal.any(0).any(1))[0]
+        gj = np.nonzero(goal.any(0).any(0))[0]
+        if len(gi) == 0:
+            return None
+        i0 = max(0, min(int(gi[0]), start[0]) - pad)
+        i1 = min(self.H, max(int(gi[-1]), start[0]) + pad + 1)
+        j0 = max(0, min(int(gj[0]), start[1]) - pad)
+        j1 = min(self.W, max(int(gj[-1]), start[1]) + pad + 1)
+        if (i1 - i0) * (j1 - j0) < self.H * self.W:
+            sub = self._wave_in((start[0] - i0, start[1] - j0),
+                                goal[:, i0:i1, j0:j1], free[:, i0:i1, j0:j1],
+                                layers, i0, j0)
+            if sub is not None:
+                return sub
+        return self._wave_in(start, goal, free, layers, 0, 0)
+
+    def _wave_in(self, start, goal, free, layers, oi, oj):
         si, sj = start
-        use = np.zeros((2, self.H, self.W), bool)
+        H, W = goal.shape[1], goal.shape[2]
+        use = np.zeros((2, H, W), bool)
         for L in layers:
             use[L] = True
         allowed = (free | goal) & use
-        seen = np.zeros((2, self.H, self.W), bool)
-        dist = np.full((2, self.H, self.W), -1, np.int32)
+        seen = np.zeros((2, H, W), bool)
+        dist = np.full((2, H, W), -1, np.int32)
+        link = self.link[oi:oi + H, oj:oj + W]
         for L in layers:
             seen[L, si, sj] = True
             dist[L, si, sj] = 0
@@ -233,11 +270,12 @@ class Router:
             hits[:, si, sj] = False
             if hits.any():
                 L, i, j = np.argwhere(hits)[0]
-                return self._back(dist, (int(L), int(i), int(j)), two)
+                p = self._back(dist, (int(L), int(i), int(j)), two, link)
+                return None if p is None else [(a, b + oi, c + oj) for a, b, c in p]
             nxt = (_shift(cur, 1, 0) | _shift(cur, -1, 0)
                    | _shift(cur, 0, 1) | _shift(cur, 0, -1))
             if two:
-                nxt |= cur[::-1] & self.link[None, :, :]
+                nxt |= cur[::-1] & link[None, :, :]
             nxt &= allowed & ~seen
             if not nxt.any():
                 return None
@@ -247,17 +285,18 @@ class Router:
             cur = nxt
         return None
 
-    def _back(self, dist, cell, two):
+    def _back(self, dist, cell, two, link):
         """ไล่ย้อนจากจุดที่ถึงเป้าหมาย ลงตามระยะที่บันทึกไว้ทีละก้าว"""
+        H, W = dist.shape[1], dist.shape[2]
         L, i, j = cell
         path = [(L, i, j)]
         d = int(dist[L, i, j])
         while d > 0:
             cand = [(L, i + 1, j), (L, i - 1, j), (L, i, j + 1), (L, i, j - 1)]
-            if two and self.link[i, j]:
+            if two and link[i, j]:
                 cand.append((L ^ 1, i, j))
             for nL, ni, nj in cand:
-                if (0 <= ni < self.H and 0 <= nj < self.W
+                if (0 <= ni < H and 0 <= nj < W
                         and dist[nL, ni, nj] == d - 1):
                     L, i, j, d = nL, ni, nj, d - 1
                     path.append((L, i, j))
@@ -334,25 +373,26 @@ class Router:
                 i, j = self._ij(*self.pads[p][:2])
                 if not (comp[0, i, j] or comp[1, i, j]):
                     errs.append(f"เน็ต {names[nid]}: {p} ต่อไม่ถึงขาอื่น")
-        r = CLEAR / self.step
-        R = int(np.ceil(r))
+        # ตรวจระยะห่างโดยขยายทองแดงของแต่ละเน็ตออกไปครึ่งเกณฑ์ แล้วดูว่าไปทับ
+        # ทองแดงเน็ตอื่นไหม — ได้ผลเท่ากับไล่เทียบทุกคู่เซลล์ แต่เร็วกว่ามาก
+        from scipy.ndimage import binary_dilation
+        st = _disk(CLEAR / self.step)
         for L in (0, 1):
             a = self.cop[L]
-            for di in range(-R, R + 1):
-                for dj in range(-R, R + 1):
-                    if di * di + dj * dj > r * r or (di == 0 and dj == 0):
-                        continue
-                    b = _shift(a, di, dj)
-                    bad = (a > 0) & (b > 0) & (a != b)
-                    if bad.any():
-                        i, j = np.argwhere(bad)[0]
-                        errs.append(
-                            f"ชั้น {'top' if L == 0 else 'bottom'}: "
-                            f"{names[int(a[i, j])]} กับ {names[int(b[i, j])]} "
-                            f"ใกล้กันเกิน {CLEAR} มม. ที่ "
-                            f"({self.x0 + j * self.step:.1f}, "
-                            f"{self.y0 + i * self.step:.1f})")
-                        return errs
+            for nid in np.unique(a):
+                if nid <= 0:
+                    continue
+                near = binary_dilation(a == nid, st)
+                bad = near & (a > 0) & (a != nid)
+                if bad.any():
+                    i, j = np.argwhere(bad)[0]
+                    errs.append(
+                        f"ชั้น {'top' if L == 0 else 'bottom'}: "
+                        f"{names[int(nid)]} กับ {names[int(a[i, j])]} "
+                        f"ใกล้กันเกิน {CLEAR} มม. ที่ "
+                        f"({self.x0 + j * self.step:.1f}, "
+                        f"{self.y0 + i * self.step:.1f})")
+                    return errs
         return errs
 
     def _component(self, nid, start):
@@ -374,7 +414,7 @@ def _simplify(pts):
     return out
 
 
-POWER_NETS = {"GND", "+5V", "3V3", "VREF"}
+POWER_NETS = {"GND", "+5V", "3V3", "VREF", "A3V3", "MCU3V3", "P5V"}
 
 
 def route_board(pl):
@@ -395,8 +435,13 @@ def route_board(pl):
         for p in pins:
             x, y, d, dia = pl["pad"][p]
             r.add_pad(p, x, y, d, dia, ids[net])
+    # ลำดับ: เน็ตสัญญาณก่อน แล้วค่อยไฟ
+    # เคยลองกลับลำดับให้ไฟเดินก่อน (เพื่อแก้ VREF ของบอร์ดรวมที่ต้องวิ่งไกล)
+    # ผลคือบอร์ดรวมดีขึ้นแต่ rx2 พังแทน 24 จุด เพราะลายไฟไปตัดแผ่นกราวด์แตก
+    # ไม่มีลำดับเดียวที่ดีกับทุกบอร์ด จึงคงของเดิมที่ผ่านสามบอร์ดไว้ก่อน
     sig = sorted(set(pl["nets"]) - POWER_NETS, key=lambda n: len(pl["nets"][n]))
-    seq = sig + [n for n in ("VREF", "3V3", "+5V") if n in pl["nets"]]
+    seq = sig + [n for n in ("A3V3", "VREF", "MCU3V3", "3V3", "P5V", "+5V")
+                 if n in pl["nets"]]
     fails = []
     for net in seq:
         wtr = POWER if net in POWER_NETS else TRACE
@@ -405,10 +450,7 @@ def route_board(pl):
     # กราวด์ทำท้ายสุดและทำเป็นแผ่น ไม่ใช่เส้น — เหตุผลอยู่ใน Router.pour
     if "GND" in pl["nets"]:
         g = ids["GND"]
-        # เททั้งสองด้าน ด้านบนเป็นแผ่นหลัก ด้านล่างเติมช่องว่างระหว่างลายสัญญาณ
-        # ขากราวด์เป็นรูทะลุ จึงเชื่อมถึงด้านที่แผ่นไม่ขาดตอนโดยอัตโนมัติ
-        # (เทด้านเดียว แผ่นถูกลายสัญญาณกับรูยึดตัดจนขาด 12 ขาบนบอร์ด rx2)
-        r.pour(g, 0)
+        # เทเฉพาะด้านล่าง ให้เป็นแผ่นกราวด์เกือบเต็ม ส่วนด้านบนเป็นชั้นสัญญาณ
         r.pour(g, 1)
         # ขากราวด์ที่แผ่นไปไม่ถึง (โดนลายอื่นตัดขาด) ค่อยลากเส้นเสริมให้
         fails += [f"เน็ต GND: เดินไม่ถึง {p}"

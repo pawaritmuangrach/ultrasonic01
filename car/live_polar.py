@@ -51,7 +51,8 @@ BG, PANEL = (22, 24, 28), (32, 35, 41)
 OKC, BADC, WARNC = (110, 230, 130), (90, 90, 245), (80, 200, 250)
 PRED = (70, 215, 250)          # เหลือง = โมเดล (เสียงล้วน)
 TRUE = (245, 245, 245)         # ขาว = กล้อง
-NAME = {34: "FAR LEFT", 33: "LEFT", 32: "RIGHT", 35: "FAR RIGHT"}
+# ตำแหน่งบน plate_mini · TL=35 TR=34 BL=32 BR=33 (ดู car/rig2.py)
+NAME = {35: "TOP LEFT", 34: "TOP RIGHT", 32: "BOTTOM LEFT", 33: "BOTTOM RIGHT"}
 RMAX_CM = 150.0
 _CANVAS = None
 

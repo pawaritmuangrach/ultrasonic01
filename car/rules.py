@@ -50,7 +50,8 @@ import features as F                                    # noqa: E402
 
 DATA = Path(HERE) / "data"
 PINS = [34, 33, 32, 35]                 # ซ้ายสุด, ซ้าย, ขวา, ขวาสุด (ตามตำแหน่งจริง)
-NAME = {34: "FAR LEFT", 33: "LEFT", 32: "RIGHT", 35: "FAR RIGHT"}
+# ตำแหน่งบน plate_mini · TL=35 TR=34 BL=32 BR=33 (ดู car/rig2.py)
+NAME = {35: "TOP LEFT", 34: "TOP RIGHT", 32: "BOTTOM LEFT", 33: "BOTTOM RIGHT"}
 COLS = "sec idx deg cam cov rng a34 a33 a32 a35 n34 n33 n32 n35".split()
 
 

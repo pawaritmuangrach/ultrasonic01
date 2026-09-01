@@ -86,16 +86,8 @@ def r2(pred, true):
 
 
 def shadow_height(occ):
-    """ความสูงของเงาเป็นจำนวนช่อง — ตัวแทนของ 'ท่าทาง'
-
-    ย่อตัวแล้วเตี้ยลง ยกแขนแล้วสูงขึ้น เป็นตัวเลขเดียวที่จับท่าทางได้ตรงที่สุด
-    ใช้ช่วง 5-95% ไม่ใช่ค่าสุดขั้ว เพื่อไม่ให้พิกเซลหลงตัวเดียวทำให้กระโดด
-    """
-    out = np.zeros(len(occ), np.float32)
-    for i, m in enumerate(occ):
-        ys = np.nonzero(m.any(1))[0]
-        out[i] = 0.0 if len(ys) < 2 else float(ys[-1] - ys[0])
-    return out
+    """ความสูงเงาของทุกเฟรม · นิยามอยู่ที่ mapdata2 ให้หน้าจอใช้ตัวเดียวกัน"""
+    return np.array([MD.shadow_height(m) for m in occ], np.float32)
 
 
 def position_bins(dmm, nang=ANG_BINS, ndist=DIST_BINS):
@@ -305,6 +297,7 @@ def main():
         print("        รูปร่างที่เห็นบนจอยังเป็นค่าเฉลี่ยที่จำมา ไม่ใช่สิ่งที่เสียงบอก")
 
     torch.save({"model": net.state_dict(), "holdout": a.test, "params": npar,
+                "split": a.split, "tail": a.tail,
                 "grid": [GW, GH],
                 "score": {"iou": iou, "thr": thr, "mae_cm": mae, "h_r2": rh,
                           "shuffle_iou": s_iou, "mean_iou": b1i, "mean_mae": b1e,

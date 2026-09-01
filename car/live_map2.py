@@ -147,30 +147,38 @@ def scores(occ_p, dep_p, occ_t, dep_t, thr):
 
 
 def height_of(mask):
-    ys = np.nonzero(mask.any(1))[0]
-    return 0.0 if len(ys) < 2 else float(ys[-1] - ys[0])
+    """ความสูงเงา · ใช้นิยามเดียวกับตอนเทรน เลขบนจอจะได้เทียบกันได้"""
+    return MD.shadow_height(mask)
 
 
 def banner_for(held):
+    """ป้ายบอกว่าเฟรมที่กำลังดูอยู่ โมเดลเคยเห็นตอนเทรนหรือยัง
+
+    ต้องดูรายเฟรม ไม่ใช่รายช่วง เพราะการแบ่งแบบใหม่กัน 25% ท้ายของทุกช่วง
+    ไว้วัดผล เล่นย้อนช่วงหนึ่งจึงผ่านทั้งข้อมูลที่เคยเห็นและไม่เคยเห็น
+    ถ้าติดป้ายเดียวทั้งช่วงจะโกหกไปครึ่งหนึ่งของเวลา
+    """
     if held is None:
         return None
-    return (("TEST SECTION  -  never seen", GOOD) if held
+    return (("HELD OUT  -  never seen in training", GOOD) if held
             else ("TRAINED ON THIS  -  score inflated", WARN))
 
 
-def run_loop(src, pr, held, thr, fps_target, foot, live=False):
+def run_loop(src, pr, thr, fps_target, foot, live=False):
     import cv2
     lut = depth_lut()
     sc = dict(pr.score)
     sc["params"] = pr.params
     run = {"n": 0, "iou": 0.0, "mae": 0.0, "h_true": 0.0, "h_pred": 0.0}
-    si = sm = sht = shp = 0.0
-    sn = 0
+    # นับแยกสองชุด: ทุกเฟรม กับ เฉพาะเฟรมที่ไม่เคยเห็นตอนเทรน
+    # เลขที่เชื่อถือได้คือชุดหลัง ชุดแรกมีข้อมูลที่โมเดลจำได้ปนอยู่
+    acc = {"all": [0, 0.0, 0.0, 0.0, 0.0, 0], "held": [0, 0.0, 0.0, 0.0, 0.0, 0]}
     hist = deque(maxlen=60)
-    bn = banner_for(held)
+    bn = None
     paused = False
     t0 = time.time()
-    for ping, depth in src:
+    for ping, depth, held in src:
+        bn = banner_for(held)
         occ_p, dep_p = pr.push(ping)
         if depth is None:
             occ_t = np.zeros((GH, GW), bool)
@@ -180,14 +188,20 @@ def run_loop(src, pr, held, thr, fps_target, foot, live=False):
             occ_t = small > 0
             dep_t = small.astype(np.float32) / 10.0
             iou, mae = scores(occ_p, dep_p, occ_t, dep_t, thr)
-            si += iou
-            sn += 1
-            if mae is not None:
-                sm += mae
-            sht += height_of(occ_t)
-            shp += height_of(occ_p >= thr)
-            run = {"n": sn, "iou": si / sn, "mae": sm / max(sn, 1),
-                   "h_true": sht / sn, "h_pred": shp / sn}
+            ht, hp = height_of(occ_t), height_of(occ_p >= thr)
+            for key in ("all",) + (("held",) if held else ()):
+                v = acc[key]
+                v[0] += 1
+                v[1] += iou
+                v[3] += ht
+                v[4] += hp
+                if mae is not None:
+                    v[2] += mae
+                    v[5] += 1
+            v = acc["held"] if acc["held"][0] else acc["all"]
+            run = {"n": v[0], "iou": v[1] / v[0], "mae": v[2] / max(v[5], 1),
+                   "h_true": v[3] / v[0], "h_pred": v[4] / v[0],
+                   "honest": bool(acc["held"][0])}
         hist.append(time.time())
         fps = (len(hist) - 1) / max(hist[-1] - hist[0], 1e-6) if len(hist) > 1 else 0.0
         cv2.imshow("map2", render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps,
@@ -205,20 +219,31 @@ def run_loop(src, pr, held, thr, fps_target, foot, live=False):
                                   bn, foot, thr))
             print(f"เซฟ {n}")
     cv2.destroyAllWindows()
+    run["seen_n"] = acc["all"][0] - acc["held"][0]
     return run, time.time() - t0
 
 
-def replay_src(name, section):
+def replay_src(name, section, tail, held_only=False):
+    """เล่นย้อนข้อมูลที่อัดไว้ · บอกไปด้วยว่าเฟรมไหนโมเดลเคยเห็นตอนเทรน
+
+    ตอนเทรนกัน tail ท้ายของทุกช่วงไว้วัดผล เฟรมท้าย ๆ จึงเป็นของจริงที่ไม่เคยเห็น
+    ส่วนเฟรมต้น ๆ โมเดลเคยเห็นแล้ว คะแนนตรงนั้นจะดูดีเกินจริง
+    """
     import cv2
     d = f"{name}_s{section}"
     fs = MD.frame_files(d)
     if not fs:
         sys.exit(f"ไม่พบข้อมูลที่ {MD.DATA / d}")
-    print(f"เล่นย้อน {d} · {len(fs)} เฟรม")
-    for u, p in fs:
+    cut = int(len(fs) * (1.0 - tail))
+    print(f"เล่นย้อน {d} · {len(fs)} เฟรม · "
+          f"{cut} เฟรมแรกโมเดลเคยเห็นตอนเทรน · "
+          f"{len(fs) - cut} เฟรมท้ายไม่เคยเห็น (ใช้วัดผลจริง)")
+    for i, (u, p) in enumerate(fs):
+        if held_only and i < cut:
+            continue
         z = np.load(u)
         yield ({"counts": z["counts"], "pins": z["pins"]},
-               cv2.imread(str(p), cv2.IMREAD_UNCHANGED))
+               cv2.imread(str(p), cv2.IMREAD_UNCHANGED), i >= cut)
 
 
 def live_src(a):
@@ -246,7 +271,7 @@ def live_src(a):
         while True:
             ping = us.ping()
             got = th.get()
-            yield ping, (got[1] if got else None)
+            yield ping, (got[1] if got else None), None
     finally:
         th.stop_flag = True
         try:
@@ -272,6 +297,8 @@ def main():
     ap.add_argument("--fps", type=float, default=15.0)
     ap.add_argument("--thr", type=float, default=None)
     ap.add_argument("--smooth", type=int, default=5)
+    ap.add_argument("--held-only", action="store_true",
+                    help="ข้ามเฟรมที่โมเดลเคยเห็นตอนเทรน ดูเฉพาะของจริง")
     a = ap.parse_args()
 
     from model2 import MapPredictor
@@ -280,7 +307,9 @@ def main():
     if a.thr is None:
         a.thr = float(s.get("thr", 0.5))
         print(f"  ใช้จุดตัด {a.thr:.2f} (ค่าที่ดีที่สุดตอนเทรน)")
-    print(f"โมเดล {pr.params:,} พารามิเตอร์ · กันช่วง s{pr.holdout} ไว้ตอนเทรน")
+    how = (f"กัน {pr.tail:.0%} ท้ายของทุกช่วงไว้วัดผล" if pr.split == "time"
+           else f"กันทั้งช่วง s{pr.holdout} ไว้วัดผล")
+    print(f"โมเดล {pr.params:,} พารามิเตอร์ · {how}")
     print(f"  IoU {s.get('iou', float('nan')):.3f} · "
           f"ระยะพลาด {s.get('mae_cm', float('nan')):.1f} ซม. · "
           f"สูงเงา R2 {s.get('h_r2', float('nan')):+.3f} "
@@ -290,14 +319,19 @@ def main():
     foot = "q ออก · space หยุด/เล่นต่อ · s เซฟภาพ"
     if a.port:
         a.pr = pr
-        run, el = run_loop(live_src(a), pr, None, a.thr, a.fps, foot, live=True)
+        run, el = run_loop(live_src(a), pr, a.thr, a.fps, foot, live=True)
     else:
-        run, el = run_loop(replay_src(a.name, a.section), pr,
-                           pr.holdout == a.section, a.thr, a.fps, foot)
+        run, el = run_loop(replay_src(a.name, a.section, pr.tail, a.held_only),
+                           pr, a.thr, a.fps, foot)
     if run["n"]:
-        print(f"\nสรุป {run['n']} เฟรม ใน {el:.0f} วินาที: IoU {run['iou']:.3f} · "
-              f"ระยะพลาด {run['mae']:.1f} ซม. · "
+        what = ("เฉพาะเฟรมที่ไม่เคยเห็นตอนเทรน" if run.get("honest")
+                else "ทุกเฟรม (มีเฟรมที่โมเดลเคยเห็นปนอยู่ เลขจึงดูดีเกินจริง)")
+        print(f"\nสรุป {run['n']} เฟรม ใน {el:.0f} วินาที · {what}")
+        print(f"  IoU {run['iou']:.3f} · ระยะพลาด {run['mae']:.1f} ซม. · "
               f"สูงเงา กล้อง {run['h_true']:.1f} เทียบ เสียง {run['h_pred']:.1f} ช่อง")
+        if run.get("seen_n"):
+            print(f"  (ข้ามอีก {run['seen_n']} เฟรมที่โมเดลเคยเห็นตอนเทรน "
+                  f"ไม่เอามาคิดคะแนน)")
 
 
 if __name__ == "__main__":

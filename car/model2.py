@@ -180,6 +180,10 @@ class MapPredictor:
         self.net.load_state_dict(ck["model"])
         self.net.eval()
         self.holdout = int(ck.get("holdout", -1))
+        # วิธีแบ่ง train/test ที่ใช้จริง · หน้าจอต้องใช้บอกว่าเฟรมไหนเคยเห็นแล้ว
+        # ถ้าไม่รู้ จะไปเดาว่า "ทั้งช่วงนี้ไม่เคยเห็น" ซึ่งผิดสำหรับการแบ่งตามเวลา
+        self.split = str(ck.get("split", "section"))
+        self.tail = float(ck.get("tail", 0.25))
         self.params = int(ck.get("params", 0))
         self.score = ck.get("score", {})
         self.occ = deque(maxlen=max(int(smooth), 1))

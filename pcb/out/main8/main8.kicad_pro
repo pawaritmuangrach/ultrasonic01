@@ -1,0 +1,24 @@
+{
+  "board": {
+    "design_settings": {}
+  },
+  "boards": [],
+  "libraries": {
+    "pinned_footprint_libs": [],
+    "pinned_symbol_libs": []
+  },
+  "meta": {
+    "filename": "main8.kicad_pro",
+    "version": 1
+  },
+  "schematic": {
+    "legacy_lib_list": []
+  },
+  "sheets": [
+    [
+      "00000000-0000-0000-0000-000000000000",
+      ""
+    ]
+  ],
+  "text_variables": {}
+}

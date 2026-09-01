@@ -134,12 +134,37 @@ def pin_etype(kind, num, offs):
         else "input"
 
 
-def lib_name(kind, ref):
+BASE = {"res": "R", "cap": "C", "term": "TERM2", "header": "HDR20"}
+
+
+def variant(kind, offs):
+    """คำต่อท้ายชื่อสัญลักษณ์ตามทิศทางการวาง
+
+    **บั๊กที่ทำให้ผังพัง**: เดิมตัวต้านทานทั้งแนวนอน แนวตั้ง และแบบสลับขา
+    ใช้นิยามสัญลักษณ์ตัวเดียวกันหมด ตัวที่บันทึกทีหลังทับตัวก่อนหน้า
+    ขาของอีก 3 ทิศจึงไปโผล่ผิดที่ สายกับขาไม่บรรจบกัน ผังเลยกลายเป็นเส้นลอย ๆ
+    54 ตัวจาก 142 โดนแบบนี้
+
+    แยกนิยามตามทิศไปเลย ปลอดภัยกว่าการหมุนสัญลักษณ์ เพราะไม่ต้องพึ่ง
+    การแปลงพิกัดของโปรแกรมปลายทางว่าจะหมุนตรงกับที่เราคิดไหม
+    """
+    if kind in ("opamp", "opwr", "inv", "icpwr", "header"):
+        return ""
+    # ตั้งชื่อตาม **ทิศของขา 1 เทียบจุดอ้างอิง** ไม่ใช่ตามแกนที่ยาวกว่า
+    # เพราะเทอร์มินอลมีขาซ้อนกันแนวตั้งทั้งคู่ ต่างกันแค่อยู่ซ้ายหรือขวา
+    # ถ้าดูแกนที่ยาวกว่าจะได้ชื่อเดียวกันทั้งสองแบบ แล้วนิยามก็ทับกันอีก
+    dx, dy = offs["1"]
+    if abs(dx) >= abs(dy):
+        return "_R" if dx > 0 else "_L"
+    return "_U" if dy > 0 else "_D"
+
+
+def lib_name(kind, ref, offs=None):
     if kind in ("opamp", "opwr"):
         return "MCP6024"
     if kind in ("inv", "icpwr"):
         return "SN74HCT04N"
-    return {"res": "R", "cap": "C", "term": "TERM2", "header": "HDR20"}[kind]
+    return BASE[kind] + (variant(kind, offs) if offs else "")
 
 
 def unit_of(kind, val, offs):
@@ -158,14 +183,18 @@ def build_symbols(insts):
     """รวมชิ้นส่วนทั้งหมดเป็นนิยามสัญลักษณ์ · ชิปหลาย section = หลาย unit"""
     lib = {}
     for kind, ref, val, pins, anchor in insts:
-        name = lib_name(kind, ref)
         offs = {n: (snap((x - anchor[0]) * SCALE),
                     snap(-(y - anchor[1]) * SCALE)) for n, (x, y) in pins.items()}
+        name = lib_name(kind, ref, offs)
         unit = unit_of(kind, val, tuple(pins))
-        lib.setdefault(name, {})[unit] = (kind, offs)
+        prev = lib.setdefault(name, {}).get(unit)
+        if prev and prev[1] != offs:
+            raise SystemExit(f"สัญลักษณ์ {name} unit {unit} ถูกใช้กับสองรูปทรง "
+                             f"— นิยามจะทับกันแล้วขาไปผิดที่ ({ref})")
+        lib[name][unit] = (kind, offs)
     out = []
     for name, units in sorted(lib.items()):
-        pref = {"R": "R", "C": "C", "TERM2": "J", "HDR20": "J"}.get(name, "U")
+        pref = {"R": "R", "C": "C", "TERM": "J", "HDR2": "J"}.get(name[:4], "U")
         out.append(f'    (symbol {_q(name)} (pin_names (offset 0.508)) '
                    f'(in_bom yes) (on_board yes)')
         out.append(f'      (property "Reference" {_q(pref)} (at 0 6.35 0) '
@@ -188,19 +217,26 @@ def build_symbols(insts):
 
 
 # ---------------------------------------------------------------- ไฟล์ผัง
-def export(sheets, path, project="main8"):
-    """เขียนไฟล์ .kicad_sch หนึ่งไฟล์ รวมทุกแผ่นที่ให้มาวางต่อกันลงล่าง"""
+def export(placed, path, project="main8"):
+    """เขียนไฟล์ .kicad_sch หนึ่งไฟล์ · placed = [(แผ่น, เลื่อนแกน x, เลื่อนแกน y)]
+
+    วางเป็นคอลัมน์ได้ ไม่ใช่ต่อกันลงล่างอย่างเดียว เพราะถ้าเรียงลงล่างหมด
+    หน้ากระดาษจะกลายเป็นแถบสูง 2 เมตรกว้างครึ่งเมตร เปิดมาแล้วมองไม่เห็นอะไรเลย
+    """
     insts, wires, juncs, labels = [], [], [], []
-    dy = 0
-    for sh in sheets:
+    nc, ncpt = set(), []
+    for sh, dx, dy in placed:
+        for pin, net in sh.tied.items():
+            if net.startswith("NC_"):
+                nc.add(pin)
         for kind, ref, val, pins, anchor in sh.inst:
             insts.append((kind, ref, val,
-                          {n: (x, y + dy) for n, (x, y) in pins.items()},
-                          (anchor[0], anchor[1] + dy)))
-        wires += [((a[0], a[1] + dy), (b[0], b[1] + dy)) for a, b in sh.wires]
-        juncs += [(x, y + dy) for x, y in sh.juncs]
-        labels += [(x, y + dy, n) for x, y, n in sh.labels]
-        dy += sh.h + 200
+                          {n: (x + dx, y + dy) for n, (x, y) in pins.items()},
+                          (anchor[0] + dx, anchor[1] + dy)))
+        wires += [((a[0] + dx, a[1] + dy), (b[0] + dx, b[1] + dy))
+                  for a, b in sh.wires]
+        juncs += [(x + dx, y + dy) for x, y in sh.juncs]
+        labels += [(x + dx, y + dy, n) for x, y, n in sh.labels]
 
     dup = [r for r, c in
            _count(f"{k}:{r}" if k in ("opamp", "inv", "opwr", "icpwr") else r
@@ -209,9 +245,14 @@ def export(sheets, path, project="main8"):
         raise SystemExit(f"อ้างอิงซ้ำในผัง: {', '.join(sorted(dup))} "
                          f"— แผ่นที่ให้มาซ้อนทับกัน")
 
+    for _k, ref, _v, ps, _a in insts:
+        for n, (x, y) in ps.items():
+            if f"{ref}.{n}" in nc:
+                ncpt.append((x, y))
+    check_geometry(insts, wires, labels, nc)
     sym_defs, _lib = build_symbols(insts)
-    w = snap(max(sh.w for sh in sheets) * SCALE) + 40
-    h = snap(dy * SCALE) + 40
+    w = snap(max(sh.w + dx for sh, dx, _ in placed) * SCALE) + 40
+    h = snap(max(sh.h + dy for sh, _, dy in placed) * SCALE) + 40
     out = [f"(kicad_sch (version {VERSION}) (generator {_q('ultrasonic01')})",
            f"  (uuid {_uid(project)})",
            f"  (paper {_q('User')} {w} {h})",
@@ -229,13 +270,19 @@ def export(sheets, path, project="main8"):
     for x, y in juncs:
         out.append(f"  (junction (at {snap(x * SCALE)} {snap(y * SCALE)}) "
                    f"(diameter 0) (color 0 0 0 0) (uuid {_uid('j', x, y)}))")
+    # ขาที่ตั้งใจไม่ต่อ ต้องติดเครื่องหมายไว้ ไม่งั้นโปรแกรมจะเตือนว่าลืมต่อ
+    for x, y in ncpt:
+        out.append(f"  (no_connect (at {snap(x * SCALE)} {snap(y * SCALE)}) "
+                   f"(uuid {_uid('nc', x, y)}))")
     for x, y, name in labels:
         out.append(f"  (label {_q(name)} (at {snap(x * SCALE)} "
                    f"{snap(y * SCALE)} 0) {_eff(1.27, justify='left bottom')} "
                    f"(uuid {_uid('l', x, y, name)}))")
 
     for kind, ref, val, pins, anchor in insts:
-        name = lib_name(kind, ref)
+        offs = {n: (snap((x - anchor[0]) * SCALE),
+                    snap(-(y - anchor[1]) * SCALE)) for n, (x, y) in pins.items()}
+        name = lib_name(kind, ref, offs)
         unit = unit_of(kind, val, tuple(pins))
         ax, ay = snap(anchor[0] * SCALE), snap(anchor[1] * SCALE)
         uid = _uid("s", ref, unit, ax, ay)
@@ -259,6 +306,50 @@ def export(sheets, path, project="main8"):
     return len(insts), len(wires), len(labels)
 
 
+def check_geometry(insts, wires, labels, nc):
+    """ทุกขาต้องมีอะไรมาบรรจบจริงในพิกัดสุดท้าย
+
+    นี่คือตัวตรวจที่จะจับบั๊กเดิมได้ตั้งแต่แรก: schematic.py ตรวจว่า
+    **ขาไหนควรอยู่เน็ตอะไร** ซึ่งผ่านหมด แต่ไม่ได้ตรวจว่า
+    **สายไปบรรจบกับขาตรงพิกัดจริงหรือเปล่า** พอสัญลักษณ์ถูกนิยามผิดทิศ
+    ขาก็ย้ายที่ สายลอยอยู่เฉย ๆ และไม่มีอะไรร้อง
+
+    ขาหนึ่งนับว่าต่อแล้วถ้าเจอ ปลายสาย หรือ ป้ายชื่อเน็ต หรือ ขาอื่น ที่พิกัดเดียวกัน
+    """
+    def key(x, y):
+        return (snap(x * SCALE), snap(y * SCALE))
+
+    segs = [(key(*a), key(*b)) for a, b in wires]
+    ends = {p for seg in segs for p in seg}
+    lab = {key(x, y) for x, y, _ in labels}
+    pins = {}
+    for _k, ref, _v, ps, _a in insts:
+        for n, (x, y) in ps.items():
+            pins.setdefault(key(x, y), []).append(f"{ref}.{n}")
+
+    def on_a_wire(pt):
+        """ขาที่เกาะ **กลาง** สายก็ต่อถึงกัน ไม่ใช่ต้องอยู่ปลายสายเท่านั้น
+        เช่นคาปาที่ห้อยลงมาจากรางไฟตรงกลางราง"""
+        px, py = pt
+        for (ax, ay), (bx, by) in segs:
+            if ax == bx == px and min(ay, by) <= py <= max(ay, by):
+                return True
+            if ay == by == py and min(ax, bx) <= px <= max(ax, bx):
+                return True
+        return False
+
+    loose = [(pt, who) for pt, who in pins.items()
+             if pt not in ends and pt not in lab and len(who) < 2
+             and not all(p in nc for p in who) and not on_a_wire(pt)]
+    if loose:
+        for pt, who in loose[:12]:
+            print(f"  ขาลอย {who[0]} ที่ {pt} — ไม่มีสายหรือป้ายมาบรรจบ")
+        raise SystemExit(f"ขาที่ไม่มีอะไรต่อ {len(loose)} จาก {len(pins)} จุด "
+                         f"— ไฟล์ผังจะเปิดมาเป็นเส้นลอย ๆ ไม่สร้างไฟล์")
+    print(f"ตรวจพิกัด: ทุกขาใน {len(pins)} จุดมีสายหรือป้ายมาบรรจบจริง "
+          f"· ขาที่ตั้งใจไม่ต่อ {len(nc)} ขา ใส่เครื่องหมายไม่ต่อให้แล้ว")
+
+
 def _count(it):
     d = {}
     for v in it:
@@ -268,10 +359,12 @@ def _count(it):
 
 def main():
     import schematic as S
-    sheets = [S.sheet_power_tx(), S.sheet_vref_mcu(), S.sheet_rx_all()]
-    S.verify(sheets)
+    grid, tx, vref = S.sheet_rx_grid(), S.sheet_power_tx(), S.sheet_vref_mcu()
+    S.verify([grid, tx, vref])
+    placed = [(grid, 0, 0), (tx, grid.w + 120, 0),
+              (vref, grid.w + 120, tx.h + 160)]
     path = os.path.join(S.OUT, "main8.kicad_sch")
-    n, w, l = export(sheets, path)
+    n, w, l = export(placed, path)
     print(f"ไฟล์ผังวงจร: ชิ้นส่วน {n} · สาย {w} · ชื่อเน็ต {l}")
     print(f"  -> {path}")
 

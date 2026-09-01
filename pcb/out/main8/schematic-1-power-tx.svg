@@ -192,6 +192,7 @@
 <line x1="1310" y1="470" x2="1420" y2="470" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
 <circle cx="1370" cy="470" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
 <text x="1430" y="466" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="start" font-weight="bold">A3V3</text>
+<line x1="1370" y1="470" x2="1370" y2="490" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
 <line x1="1370" y1="490" x2="1370" y2="510" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
 <line x1="1370" y1="520" x2="1370" y2="540" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
 <line x1="1353" y1="510" x2="1387" y2="510" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>

@@ -76,6 +76,22 @@ def export(path, pl, r, w, h, x0, y0):
                    f" (effects (font (size 1 1) (thickness 0.15))))")
         out.append(f"    (fp_text value {_q(val)} (at 0 2.2) (layer {_q('F.Fab')})"
                    f" (effects (font (size 1 1) (thickness 0.15))))")
+        # กรอบตัวถังบนซิลค์สกรีน — ไม่มีอันนี้ บอร์ดจะมีแต่แป้นเปล่า ๆ
+        # ประกอบไม่ได้ เพราะมองไม่ออกว่าตัวไหนหันทางไหนและกินที่แค่ไหน
+        # และหน้าจอ 3D ก็จะโล่ง เพราะไม่มีอะไรให้วาดนอกจากแผ่นทองแดง
+        bx0, by0, bx1, by1 = pl["bodies"][ref]
+        box = [(bx0, by0), (bx1, by0), (bx1, by1), (bx0, by1)]
+        for (ax, ay), (cx, cy) in zip(box, box[1:] + box[:1]):
+            out.append(f"    (fp_line (start {round(_x(ax) - _x(px), 4)} "
+                       f"{round(_y(ay) - _y(py), 4)}) "
+                       f"(end {round(_x(cx) - _x(px), 4)} "
+                       f"{round(_y(cy) - _y(py), 4)}) "
+                       f"(stroke (width 0.15) (type solid)) "
+                       f"(layer {_q('F.SilkS')}))")
+        # จุดบอกขา 1 — ช่างดูจุดนี้ตัวเดียวก็รู้ว่าต้องหันชิปทางไหน
+        out.append(f"    (fp_circle (center -1.9 0) (end -1.4 0) "
+                   f"(stroke (width 0.3) (type solid)) (fill none) "
+                   f"(layer {_q('F.SilkS')}))")
         for p in pins:
             x, y, drill, dia = pl["pad"][p]
             num = p.split(".")[1]

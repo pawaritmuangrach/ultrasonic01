@@ -313,6 +313,7 @@ def sheet_power_tx():
     s.wire(rb, (1420, 470))
     s.dot(1370, 470)
     s.netlabel(1430, 466, "A3V3", "start", at=(1420, 470))
+    s.wire((1370, 470), (1370, 490))    # จากรางไฟ ลงมาที่คาปากรอง
     s.cap("CF", "100uF", 1370, 490, vert=True)
     s.wire((1370, 540), (1370, 576))
     s.gnd(1370, 576)
@@ -371,6 +372,7 @@ def rx_block(s, i, chip, sa, sb, ox, oy, notes=False):
         s.wire(pout, (fx, CY), (fx, FB), (fx - 80, FB))
         s.dot(fx, CY)                  # ขาออกแยกสองทาง: สเตจถัดไป กับ สายป้อนกลับ
         s.res(rf, "33k", gx + 80, FB, flip=True)
+        s.wire((gx, FB), (gx + 80, FB))     # จากปมขาลบ ไปถึงขาซ้ายของตัวป้อนกลับ
         s.wire((gx, FB), (gx, CY + 25), pminus)
         s.dot(gx, FB)
         s.res(rg, "1k", gx, LEG, vert=True)
@@ -392,6 +394,7 @@ def rx_block(s, i, chip, sa, sb, ox, oy, notes=False):
     s.wire((ox + 1240, CY), (ox + 1280, CY))
     s.wire((ox + 1360, CY), (ox + 1440, CY))
     s.dot(ox + 1440, CY)
+    s.wire((ox + 1440, CY), (ox + 1440, CY + 20))   # จากปมขาออก ลงมาที่คาปา
     s.cap(f"C{i}O", "1nF", ox + 1440, CY + 20, vert=True)
     s.wire((ox + 1440, CY + 70), (ox + 1440, CY + 100))
     s.gnd(ox + 1440, CY + 100)
@@ -433,20 +436,26 @@ def sheet_rx():
     return s
 
 
-def sheet_rx_all():
-    """ครบทั้ง 8 ช่อง — แผ่นนี้มีไว้ให้ไฟล์ผังที่เอาไปเปิดใน EasyEDA ครบถ้วน
+def sheet_rx_grid():
+    """ครบทั้ง 8 ช่อง วางเป็นตาราง 2 คอลัมน์ 4 แถว
 
-    คนอ่านให้ดูแผ่น 2 ที่มีช่องเดียวพร้อมคำอธิบายแทน แผ่นนี้ยาวเกินกว่าจะอ่านสบาย
-    แต่โปรแกรมต้องการครบทุกช่อง ไม่งั้นผังกับบอร์ดจะไม่ตรงกัน
+    แผ่นนี้มีไว้ให้ไฟล์ผังที่เอาไปเปิดใน EasyEDA ครบถ้วน คนอ่านให้ดูแผ่น 2
+    ที่มีช่องเดียวพร้อมคำอธิบายแทน
+
+    ที่ต้องวางเป็นตารางแทนการเรียงลงล่าง เพราะถ้าเรียง 8 ช่องต่อกันลงล่าง
+    หน้ากระดาษจะสูงเกือบ 1.4 เมตรแต่กว้างแค่ 40 ซม. เปิดมาแล้วเห็นเป็นแถบ
+    ผอม ๆ มองไม่ออกว่าอะไรเป็นอะไร
     """
-    s = Sheet("4-rx-all", 1580, 380 + 8 * 620,
+    COLW, ROWH = 1620, 620
+    s = Sheet("4-rx-grid", COLW + 1580, 380 + 4 * ROWH,
               "ภาครับครบทั้ง 8 ช่อง (สำหรับนำเข้า EasyEDA)",
               "ทุกช่องเหมือนกันหมด ต่างแค่หมายเลขและชิปที่ใช้")
     for i in range(1, 9):
         chip, sa, sb = rx_spec(i)
-        oy = 380 + (i - 1) * 620
-        rx_block(s, i, chip, sa, sb, 0, oy)
-        s.text(60, oy - 150, f"ช่องรับที่ {i}  ({'U%d' % chip} section {sa}+{sb})",
+        ox = COLW * ((i - 1) // 4)
+        oy = 380 + ROWH * ((i - 1) % 4)
+        rx_block(s, i, chip, sa, sb, ox, oy)
+        s.text(ox + 60, oy - 210, f"ช่องรับที่ {i}  (U{chip} section {sa}+{sb})",
                18, "start", True)
     return s
 
@@ -703,7 +712,7 @@ def to_png(sh, path, scale=1):
 
 def main():
     os.makedirs(OUT, exist_ok=True)
-    sheets = [sheet_power_tx(), sheet_rx(), sheet_vref_mcu(), sheet_rx_all()]
+    sheets = [sheet_power_tx(), sheet_rx(), sheet_vref_mcu(), sheet_rx_grid()]
     verify(sheets)
     for sh in sheets:
         for ext, fn in (("svg", lambda p: open(p, "w", encoding="utf-8")

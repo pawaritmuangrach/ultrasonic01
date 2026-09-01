@@ -228,3 +228,48 @@ if __name__ == "__main__":
     bad = sum(len(x["errs"]) for x in res)
     print(f"\n{'ทุกบอร์ดผ่านการตรวจ' if not bad else f'ยังมี {bad} ปัญหา'} "
           f"· ไฟล์อยู่ที่ {OUT}")
+
+
+def pack_kicad(name="main8"):
+    """แพ็คเป็น ZIP โครงการ KiCad ไฟล์เดียว ให้ EasyEDA นำเข้าทีเดียวได้ทั้งชุด
+
+    ในซิปมีสามไฟล์
+      .kicad_pro  ไฟล์โครงการ · ตัวนำเข้าใช้ผูกผังกับบอร์ดเข้าด้วยกัน
+      .kicad_sch  ผังวงจร      · ชิ้นส่วน สาย และชื่อเน็ต
+      .kicad_pcb  บอร์ด        · แป้น รู กรอบตัวถัง และขอบบอร์ด (ยังไม่เดินลาย)
+
+    ชื่อไฟล์ทั้งสามต้องเป็นชื่อเดียวกัน ไม่งั้นตัวนำเข้าจะไม่รู้ว่าคู่ไหนเป็นของกัน
+    """
+    import json
+    import zipfile
+    import kicad_sch
+    import schematic as S
+
+    d = os.path.join(OUT, name)
+    unrouted(name)
+    grid, tx, vref = S.sheet_rx_grid(), S.sheet_power_tx(), S.sheet_vref_mcu()
+    S.verify([grid, tx, vref])
+    sch = os.path.join(d, f"{name}.kicad_sch")
+    kicad_sch.export([(grid, 0, 0), (tx, grid.w + 120, 0),
+                      (vref, grid.w + 120, tx.h + 160)], sch)
+
+    pro = os.path.join(d, f"{name}.kicad_pro")
+    with open(pro, "w", encoding="utf-8") as f:
+        json.dump({"board": {"design_settings": {}}, "boards": [],
+                   "libraries": {"pinned_footprint_libs": [],
+                                 "pinned_symbol_libs": []},
+                   "meta": {"filename": f"{name}.kicad_pro", "version": 1},
+                   "schematic": {"legacy_lib_list": []},
+                   "sheets": [["00000000-0000-0000-0000-000000000000", ""]],
+                   "text_variables": {}}, f, indent=2)
+
+    zp = os.path.join(d, f"{name}-kicad.zip")
+    with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
+        for src, arc in ((pro, f"{name}/{name}.kicad_pro"),
+                         (sch, f"{name}/{name}.kicad_sch"),
+                         (os.path.join(d, f"{name}-unrouted.kicad_pcb"),
+                          f"{name}/{name}.kicad_pcb")):
+            z.write(src, arc)
+    mb = os.path.getsize(zp) / 1e6
+    print(f"ซิปโครงการ KiCad {mb:.2f} MB -> {zp}")
+    return zp

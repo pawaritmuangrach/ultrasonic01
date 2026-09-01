@@ -55,6 +55,7 @@
 <line x1="580" y1="530" x2="600" y2="530" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
 <text x="560" y="509" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R1F1</text>
 <text x="560" y="561" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="440" y1="530" x2="520" y2="530" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
 <line x1="440" y1="530" x2="440" y2="430" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
 <line x1="440" y1="430" x2="480" y2="430" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
 <circle cx="440" cy="530" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
@@ -103,6 +104,7 @@
 <line x1="1140" y1="530" x2="1160" y2="530" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
 <text x="1120" y="509" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R1F2</text>
 <text x="1120" y="561" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="1000" y1="530" x2="1080" y2="530" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
 <line x1="1000" y1="530" x2="1000" y2="430" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
 <line x1="1000" y1="430" x2="1040" y2="430" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
 <circle cx="1000" cy="530" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
@@ -136,6 +138,7 @@
 <line x1="1240" y1="405" x2="1280" y2="405" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
 <line x1="1360" y1="405" x2="1440" y2="405" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
 <circle cx="1440" cy="405" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="1440" y1="405" x2="1440" y2="425" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
 <line x1="1440" y1="425" x2="1440" y2="445" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
 <line x1="1440" y1="455" x2="1440" y2="475" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
 <line x1="1423" y1="445" x2="1457" y2="445" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>

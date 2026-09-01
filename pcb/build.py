@@ -100,6 +100,24 @@ def nets_md(pl, name):
     return "\n".join(out) + "\n"
 
 
+# หมายเหตุที่ต้องรู้ตอนซื้อและตอนประกอบ — ใส่ไว้ในไฟล์ BOM ของบอร์ดนั้นเลย
+# จะได้ไม่ต้องถือเอกสารสองใบตอนไปร้าน
+BOM_NOTES = {
+    "main8": """**ซื้อซ็อกเก็ต DIP-14 มาด้วย 6 ตัว** อย่าบัดกรีชิปลงบอร์ดตรง ๆ
+รูเหมือนกันเป๊ะ ใส่ซ็อกเก็ตแทนได้เลยไม่ต้องแก้บอร์ด เหตุผล:
+MCP6024 ไวต่อความร้อนตอนบัดกรี และถ้าชิปตัวไหนเสียก็ถอดเปลี่ยนได้ทันที
+ไม่ต้องดูดตะกั่ว 14 ขาบนบอร์ดที่มีแผ่นกราวด์ดูดความร้อน
+
+**JA กับ JB ใช้เฮดเดอร์ตัวเมีย 1x20 ระยะขา 2.54 มม.** สองแถวห่างกัน 17.78 มม.
+เป็นที่เสียบ STM32F103C8T6 (Blue Pill) ไม่ต้องบัดกรีบอร์ด STM32 ลงไปตรง ๆ
+จะได้ถอดไปแฟลชด้วย ST-Link ได้ และเปลี่ยนตัวได้ถ้าเสีย
+
+**เทอร์มินอลขันสกรู KF301 ระยะขา 5.08 มม. 12 ตัว** สำหรับ TX1-3 · RX1-8 · ไฟ 5V เข้า
+
+**ตัวต้านทาน 1/4W ระยะขา 7.62 มม.** ถ้าซื้อมาแล้วตัวยาวกว่านี้ ให้งอขาลงตรง ๆ ได้""",
+}
+
+
 def bom_md(pl, name, extra=""):
     rows = bom_rows(pl)
     out = [f"# {name} — รายการชิ้นส่วน", "", extra, "",
@@ -140,6 +158,12 @@ def unrouted(name):
     os.makedirs(d, exist_ok=True)
     out = os.path.join(d, f"{name}-unrouted.kicad_pcb")
     kicad_export(out, pl, r, w, h, x0, y0)
+    # บอร์ดที่ให้เครื่องมืออื่นเดินลายต่อจะไม่ได้ผ่าน build() จึงต้องเขียน
+    # เอกสารประกอบตรงนี้เอง ไม่งั้น BOM จะค้างเป็นรุ่นเก่าโดยไม่มีใครรู้
+    with open(os.path.join(d, "BOM.md"), "w", encoding="utf-8") as f:
+        f.write(bom_md(pl, name, BOM_NOTES.get(name, "")))
+    with open(os.path.join(d, "nets.md"), "w", encoding="utf-8") as f:
+        f.write(nets_md(pl, name))
     real = [n for n in pl["nets"] if not n.startswith("NC_")]
     print(f"{name}: {w:.1f} x {h:.1f} mm · ชิ้นส่วน {len(pl['fps'])} · "
           f"ขา {len(r.pads)} · เน็ตจริง {len(real)} · ยังไม่เดินลาย")
@@ -174,7 +198,7 @@ def build(name, verbose=True):
     with open(os.path.join(d, "nets.md"), "w", encoding="utf-8") as f:
         f.write(nets_md(pl, name))
     with open(os.path.join(d, "BOM.md"), "w", encoding="utf-8") as f:
-        f.write(bom_md(pl, name))
+        f.write(bom_md(pl, name, BOM_NOTES.get(name, "")))
     top = sum(1 for L, *_ in r.tracks if L == 0)
     if verbose:
         state = "ผ่าน" if not errs else f"{len(errs)} ปัญหา"

@@ -254,7 +254,7 @@ OPA = {"A": (2, 3, 1), "B": (6, 5, 7), "C": (9, 10, 8), "D": (13, 12, 14)}
 def _mcu_rows(parts, nets, nc):
     """เฮดเดอร์ตัวเมียสองแถวสำหรับเสียบ Blue Pill"""
     for ref, row in (("JA", BP_TOP), ("JB", BP_BOT)):
-        parts.append((ref, "Blue Pill", "HDR20"))
+        parts.append((ref, "1x20 female hdr", "HDR20"))
         for i, lab in enumerate(row, start=1):
             pin = f"{ref}.{i}"
             net = BP_NET.get(lab)
@@ -323,7 +323,7 @@ def main8():
     _mcu_rows(parts, nets, nc)
 
     # ---- ภาคส่ง: 74HCT04 หนึ่งตัว 6 เกต = 3 หัว
-    parts += [("U1", "74HCT04", "DIP14"),
+    parts += [("U1", "SN74HCT04N", "DIP14"),
               ("CD1", "100nF", "C_DISC"), ("CB1", "10uF", "C_ELEC"),
               ("JP", "5V IN", "TERM2")]
     gnd = ["U1.7", "CD1.2", "CB1.2", "JP.2"]
@@ -347,13 +347,13 @@ def main8():
         gnd += g
         vref += v
     for u in range(2, 6):
-        parts += [(f"U{u}", "MCP6024", "DIP14"),
+        parts += [(f"U{u}", "MCP6024-I/P", "DIP14"),
                   (f"CD{u}", "100nF", "C_DISC")]
         nets["A3V3"] += [f"U{u}.4", f"CD{u}.1"]
         gnd += [f"U{u}.11", f"CD{u}.2"]
 
     # ---- VREF: ตัวแบ่งครึ่ง แล้วบัฟเฟอร์ · section ที่เหลือผูกเป็นตัวตาม ไม่ปล่อยลอย
-    parts += [("U6", "MCP6024", "DIP14"), ("CD6", "100nF", "C_DISC"),
+    parts += [("U6", "MCP6024-I/P", "DIP14"), ("CD6", "100nF", "C_DISC"),
               ("RV1", "10k", "R_AXIAL"), ("RV2", "10k", "R_AXIAL"),
               ("CV1", "100nF", "C_DISC"), ("CB2", "10uF", "C_ELEC")]
     nets["A3V3"] += ["U6.4", "CD6.1", "RV1.1"]

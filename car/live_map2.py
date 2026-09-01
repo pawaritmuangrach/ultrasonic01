@@ -97,7 +97,8 @@ def stat(img, x, y, k, v, col=TRUE):
     _text(img, v, (x, y + 26), 0.72, col, 2)
 
 
-def render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps, banner, foot, thr, echo=None):
+def render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps, banner, foot, thr,
+           echo=None, cam_on=True):
     import cv2
     img = np.full((H, W, 3), BG, np.uint8)
     _text(img, "DEPTH MAP  -  from sound alone", (PAD, 44), 0.86, TRUE, 2)
@@ -112,8 +113,9 @@ def render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps, banner, foot, thr, ech
     pw, ph = PANEL
     top = 128
     cloud(img, PAD, top, pw, ph, occ_t.astype(float), dep_t, lut, 0.5,
-          "CAMERA   ground truth",
-          "reduced to the same grid the model predicts, so the two are comparable")
+          "CAMERA   ground truth" if cam_on else "CAMERA   off",
+          "reduced to the same grid the model predicts, so the two are comparable"
+          if cam_on else "running on sound alone - nothing to compare against")
     cloud(img, PAD + pw + 60, top, pw, ph, occ_p, dep_p, lut, thr,
           "SOUND   model prediction",
           f"a dot where the model is over {thr:.0%} sure - no camera data used")
@@ -121,16 +123,26 @@ def render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps, banner, foot, thr, ech
 
     yb = top + ph + 128
     cv2.line(img, (PAD, yb - 16), (W - PAD, yb - 16), LINE, 1)
-    stat(img, PAD, yb, "frames scored", f"{run['n']}")
-    stat(img, PAD + 200, yb, "overlap with truth", f"{run['iou']:.3f}",
-         GOOD if run["iou"] > sc.get("mean_iou", 1) else WARN)
-    stat(img, PAD + 430, yb, "mean depth error", f"{run['mae']:.0f} cm")
-    # ความสูงเงา = ท่าทาง · ตัวเลขนี้คือคำถามหลักของรอบนี้
-    stat(img, PAD + 650, yb, "shadow height  cam / sound",
-         f"{run['h_true']:.0f} / {run['h_pred']:.0f}",
-         GOOD if abs(run["h_true"] - run["h_pred"]) < 6 else WARN)
-    stat(img, PAD + 960, yb, "guessing the average gets",
-         f"{sc.get('mean_iou', float('nan')):.3f}", DIM)
+    if cam_on:
+        stat(img, PAD, yb, "frames scored", f"{run['n']}")
+        stat(img, PAD + 200, yb, "overlap with truth", f"{run['iou']:.3f}",
+             GOOD if run["iou"] > sc.get("mean_iou", 1) else WARN)
+        stat(img, PAD + 430, yb, "mean depth error", f"{run['mae']:.0f} cm")
+        # ความสูงเงา = ท่าทาง · ตัวเลขนี้คือคำถามหลักของรอบนี้
+        stat(img, PAD + 650, yb, "shadow height  cam / sound",
+             f"{run['h_true']:.0f} / {run['h_pred']:.0f}",
+             GOOD if abs(run["h_true"] - run["h_pred"]) < 6 else WARN)
+        stat(img, PAD + 960, yb, "guessing the average gets",
+             f"{sc.get('mean_iou', float('nan')):.3f}", DIM)
+    else:
+        # ไม่มีกล้อง = ไม่มีอะไรให้เทียบ · โชว์เลข 0.000 ไว้จะเข้าใจผิดว่าโมเดลพลาดหมด
+        stat(img, PAD, yb, "shadow height  from sound", f"{run['h_pred']:.0f}")
+        stat(img, PAD + 280, yb, "scored on held-out data",
+             f"IoU {sc.get('iou', float('nan')):.3f}", DIM)
+        stat(img, PAD + 560, yb, "depth error then",
+             f"{sc.get('mae_cm', float('nan')):.1f} cm", DIM)
+        stat(img, PAD + 800, yb, "pose R2 then",
+             f"{sc.get('h_r2', float('nan')):+.3f}", DIM)
     if echo is not None:
         stat(img, PAD + 1230, yb, "echo strength", f"{echo:.0f} mV",
              TRUE if echo >= 60 else WARN)
@@ -164,7 +176,7 @@ def banner_for(held):
             else ("TRAINED ON THIS  -  score inflated", WARN))
 
 
-def run_loop(src, pr, thr, fps_target, foot, live=False):
+def run_loop(src, pr, thr, fps_target, foot, live=False, cam_on=True):
     import cv2
     lut = depth_lut()
     sc = dict(pr.score)
@@ -206,7 +218,8 @@ def run_loop(src, pr, thr, fps_target, foot, live=False):
         fps = (len(hist) - 1) / max(hist[-1] - hist[0], 1e-6) if len(hist) > 1 else 0.0
         cv2.imshow("map2", render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps,
                                   bn, foot, thr,
-                                  echo=max(pr.amps) if live else None))
+                                  echo=max(pr.amps) if live else None,
+                                  cam_on=cam_on))
         wait = 0 if paused else (1 if live else max(1, int(1000 / fps_target)))
         k = cv2.waitKey(wait) & 0xFF
         if k in (27, ord("q")):
@@ -247,10 +260,14 @@ def replay_src(name, section, tail, held_only=False):
 
 
 def live_src(a):
-    """โหมดสด — ลำดับสำคัญ: ปิด GC ก่อนแตะกล้อง เปิดคืนหลังปิดกล้องแล้ว"""
-    from astra import Astra
+    """โหมดสด — ลำดับสำคัญ: ปิด GC ก่อนแตะกล้อง เปิดคืนหลังปิดกล้องแล้ว
+
+    a.no_cam = ใช้เสียงล้วน ไม่เปิดกล้องเลย ซึ่งคือเป้าหมายจริงของงานนี้
+    กล้องมีไว้เทียบว่าโมเดลถูกแค่ไหนเท่านั้น ไม่ได้เป็นส่วนหนึ่งของการทำงาน
+    ปิดกล้องแล้วเบาลง ไม่ต้องพึ่ง OpenNI และไม่มีปัญหาเธรดกล้องชนกับ torch
+    """
     from sync4 import Sync4
-    from record import DepthThread, _warmup
+    from record import _warmup
     pr = a.pr
     w, h = (int(v) for v in a.size.lower().split("x"))
     print(f"เปิดเซ็นเซอร์ {a.port} ...", flush=True)
@@ -260,25 +277,32 @@ def live_src(a):
     print("ซ้อมเส้นทางคำนวณก่อนเปิดกล้อง ...", flush=True)
     _warmup(Path(HERE) / "data", nsamp=us.samples, rate=us.rate)
     pr.warmup(us.samples)
-    print(f"เปิดกล้อง depth {w}x{h} ...", flush=True)
-    gc.disable()
-    cam = Astra(want_rgb=False, depth_size=(w, h))
-    th = DepthThread(cam, 1)
-    th.start()
-    time.sleep(0.6)
+    cam = th = None
+    if not a.no_cam:
+        from astra import Astra
+        from record import DepthThread
+        print(f"เปิดกล้อง depth {w}x{h} ...", flush=True)
+        gc.disable()
+        cam = Astra(want_rgb=False, depth_size=(w, h))
+        th = DepthThread(cam, 1)
+        th.start()
+        time.sleep(0.6)
+    else:
+        print("เสียงล้วน ไม่เปิดกล้อง", flush=True)
     print("เปิดหน้าต่างแล้ว — ยืนหน้าเซ็นเซอร์ได้เลย", flush=True)
     try:
         while True:
             ping = us.ping()
-            got = th.get()
+            got = th.get() if th else None
             yield ping, (got[1] if got else None), None
     finally:
-        th.stop_flag = True
-        try:
-            cam.close()
-        except Exception:
-            pass
-        gc.enable()
+        if th:
+            th.stop_flag = True
+            try:
+                cam.close()
+            except Exception:
+                pass
+            gc.enable()
         try:
             us.close()
         except Exception:
@@ -299,6 +323,8 @@ def main():
     ap.add_argument("--smooth", type=int, default=5)
     ap.add_argument("--held-only", action="store_true",
                     help="ข้ามเฟรมที่โมเดลเคยเห็นตอนเทรน ดูเฉพาะของจริง")
+    ap.add_argument("--no-cam", action="store_true",
+                    help="โหมดสดแบบเสียงล้วน ไม่เปิดกล้อง")
     a = ap.parse_args()
 
     from model2 import MapPredictor
@@ -319,7 +345,8 @@ def main():
     foot = "q ออก · space หยุด/เล่นต่อ · s เซฟภาพ"
     if a.port:
         a.pr = pr
-        run, el = run_loop(live_src(a), pr, a.thr, a.fps, foot, live=True)
+        run, el = run_loop(live_src(a), pr, a.thr, a.fps, foot, live=True,
+                           cam_on=not a.no_cam)
     else:
         run, el = run_loop(replay_src(a.name, a.section, pr.tail, a.held_only),
                            pr, a.thr, a.fps, foot)

@@ -1,0 +1,1117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1580" height="5340" viewBox="0 0 1580 5340">
+<rect width="1580" height="5340" fill="#ffffff"/>
+<text x="790.0" y="44" font-family="Tahoma, Arial, sans-serif" font-size="26" fill="#1a1a1a" text-anchor="middle" font-weight="bold">ภาครับครบทั้ง 8 ช่อง (สำหรับนำเข้า EasyEDA)</text>
+<text x="790.0" y="72" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="middle">ทุกช่องเหมือนกันหมด ต่างแค่หมายเลขและชิปที่ใช้</text>
+<rect x="60" y="364" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="91" cy="380" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="375" x2="96" y2="385" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="380" x2="152" y2="380" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="91" cy="416" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="411" x2="96" y2="421" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="416" x2="152" y2="416" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="91" y="354" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">K1</text>
+<text x="91" y="455" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">RX1</text>
+<line x1="152" y1="380" x2="200" y2="380" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="152" y1="416" x2="250" y2="416" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="416" x2="250" y2="470" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="470" x2="250" y2="484" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="239.0" y1="484" x2="261.0" y2="484" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="243.0" y1="491" x2="257.0" y2="491" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="247.0" y1="498" x2="253.0" y2="498" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="200" y1="380" x2="220" y2="380" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="380" x2="250" y2="380" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="220" y1="363" x2="220" y2="397" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="363" x2="230" y2="397" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="225" y="356" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">C1I</text>
+<text x="225" y="414" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">10nF</text>
+<line x1="250" y1="380" x2="330" y2="380" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="330" cy="380" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="317" y="270" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="330" y1="250" x2="330" y2="270" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="310" x2="330" y2="330" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="351" y="286" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R1B</text>
+<text x="351" y="304" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1M</text>
+<line x1="330" y1="380" x2="330" y2="330" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="250" x2="330" y2="200" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="330" y="190" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">VREF</text>
+<polygon points="500,359 500,451 582,405" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="513" y="389" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="513" y="437" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="530" y="413" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">A</text>
+<text x="526" y="347" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U2A</text>
+<line x1="480" y1="380" x2="500" y2="380" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="480" y1="430" x2="500" y2="430" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="582" y1="405" x2="602" y2="405" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="474" y="373" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">3</text>
+<text x="474" y="423" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">2</text>
+<text x="608" y="397" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">1</text>
+<line x1="330" y1="380" x2="480" y2="380" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="602" y1="405" x2="680" y2="405" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="405" x2="680" y2="530" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="530" x2="600" y2="530" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="680" cy="405" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="540" y="517" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="520" y1="530" x2="540" y2="530" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="580" y1="530" x2="600" y2="530" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="560" y="509" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R1F1</text>
+<text x="560" y="561" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="440" y1="530" x2="440" y2="430" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="430" x2="480" y2="430" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="440" cy="530" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="427" y="610" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="440" y1="590" x2="440" y2="610" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="650" x2="440" y2="670" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="461" y="626" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R1G1</text>
+<text x="461" y="644" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="440" y1="530" x2="440" y2="590" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="670" x2="440" y2="700" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="700" x2="440" y2="720" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="730" x2="440" y2="750" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="720" x2="457" y2="720" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="730" x2="457" y2="730" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="464" y="718" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C1G1</text>
+<text x="464" y="736" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="440" y1="750" x2="440" y2="780" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="780" x2="440" y2="794" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="429.0" y1="794" x2="451.0" y2="794" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="433.0" y1="801" x2="447.0" y2="801" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="437.0" y1="808" x2="443.0" y2="808" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<polygon points="1060,359 1060,451 1142,405" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="1073" y="389" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="1073" y="437" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="1090" y="413" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">B</text>
+<text x="1086" y="347" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U2B</text>
+<line x1="1040" y1="380" x2="1060" y2="380" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1040" y1="430" x2="1060" y2="430" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1142" y1="405" x2="1162" y2="405" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1034" y="373" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">5</text>
+<text x="1034" y="423" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">6</text>
+<text x="1168" y="397" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">7</text>
+<line x1="602" y1="405" x2="980" y2="405" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="405" x2="980" y2="380" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="380" x2="1040" y2="380" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1162" y1="405" x2="1240" y2="405" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="405" x2="1240" y2="530" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="530" x2="1160" y2="530" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1240" cy="405" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="1100" y="517" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1080" y1="530" x2="1100" y2="530" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1140" y1="530" x2="1160" y2="530" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1120" y="509" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R1F2</text>
+<text x="1120" y="561" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="1000" y1="530" x2="1000" y2="430" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="430" x2="1040" y2="430" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1000" cy="530" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="987" y="610" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1000" y1="590" x2="1000" y2="610" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="650" x2="1000" y2="670" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1021" y="626" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R1G2</text>
+<text x="1021" y="644" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="1000" y1="530" x2="1000" y2="590" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="670" x2="1000" y2="700" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="700" x2="1000" y2="720" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="730" x2="1000" y2="750" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="720" x2="1017" y2="720" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="730" x2="1017" y2="730" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1024" y="718" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C1G2</text>
+<text x="1024" y="736" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="1000" y1="750" x2="1000" y2="780" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="780" x2="1000" y2="794" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="989.0" y1="794" x2="1011.0" y2="794" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="993.0" y1="801" x2="1007.0" y2="801" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="997.0" y1="808" x2="1003.0" y2="808" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<rect x="1300" y="392" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1280" y1="405" x2="1300" y2="405" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1340" y1="405" x2="1360" y2="405" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1320" y="384" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R1O</text>
+<text x="1320" y="436" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">1k</text>
+<line x1="1240" y1="405" x2="1280" y2="405" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1360" y1="405" x2="1440" y2="405" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1440" cy="405" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="1440" y1="425" x2="1440" y2="445" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="455" x2="1440" y2="475" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="445" x2="1457" y2="445" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="455" x2="1457" y2="455" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1464" y="443" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C1O</text>
+<text x="1464" y="461" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1nF</text>
+<line x1="1440" y1="475" x2="1440" y2="505" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="505" x2="1440" y2="519" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1429.0" y1="519" x2="1451.0" y2="519" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1433.0" y1="526" x2="1447.0" y2="526" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1437.0" y1="533" x2="1443.0" y2="533" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1440" y="388" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">RX1_ADC</text>
+<text x="60" y="230" font-family="Tahoma, Arial, sans-serif" font-size="18" fill="#1a1a1a" text-anchor="start" font-weight="bold">ช่องรับที่ 1  (U2 section A+B)</text>
+<rect x="60" y="984" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="91" cy="1000" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="995" x2="96" y2="1005" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="1000" x2="152" y2="1000" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="91" cy="1036" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="1031" x2="96" y2="1041" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="1036" x2="152" y2="1036" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="91" y="974" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">K2</text>
+<text x="91" y="1075" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">RX2</text>
+<line x1="152" y1="1000" x2="200" y2="1000" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="152" y1="1036" x2="250" y2="1036" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="1036" x2="250" y2="1090" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="1090" x2="250" y2="1104" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="239.0" y1="1104" x2="261.0" y2="1104" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="243.0" y1="1111" x2="257.0" y2="1111" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="247.0" y1="1118" x2="253.0" y2="1118" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="200" y1="1000" x2="220" y2="1000" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="1000" x2="250" y2="1000" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="220" y1="983" x2="220" y2="1017" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="983" x2="230" y2="1017" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="225" y="976" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">C2I</text>
+<text x="225" y="1034" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">10nF</text>
+<line x1="250" y1="1000" x2="330" y2="1000" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="330" cy="1000" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="317" y="890" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="330" y1="870" x2="330" y2="890" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="930" x2="330" y2="950" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="351" y="906" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R2B</text>
+<text x="351" y="924" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1M</text>
+<line x1="330" y1="1000" x2="330" y2="950" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="870" x2="330" y2="820" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="330" y="810" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">VREF</text>
+<polygon points="500,979 500,1071 582,1025" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="513" y="1009" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="513" y="1057" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="530" y="1033" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">C</text>
+<text x="526" y="967" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U2C</text>
+<line x1="480" y1="1000" x2="500" y2="1000" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="480" y1="1050" x2="500" y2="1050" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="582" y1="1025" x2="602" y2="1025" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="474" y="993" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">10</text>
+<text x="474" y="1043" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">9</text>
+<text x="608" y="1017" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">8</text>
+<line x1="330" y1="1000" x2="480" y2="1000" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="602" y1="1025" x2="680" y2="1025" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="1025" x2="680" y2="1150" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="1150" x2="600" y2="1150" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="680" cy="1025" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="540" y="1137" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="520" y1="1150" x2="540" y2="1150" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="580" y1="1150" x2="600" y2="1150" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="560" y="1129" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R2F1</text>
+<text x="560" y="1181" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="440" y1="1150" x2="440" y2="1050" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="1050" x2="480" y2="1050" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="440" cy="1150" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="427" y="1230" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="440" y1="1210" x2="440" y2="1230" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="1270" x2="440" y2="1290" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="461" y="1246" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R2G1</text>
+<text x="461" y="1264" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="440" y1="1150" x2="440" y2="1210" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="1290" x2="440" y2="1320" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="1320" x2="440" y2="1340" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="1350" x2="440" y2="1370" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="1340" x2="457" y2="1340" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="1350" x2="457" y2="1350" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="464" y="1338" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C2G1</text>
+<text x="464" y="1356" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="440" y1="1370" x2="440" y2="1400" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="1400" x2="440" y2="1414" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="429.0" y1="1414" x2="451.0" y2="1414" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="433.0" y1="1421" x2="447.0" y2="1421" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="437.0" y1="1428" x2="443.0" y2="1428" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<polygon points="1060,979 1060,1071 1142,1025" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="1073" y="1009" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="1073" y="1057" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="1090" y="1033" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">D</text>
+<text x="1086" y="967" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U2D</text>
+<line x1="1040" y1="1000" x2="1060" y2="1000" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1040" y1="1050" x2="1060" y2="1050" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1142" y1="1025" x2="1162" y2="1025" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1034" y="993" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">12</text>
+<text x="1034" y="1043" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">13</text>
+<text x="1168" y="1017" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">14</text>
+<line x1="602" y1="1025" x2="980" y2="1025" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="1025" x2="980" y2="1000" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="1000" x2="1040" y2="1000" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1162" y1="1025" x2="1240" y2="1025" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="1025" x2="1240" y2="1150" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="1150" x2="1160" y2="1150" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1240" cy="1025" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="1100" y="1137" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1080" y1="1150" x2="1100" y2="1150" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1140" y1="1150" x2="1160" y2="1150" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1120" y="1129" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R2F2</text>
+<text x="1120" y="1181" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="1000" y1="1150" x2="1000" y2="1050" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="1050" x2="1040" y2="1050" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1000" cy="1150" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="987" y="1230" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1000" y1="1210" x2="1000" y2="1230" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="1270" x2="1000" y2="1290" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1021" y="1246" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R2G2</text>
+<text x="1021" y="1264" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="1000" y1="1150" x2="1000" y2="1210" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="1290" x2="1000" y2="1320" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="1320" x2="1000" y2="1340" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="1350" x2="1000" y2="1370" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="1340" x2="1017" y2="1340" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="1350" x2="1017" y2="1350" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1024" y="1338" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C2G2</text>
+<text x="1024" y="1356" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="1000" y1="1370" x2="1000" y2="1400" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="1400" x2="1000" y2="1414" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="989.0" y1="1414" x2="1011.0" y2="1414" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="993.0" y1="1421" x2="1007.0" y2="1421" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="997.0" y1="1428" x2="1003.0" y2="1428" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<rect x="1300" y="1012" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1280" y1="1025" x2="1300" y2="1025" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1340" y1="1025" x2="1360" y2="1025" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1320" y="1004" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R2O</text>
+<text x="1320" y="1056" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">1k</text>
+<line x1="1240" y1="1025" x2="1280" y2="1025" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1360" y1="1025" x2="1440" y2="1025" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1440" cy="1025" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="1440" y1="1045" x2="1440" y2="1065" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="1075" x2="1440" y2="1095" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="1065" x2="1457" y2="1065" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="1075" x2="1457" y2="1075" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1464" y="1063" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C2O</text>
+<text x="1464" y="1081" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1nF</text>
+<line x1="1440" y1="1095" x2="1440" y2="1125" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="1125" x2="1440" y2="1139" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1429.0" y1="1139" x2="1451.0" y2="1139" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1433.0" y1="1146" x2="1447.0" y2="1146" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1437.0" y1="1153" x2="1443.0" y2="1153" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1440" y="1008" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">RX2_ADC</text>
+<text x="60" y="850" font-family="Tahoma, Arial, sans-serif" font-size="18" fill="#1a1a1a" text-anchor="start" font-weight="bold">ช่องรับที่ 2  (U2 section C+D)</text>
+<rect x="60" y="1604" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="91" cy="1620" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="1615" x2="96" y2="1625" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="1620" x2="152" y2="1620" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="91" cy="1656" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="1651" x2="96" y2="1661" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="1656" x2="152" y2="1656" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="91" y="1594" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">K3</text>
+<text x="91" y="1695" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">RX3</text>
+<line x1="152" y1="1620" x2="200" y2="1620" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="152" y1="1656" x2="250" y2="1656" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="1656" x2="250" y2="1710" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="1710" x2="250" y2="1724" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="239.0" y1="1724" x2="261.0" y2="1724" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="243.0" y1="1731" x2="257.0" y2="1731" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="247.0" y1="1738" x2="253.0" y2="1738" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="200" y1="1620" x2="220" y2="1620" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="1620" x2="250" y2="1620" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="220" y1="1603" x2="220" y2="1637" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="1603" x2="230" y2="1637" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="225" y="1596" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">C3I</text>
+<text x="225" y="1654" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">10nF</text>
+<line x1="250" y1="1620" x2="330" y2="1620" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="330" cy="1620" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="317" y="1510" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="330" y1="1490" x2="330" y2="1510" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="1550" x2="330" y2="1570" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="351" y="1526" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R3B</text>
+<text x="351" y="1544" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1M</text>
+<line x1="330" y1="1620" x2="330" y2="1570" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="1490" x2="330" y2="1440" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="330" y="1430" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">VREF</text>
+<polygon points="500,1599 500,1691 582,1645" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="513" y="1629" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="513" y="1677" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="530" y="1653" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">A</text>
+<text x="526" y="1587" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U3A</text>
+<line x1="480" y1="1620" x2="500" y2="1620" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="480" y1="1670" x2="500" y2="1670" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="582" y1="1645" x2="602" y2="1645" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="474" y="1613" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">3</text>
+<text x="474" y="1663" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">2</text>
+<text x="608" y="1637" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">1</text>
+<line x1="330" y1="1620" x2="480" y2="1620" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="602" y1="1645" x2="680" y2="1645" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="1645" x2="680" y2="1770" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="1770" x2="600" y2="1770" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="680" cy="1645" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="540" y="1757" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="520" y1="1770" x2="540" y2="1770" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="580" y1="1770" x2="600" y2="1770" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="560" y="1749" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R3F1</text>
+<text x="560" y="1801" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="440" y1="1770" x2="440" y2="1670" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="1670" x2="480" y2="1670" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="440" cy="1770" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="427" y="1850" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="440" y1="1830" x2="440" y2="1850" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="1890" x2="440" y2="1910" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="461" y="1866" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R3G1</text>
+<text x="461" y="1884" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="440" y1="1770" x2="440" y2="1830" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="1910" x2="440" y2="1940" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="1940" x2="440" y2="1960" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="1970" x2="440" y2="1990" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="1960" x2="457" y2="1960" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="1970" x2="457" y2="1970" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="464" y="1958" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C3G1</text>
+<text x="464" y="1976" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="440" y1="1990" x2="440" y2="2020" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="2020" x2="440" y2="2034" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="429.0" y1="2034" x2="451.0" y2="2034" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="433.0" y1="2041" x2="447.0" y2="2041" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="437.0" y1="2048" x2="443.0" y2="2048" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<polygon points="1060,1599 1060,1691 1142,1645" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="1073" y="1629" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="1073" y="1677" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="1090" y="1653" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">B</text>
+<text x="1086" y="1587" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U3B</text>
+<line x1="1040" y1="1620" x2="1060" y2="1620" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1040" y1="1670" x2="1060" y2="1670" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1142" y1="1645" x2="1162" y2="1645" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1034" y="1613" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">5</text>
+<text x="1034" y="1663" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">6</text>
+<text x="1168" y="1637" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">7</text>
+<line x1="602" y1="1645" x2="980" y2="1645" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="1645" x2="980" y2="1620" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="1620" x2="1040" y2="1620" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1162" y1="1645" x2="1240" y2="1645" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="1645" x2="1240" y2="1770" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="1770" x2="1160" y2="1770" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1240" cy="1645" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="1100" y="1757" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1080" y1="1770" x2="1100" y2="1770" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1140" y1="1770" x2="1160" y2="1770" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1120" y="1749" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R3F2</text>
+<text x="1120" y="1801" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="1000" y1="1770" x2="1000" y2="1670" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="1670" x2="1040" y2="1670" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1000" cy="1770" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="987" y="1850" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1000" y1="1830" x2="1000" y2="1850" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="1890" x2="1000" y2="1910" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1021" y="1866" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R3G2</text>
+<text x="1021" y="1884" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="1000" y1="1770" x2="1000" y2="1830" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="1910" x2="1000" y2="1940" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="1940" x2="1000" y2="1960" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="1970" x2="1000" y2="1990" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="1960" x2="1017" y2="1960" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="1970" x2="1017" y2="1970" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1024" y="1958" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C3G2</text>
+<text x="1024" y="1976" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="1000" y1="1990" x2="1000" y2="2020" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="2020" x2="1000" y2="2034" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="989.0" y1="2034" x2="1011.0" y2="2034" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="993.0" y1="2041" x2="1007.0" y2="2041" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="997.0" y1="2048" x2="1003.0" y2="2048" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<rect x="1300" y="1632" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1280" y1="1645" x2="1300" y2="1645" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1340" y1="1645" x2="1360" y2="1645" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1320" y="1624" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R3O</text>
+<text x="1320" y="1676" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">1k</text>
+<line x1="1240" y1="1645" x2="1280" y2="1645" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1360" y1="1645" x2="1440" y2="1645" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1440" cy="1645" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="1440" y1="1665" x2="1440" y2="1685" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="1695" x2="1440" y2="1715" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="1685" x2="1457" y2="1685" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="1695" x2="1457" y2="1695" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1464" y="1683" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C3O</text>
+<text x="1464" y="1701" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1nF</text>
+<line x1="1440" y1="1715" x2="1440" y2="1745" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="1745" x2="1440" y2="1759" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1429.0" y1="1759" x2="1451.0" y2="1759" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1433.0" y1="1766" x2="1447.0" y2="1766" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1437.0" y1="1773" x2="1443.0" y2="1773" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1440" y="1628" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">RX3_ADC</text>
+<text x="60" y="1470" font-family="Tahoma, Arial, sans-serif" font-size="18" fill="#1a1a1a" text-anchor="start" font-weight="bold">ช่องรับที่ 3  (U3 section A+B)</text>
+<rect x="60" y="2224" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="91" cy="2240" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="2235" x2="96" y2="2245" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="2240" x2="152" y2="2240" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="91" cy="2276" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="2271" x2="96" y2="2281" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="2276" x2="152" y2="2276" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="91" y="2214" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">K4</text>
+<text x="91" y="2315" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">RX4</text>
+<line x1="152" y1="2240" x2="200" y2="2240" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="152" y1="2276" x2="250" y2="2276" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="2276" x2="250" y2="2330" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="2330" x2="250" y2="2344" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="239.0" y1="2344" x2="261.0" y2="2344" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="243.0" y1="2351" x2="257.0" y2="2351" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="247.0" y1="2358" x2="253.0" y2="2358" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="200" y1="2240" x2="220" y2="2240" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="2240" x2="250" y2="2240" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="220" y1="2223" x2="220" y2="2257" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="2223" x2="230" y2="2257" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="225" y="2216" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">C4I</text>
+<text x="225" y="2274" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">10nF</text>
+<line x1="250" y1="2240" x2="330" y2="2240" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="330" cy="2240" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="317" y="2130" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="330" y1="2110" x2="330" y2="2130" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="2170" x2="330" y2="2190" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="351" y="2146" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R4B</text>
+<text x="351" y="2164" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1M</text>
+<line x1="330" y1="2240" x2="330" y2="2190" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="2110" x2="330" y2="2060" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="330" y="2050" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">VREF</text>
+<polygon points="500,2219 500,2311 582,2265" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="513" y="2249" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="513" y="2297" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="530" y="2273" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">C</text>
+<text x="526" y="2207" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U3C</text>
+<line x1="480" y1="2240" x2="500" y2="2240" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="480" y1="2290" x2="500" y2="2290" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="582" y1="2265" x2="602" y2="2265" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="474" y="2233" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">10</text>
+<text x="474" y="2283" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">9</text>
+<text x="608" y="2257" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">8</text>
+<line x1="330" y1="2240" x2="480" y2="2240" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="602" y1="2265" x2="680" y2="2265" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="2265" x2="680" y2="2390" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="2390" x2="600" y2="2390" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="680" cy="2265" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="540" y="2377" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="520" y1="2390" x2="540" y2="2390" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="580" y1="2390" x2="600" y2="2390" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="560" y="2369" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R4F1</text>
+<text x="560" y="2421" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="440" y1="2390" x2="440" y2="2290" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="2290" x2="480" y2="2290" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="440" cy="2390" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="427" y="2470" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="440" y1="2450" x2="440" y2="2470" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="2510" x2="440" y2="2530" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="461" y="2486" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R4G1</text>
+<text x="461" y="2504" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="440" y1="2390" x2="440" y2="2450" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="2530" x2="440" y2="2560" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="2560" x2="440" y2="2580" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="2590" x2="440" y2="2610" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="2580" x2="457" y2="2580" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="2590" x2="457" y2="2590" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="464" y="2578" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C4G1</text>
+<text x="464" y="2596" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="440" y1="2610" x2="440" y2="2640" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="2640" x2="440" y2="2654" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="429.0" y1="2654" x2="451.0" y2="2654" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="433.0" y1="2661" x2="447.0" y2="2661" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="437.0" y1="2668" x2="443.0" y2="2668" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<polygon points="1060,2219 1060,2311 1142,2265" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="1073" y="2249" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="1073" y="2297" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="1090" y="2273" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">D</text>
+<text x="1086" y="2207" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U3D</text>
+<line x1="1040" y1="2240" x2="1060" y2="2240" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1040" y1="2290" x2="1060" y2="2290" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1142" y1="2265" x2="1162" y2="2265" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1034" y="2233" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">12</text>
+<text x="1034" y="2283" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">13</text>
+<text x="1168" y="2257" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">14</text>
+<line x1="602" y1="2265" x2="980" y2="2265" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="2265" x2="980" y2="2240" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="2240" x2="1040" y2="2240" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1162" y1="2265" x2="1240" y2="2265" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="2265" x2="1240" y2="2390" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="2390" x2="1160" y2="2390" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1240" cy="2265" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="1100" y="2377" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1080" y1="2390" x2="1100" y2="2390" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1140" y1="2390" x2="1160" y2="2390" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1120" y="2369" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R4F2</text>
+<text x="1120" y="2421" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="1000" y1="2390" x2="1000" y2="2290" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="2290" x2="1040" y2="2290" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1000" cy="2390" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="987" y="2470" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1000" y1="2450" x2="1000" y2="2470" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="2510" x2="1000" y2="2530" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1021" y="2486" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R4G2</text>
+<text x="1021" y="2504" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="1000" y1="2390" x2="1000" y2="2450" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="2530" x2="1000" y2="2560" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="2560" x2="1000" y2="2580" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="2590" x2="1000" y2="2610" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="2580" x2="1017" y2="2580" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="2590" x2="1017" y2="2590" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1024" y="2578" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C4G2</text>
+<text x="1024" y="2596" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="1000" y1="2610" x2="1000" y2="2640" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="2640" x2="1000" y2="2654" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="989.0" y1="2654" x2="1011.0" y2="2654" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="993.0" y1="2661" x2="1007.0" y2="2661" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="997.0" y1="2668" x2="1003.0" y2="2668" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<rect x="1300" y="2252" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1280" y1="2265" x2="1300" y2="2265" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1340" y1="2265" x2="1360" y2="2265" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1320" y="2244" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R4O</text>
+<text x="1320" y="2296" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">1k</text>
+<line x1="1240" y1="2265" x2="1280" y2="2265" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1360" y1="2265" x2="1440" y2="2265" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1440" cy="2265" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="1440" y1="2285" x2="1440" y2="2305" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="2315" x2="1440" y2="2335" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="2305" x2="1457" y2="2305" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="2315" x2="1457" y2="2315" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1464" y="2303" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C4O</text>
+<text x="1464" y="2321" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1nF</text>
+<line x1="1440" y1="2335" x2="1440" y2="2365" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="2365" x2="1440" y2="2379" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1429.0" y1="2379" x2="1451.0" y2="2379" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1433.0" y1="2386" x2="1447.0" y2="2386" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1437.0" y1="2393" x2="1443.0" y2="2393" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1440" y="2248" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">RX4_ADC</text>
+<text x="60" y="2090" font-family="Tahoma, Arial, sans-serif" font-size="18" fill="#1a1a1a" text-anchor="start" font-weight="bold">ช่องรับที่ 4  (U3 section C+D)</text>
+<rect x="60" y="2844" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="91" cy="2860" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="2855" x2="96" y2="2865" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="2860" x2="152" y2="2860" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="91" cy="2896" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="2891" x2="96" y2="2901" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="2896" x2="152" y2="2896" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="91" y="2834" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">K5</text>
+<text x="91" y="2935" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">RX5</text>
+<line x1="152" y1="2860" x2="200" y2="2860" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="152" y1="2896" x2="250" y2="2896" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="2896" x2="250" y2="2950" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="2950" x2="250" y2="2964" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="239.0" y1="2964" x2="261.0" y2="2964" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="243.0" y1="2971" x2="257.0" y2="2971" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="247.0" y1="2978" x2="253.0" y2="2978" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="200" y1="2860" x2="220" y2="2860" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="2860" x2="250" y2="2860" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="220" y1="2843" x2="220" y2="2877" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="2843" x2="230" y2="2877" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="225" y="2836" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">C5I</text>
+<text x="225" y="2894" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">10nF</text>
+<line x1="250" y1="2860" x2="330" y2="2860" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="330" cy="2860" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="317" y="2750" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="330" y1="2730" x2="330" y2="2750" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="2790" x2="330" y2="2810" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="351" y="2766" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R5B</text>
+<text x="351" y="2784" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1M</text>
+<line x1="330" y1="2860" x2="330" y2="2810" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="2730" x2="330" y2="2680" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="330" y="2670" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">VREF</text>
+<polygon points="500,2839 500,2931 582,2885" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="513" y="2869" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="513" y="2917" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="530" y="2893" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">A</text>
+<text x="526" y="2827" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U4A</text>
+<line x1="480" y1="2860" x2="500" y2="2860" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="480" y1="2910" x2="500" y2="2910" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="582" y1="2885" x2="602" y2="2885" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="474" y="2853" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">3</text>
+<text x="474" y="2903" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">2</text>
+<text x="608" y="2877" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">1</text>
+<line x1="330" y1="2860" x2="480" y2="2860" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="602" y1="2885" x2="680" y2="2885" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="2885" x2="680" y2="3010" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="3010" x2="600" y2="3010" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="680" cy="2885" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="540" y="2997" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="520" y1="3010" x2="540" y2="3010" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="580" y1="3010" x2="600" y2="3010" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="560" y="2989" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R5F1</text>
+<text x="560" y="3041" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="440" y1="3010" x2="440" y2="2910" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="2910" x2="480" y2="2910" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="440" cy="3010" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="427" y="3090" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="440" y1="3070" x2="440" y2="3090" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="3130" x2="440" y2="3150" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="461" y="3106" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R5G1</text>
+<text x="461" y="3124" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="440" y1="3010" x2="440" y2="3070" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="3150" x2="440" y2="3180" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="3180" x2="440" y2="3200" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="3210" x2="440" y2="3230" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="3200" x2="457" y2="3200" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="3210" x2="457" y2="3210" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="464" y="3198" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C5G1</text>
+<text x="464" y="3216" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="440" y1="3230" x2="440" y2="3260" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="3260" x2="440" y2="3274" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="429.0" y1="3274" x2="451.0" y2="3274" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="433.0" y1="3281" x2="447.0" y2="3281" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="437.0" y1="3288" x2="443.0" y2="3288" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<polygon points="1060,2839 1060,2931 1142,2885" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="1073" y="2869" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="1073" y="2917" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="1090" y="2893" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">B</text>
+<text x="1086" y="2827" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U4B</text>
+<line x1="1040" y1="2860" x2="1060" y2="2860" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1040" y1="2910" x2="1060" y2="2910" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1142" y1="2885" x2="1162" y2="2885" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1034" y="2853" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">5</text>
+<text x="1034" y="2903" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">6</text>
+<text x="1168" y="2877" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">7</text>
+<line x1="602" y1="2885" x2="980" y2="2885" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="2885" x2="980" y2="2860" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="2860" x2="1040" y2="2860" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1162" y1="2885" x2="1240" y2="2885" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="2885" x2="1240" y2="3010" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="3010" x2="1160" y2="3010" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1240" cy="2885" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="1100" y="2997" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1080" y1="3010" x2="1100" y2="3010" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1140" y1="3010" x2="1160" y2="3010" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1120" y="2989" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R5F2</text>
+<text x="1120" y="3041" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="1000" y1="3010" x2="1000" y2="2910" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="2910" x2="1040" y2="2910" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1000" cy="3010" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="987" y="3090" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1000" y1="3070" x2="1000" y2="3090" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="3130" x2="1000" y2="3150" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1021" y="3106" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R5G2</text>
+<text x="1021" y="3124" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="1000" y1="3010" x2="1000" y2="3070" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="3150" x2="1000" y2="3180" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="3180" x2="1000" y2="3200" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="3210" x2="1000" y2="3230" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="3200" x2="1017" y2="3200" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="3210" x2="1017" y2="3210" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1024" y="3198" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C5G2</text>
+<text x="1024" y="3216" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="1000" y1="3230" x2="1000" y2="3260" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="3260" x2="1000" y2="3274" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="989.0" y1="3274" x2="1011.0" y2="3274" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="993.0" y1="3281" x2="1007.0" y2="3281" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="997.0" y1="3288" x2="1003.0" y2="3288" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<rect x="1300" y="2872" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1280" y1="2885" x2="1300" y2="2885" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1340" y1="2885" x2="1360" y2="2885" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1320" y="2864" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R5O</text>
+<text x="1320" y="2916" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">1k</text>
+<line x1="1240" y1="2885" x2="1280" y2="2885" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1360" y1="2885" x2="1440" y2="2885" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1440" cy="2885" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="1440" y1="2905" x2="1440" y2="2925" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="2935" x2="1440" y2="2955" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="2925" x2="1457" y2="2925" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="2935" x2="1457" y2="2935" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1464" y="2923" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C5O</text>
+<text x="1464" y="2941" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1nF</text>
+<line x1="1440" y1="2955" x2="1440" y2="2985" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="2985" x2="1440" y2="2999" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1429.0" y1="2999" x2="1451.0" y2="2999" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1433.0" y1="3006" x2="1447.0" y2="3006" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1437.0" y1="3013" x2="1443.0" y2="3013" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1440" y="2868" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">RX5_ADC</text>
+<text x="60" y="2710" font-family="Tahoma, Arial, sans-serif" font-size="18" fill="#1a1a1a" text-anchor="start" font-weight="bold">ช่องรับที่ 5  (U4 section A+B)</text>
+<rect x="60" y="3464" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="91" cy="3480" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="3475" x2="96" y2="3485" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="3480" x2="152" y2="3480" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="91" cy="3516" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="3511" x2="96" y2="3521" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="3516" x2="152" y2="3516" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="91" y="3454" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">K6</text>
+<text x="91" y="3555" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">RX6</text>
+<line x1="152" y1="3480" x2="200" y2="3480" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="152" y1="3516" x2="250" y2="3516" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="3516" x2="250" y2="3570" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="3570" x2="250" y2="3584" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="239.0" y1="3584" x2="261.0" y2="3584" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="243.0" y1="3591" x2="257.0" y2="3591" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="247.0" y1="3598" x2="253.0" y2="3598" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="200" y1="3480" x2="220" y2="3480" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="3480" x2="250" y2="3480" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="220" y1="3463" x2="220" y2="3497" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="3463" x2="230" y2="3497" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="225" y="3456" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">C6I</text>
+<text x="225" y="3514" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">10nF</text>
+<line x1="250" y1="3480" x2="330" y2="3480" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="330" cy="3480" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="317" y="3370" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="330" y1="3350" x2="330" y2="3370" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="3410" x2="330" y2="3430" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="351" y="3386" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R6B</text>
+<text x="351" y="3404" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1M</text>
+<line x1="330" y1="3480" x2="330" y2="3430" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="3350" x2="330" y2="3300" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="330" y="3290" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">VREF</text>
+<polygon points="500,3459 500,3551 582,3505" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="513" y="3489" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="513" y="3537" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="530" y="3513" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">C</text>
+<text x="526" y="3447" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U4C</text>
+<line x1="480" y1="3480" x2="500" y2="3480" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="480" y1="3530" x2="500" y2="3530" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="582" y1="3505" x2="602" y2="3505" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="474" y="3473" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">10</text>
+<text x="474" y="3523" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">9</text>
+<text x="608" y="3497" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">8</text>
+<line x1="330" y1="3480" x2="480" y2="3480" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="602" y1="3505" x2="680" y2="3505" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="3505" x2="680" y2="3630" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="3630" x2="600" y2="3630" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="680" cy="3505" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="540" y="3617" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="520" y1="3630" x2="540" y2="3630" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="580" y1="3630" x2="600" y2="3630" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="560" y="3609" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R6F1</text>
+<text x="560" y="3661" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="440" y1="3630" x2="440" y2="3530" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="3530" x2="480" y2="3530" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="440" cy="3630" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="427" y="3710" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="440" y1="3690" x2="440" y2="3710" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="3750" x2="440" y2="3770" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="461" y="3726" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R6G1</text>
+<text x="461" y="3744" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="440" y1="3630" x2="440" y2="3690" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="3770" x2="440" y2="3800" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="3800" x2="440" y2="3820" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="3830" x2="440" y2="3850" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="3820" x2="457" y2="3820" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="3830" x2="457" y2="3830" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="464" y="3818" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C6G1</text>
+<text x="464" y="3836" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="440" y1="3850" x2="440" y2="3880" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="3880" x2="440" y2="3894" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="429.0" y1="3894" x2="451.0" y2="3894" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="433.0" y1="3901" x2="447.0" y2="3901" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="437.0" y1="3908" x2="443.0" y2="3908" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<polygon points="1060,3459 1060,3551 1142,3505" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="1073" y="3489" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="1073" y="3537" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="1090" y="3513" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">D</text>
+<text x="1086" y="3447" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U4D</text>
+<line x1="1040" y1="3480" x2="1060" y2="3480" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1040" y1="3530" x2="1060" y2="3530" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1142" y1="3505" x2="1162" y2="3505" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1034" y="3473" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">12</text>
+<text x="1034" y="3523" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">13</text>
+<text x="1168" y="3497" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">14</text>
+<line x1="602" y1="3505" x2="980" y2="3505" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="3505" x2="980" y2="3480" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="3480" x2="1040" y2="3480" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1162" y1="3505" x2="1240" y2="3505" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="3505" x2="1240" y2="3630" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="3630" x2="1160" y2="3630" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1240" cy="3505" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="1100" y="3617" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1080" y1="3630" x2="1100" y2="3630" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1140" y1="3630" x2="1160" y2="3630" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1120" y="3609" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R6F2</text>
+<text x="1120" y="3661" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="1000" y1="3630" x2="1000" y2="3530" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="3530" x2="1040" y2="3530" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1000" cy="3630" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="987" y="3710" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1000" y1="3690" x2="1000" y2="3710" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="3750" x2="1000" y2="3770" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1021" y="3726" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R6G2</text>
+<text x="1021" y="3744" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="1000" y1="3630" x2="1000" y2="3690" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="3770" x2="1000" y2="3800" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="3800" x2="1000" y2="3820" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="3830" x2="1000" y2="3850" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="3820" x2="1017" y2="3820" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="3830" x2="1017" y2="3830" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1024" y="3818" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C6G2</text>
+<text x="1024" y="3836" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="1000" y1="3850" x2="1000" y2="3880" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="3880" x2="1000" y2="3894" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="989.0" y1="3894" x2="1011.0" y2="3894" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="993.0" y1="3901" x2="1007.0" y2="3901" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="997.0" y1="3908" x2="1003.0" y2="3908" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<rect x="1300" y="3492" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1280" y1="3505" x2="1300" y2="3505" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1340" y1="3505" x2="1360" y2="3505" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1320" y="3484" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R6O</text>
+<text x="1320" y="3536" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">1k</text>
+<line x1="1240" y1="3505" x2="1280" y2="3505" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1360" y1="3505" x2="1440" y2="3505" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1440" cy="3505" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="1440" y1="3525" x2="1440" y2="3545" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="3555" x2="1440" y2="3575" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="3545" x2="1457" y2="3545" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="3555" x2="1457" y2="3555" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1464" y="3543" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C6O</text>
+<text x="1464" y="3561" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1nF</text>
+<line x1="1440" y1="3575" x2="1440" y2="3605" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="3605" x2="1440" y2="3619" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1429.0" y1="3619" x2="1451.0" y2="3619" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1433.0" y1="3626" x2="1447.0" y2="3626" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1437.0" y1="3633" x2="1443.0" y2="3633" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1440" y="3488" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">RX6_ADC</text>
+<text x="60" y="3330" font-family="Tahoma, Arial, sans-serif" font-size="18" fill="#1a1a1a" text-anchor="start" font-weight="bold">ช่องรับที่ 6  (U4 section C+D)</text>
+<rect x="60" y="4084" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="91" cy="4100" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="4095" x2="96" y2="4105" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="4100" x2="152" y2="4100" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="91" cy="4136" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="4131" x2="96" y2="4141" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="4136" x2="152" y2="4136" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="91" y="4074" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">K7</text>
+<text x="91" y="4175" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">RX7</text>
+<line x1="152" y1="4100" x2="200" y2="4100" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="152" y1="4136" x2="250" y2="4136" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="4136" x2="250" y2="4190" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="4190" x2="250" y2="4204" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="239.0" y1="4204" x2="261.0" y2="4204" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="243.0" y1="4211" x2="257.0" y2="4211" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="247.0" y1="4218" x2="253.0" y2="4218" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="200" y1="4100" x2="220" y2="4100" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="4100" x2="250" y2="4100" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="220" y1="4083" x2="220" y2="4117" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="4083" x2="230" y2="4117" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="225" y="4076" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">C7I</text>
+<text x="225" y="4134" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">10nF</text>
+<line x1="250" y1="4100" x2="330" y2="4100" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="330" cy="4100" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="317" y="3990" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="330" y1="3970" x2="330" y2="3990" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="4030" x2="330" y2="4050" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="351" y="4006" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R7B</text>
+<text x="351" y="4024" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1M</text>
+<line x1="330" y1="4100" x2="330" y2="4050" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="3970" x2="330" y2="3920" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="330" y="3910" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">VREF</text>
+<polygon points="500,4079 500,4171 582,4125" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="513" y="4109" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="513" y="4157" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="530" y="4133" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">A</text>
+<text x="526" y="4067" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U5A</text>
+<line x1="480" y1="4100" x2="500" y2="4100" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="480" y1="4150" x2="500" y2="4150" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="582" y1="4125" x2="602" y2="4125" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="474" y="4093" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">3</text>
+<text x="474" y="4143" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">2</text>
+<text x="608" y="4117" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">1</text>
+<line x1="330" y1="4100" x2="480" y2="4100" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="602" y1="4125" x2="680" y2="4125" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="4125" x2="680" y2="4250" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="4250" x2="600" y2="4250" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="680" cy="4125" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="540" y="4237" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="520" y1="4250" x2="540" y2="4250" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="580" y1="4250" x2="600" y2="4250" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="560" y="4229" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R7F1</text>
+<text x="560" y="4281" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="440" y1="4250" x2="440" y2="4150" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="4150" x2="480" y2="4150" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="440" cy="4250" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="427" y="4330" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="440" y1="4310" x2="440" y2="4330" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="4370" x2="440" y2="4390" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="461" y="4346" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R7G1</text>
+<text x="461" y="4364" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="440" y1="4250" x2="440" y2="4310" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="4390" x2="440" y2="4420" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="4420" x2="440" y2="4440" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="4450" x2="440" y2="4470" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="4440" x2="457" y2="4440" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="4450" x2="457" y2="4450" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="464" y="4438" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C7G1</text>
+<text x="464" y="4456" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="440" y1="4470" x2="440" y2="4500" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="4500" x2="440" y2="4514" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="429.0" y1="4514" x2="451.0" y2="4514" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="433.0" y1="4521" x2="447.0" y2="4521" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="437.0" y1="4528" x2="443.0" y2="4528" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<polygon points="1060,4079 1060,4171 1142,4125" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="1073" y="4109" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="1073" y="4157" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="1090" y="4133" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">B</text>
+<text x="1086" y="4067" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U5B</text>
+<line x1="1040" y1="4100" x2="1060" y2="4100" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1040" y1="4150" x2="1060" y2="4150" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1142" y1="4125" x2="1162" y2="4125" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1034" y="4093" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">5</text>
+<text x="1034" y="4143" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">6</text>
+<text x="1168" y="4117" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">7</text>
+<line x1="602" y1="4125" x2="980" y2="4125" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="4125" x2="980" y2="4100" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="4100" x2="1040" y2="4100" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1162" y1="4125" x2="1240" y2="4125" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="4125" x2="1240" y2="4250" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="4250" x2="1160" y2="4250" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1240" cy="4125" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="1100" y="4237" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1080" y1="4250" x2="1100" y2="4250" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1140" y1="4250" x2="1160" y2="4250" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1120" y="4229" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R7F2</text>
+<text x="1120" y="4281" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="1000" y1="4250" x2="1000" y2="4150" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="4150" x2="1040" y2="4150" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1000" cy="4250" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="987" y="4330" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1000" y1="4310" x2="1000" y2="4330" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="4370" x2="1000" y2="4390" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1021" y="4346" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R7G2</text>
+<text x="1021" y="4364" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="1000" y1="4250" x2="1000" y2="4310" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="4390" x2="1000" y2="4420" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="4420" x2="1000" y2="4440" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="4450" x2="1000" y2="4470" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="4440" x2="1017" y2="4440" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="4450" x2="1017" y2="4450" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1024" y="4438" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C7G2</text>
+<text x="1024" y="4456" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="1000" y1="4470" x2="1000" y2="4500" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="4500" x2="1000" y2="4514" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="989.0" y1="4514" x2="1011.0" y2="4514" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="993.0" y1="4521" x2="1007.0" y2="4521" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="997.0" y1="4528" x2="1003.0" y2="4528" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<rect x="1300" y="4112" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1280" y1="4125" x2="1300" y2="4125" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1340" y1="4125" x2="1360" y2="4125" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1320" y="4104" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R7O</text>
+<text x="1320" y="4156" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">1k</text>
+<line x1="1240" y1="4125" x2="1280" y2="4125" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1360" y1="4125" x2="1440" y2="4125" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1440" cy="4125" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="1440" y1="4145" x2="1440" y2="4165" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="4175" x2="1440" y2="4195" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="4165" x2="1457" y2="4165" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="4175" x2="1457" y2="4175" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1464" y="4163" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C7O</text>
+<text x="1464" y="4181" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1nF</text>
+<line x1="1440" y1="4195" x2="1440" y2="4225" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="4225" x2="1440" y2="4239" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1429.0" y1="4239" x2="1451.0" y2="4239" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1433.0" y1="4246" x2="1447.0" y2="4246" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1437.0" y1="4253" x2="1443.0" y2="4253" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1440" y="4108" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">RX7_ADC</text>
+<text x="60" y="3950" font-family="Tahoma, Arial, sans-serif" font-size="18" fill="#1a1a1a" text-anchor="start" font-weight="bold">ช่องรับที่ 7  (U5 section A+B)</text>
+<rect x="60" y="4704" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="91" cy="4720" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="4715" x2="96" y2="4725" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="4720" x2="152" y2="4720" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="91" cy="4756" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="4751" x2="96" y2="4761" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="4756" x2="152" y2="4756" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="91" y="4694" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">K8</text>
+<text x="91" y="4795" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">RX8</text>
+<line x1="152" y1="4720" x2="200" y2="4720" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="152" y1="4756" x2="250" y2="4756" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="4756" x2="250" y2="4810" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="250" y1="4810" x2="250" y2="4824" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="239.0" y1="4824" x2="261.0" y2="4824" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="243.0" y1="4831" x2="257.0" y2="4831" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="247.0" y1="4838" x2="253.0" y2="4838" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="200" y1="4720" x2="220" y2="4720" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="4720" x2="250" y2="4720" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="220" y1="4703" x2="220" y2="4737" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="230" y1="4703" x2="230" y2="4737" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="225" y="4696" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">C8I</text>
+<text x="225" y="4754" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">10nF</text>
+<line x1="250" y1="4720" x2="330" y2="4720" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="330" cy="4720" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="317" y="4610" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="330" y1="4590" x2="330" y2="4610" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="4650" x2="330" y2="4670" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="351" y="4626" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R8B</text>
+<text x="351" y="4644" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1M</text>
+<line x1="330" y1="4720" x2="330" y2="4670" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="330" y1="4590" x2="330" y2="4540" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="330" y="4530" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">VREF</text>
+<polygon points="500,4699 500,4791 582,4745" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="513" y="4729" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="513" y="4777" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="530" y="4753" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">C</text>
+<text x="526" y="4687" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U5C</text>
+<line x1="480" y1="4720" x2="500" y2="4720" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="480" y1="4770" x2="500" y2="4770" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="582" y1="4745" x2="602" y2="4745" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="474" y="4713" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">10</text>
+<text x="474" y="4763" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">9</text>
+<text x="608" y="4737" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">8</text>
+<line x1="330" y1="4720" x2="480" y2="4720" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="602" y1="4745" x2="680" y2="4745" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="4745" x2="680" y2="4870" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="680" y1="4870" x2="600" y2="4870" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="680" cy="4745" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="540" y="4857" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="520" y1="4870" x2="540" y2="4870" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="580" y1="4870" x2="600" y2="4870" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="560" y="4849" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R8F1</text>
+<text x="560" y="4901" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="440" y1="4870" x2="440" y2="4770" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="4770" x2="480" y2="4770" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="440" cy="4870" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="427" y="4950" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="440" y1="4930" x2="440" y2="4950" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="4990" x2="440" y2="5010" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="461" y="4966" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R8G1</text>
+<text x="461" y="4984" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="440" y1="4870" x2="440" y2="4930" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="5010" x2="440" y2="5040" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="5040" x2="440" y2="5060" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="5070" x2="440" y2="5090" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="5060" x2="457" y2="5060" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="423" y1="5070" x2="457" y2="5070" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="464" y="5058" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C8G1</text>
+<text x="464" y="5076" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="440" y1="5090" x2="440" y2="5120" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="440" y1="5120" x2="440" y2="5134" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="429.0" y1="5134" x2="451.0" y2="5134" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="433.0" y1="5141" x2="447.0" y2="5141" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="437.0" y1="5148" x2="443.0" y2="5148" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<polygon points="1060,4699 1060,4791 1142,4745" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="1073" y="4729" font-family="Tahoma, Arial, sans-serif" font-size="21" fill="#1a1a1a" text-anchor="start">+</text>
+<text x="1073" y="4777" font-family="Tahoma, Arial, sans-serif" font-size="24" fill="#1a1a1a" text-anchor="start">-</text>
+<text x="1090" y="4753" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="start" font-weight="bold">D</text>
+<text x="1086" y="4687" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U5D</text>
+<line x1="1040" y1="4720" x2="1060" y2="4720" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1040" y1="4770" x2="1060" y2="4770" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1142" y1="4745" x2="1162" y2="4745" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1034" y="4713" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">12</text>
+<text x="1034" y="4763" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="end">13</text>
+<text x="1168" y="4737" font-family="Tahoma, Arial, sans-serif" font-size="11" fill="#8a8a8a" text-anchor="start">14</text>
+<line x1="602" y1="4745" x2="980" y2="4745" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="4745" x2="980" y2="4720" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="980" y1="4720" x2="1040" y2="4720" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1162" y1="4745" x2="1240" y2="4745" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="4745" x2="1240" y2="4870" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1240" y1="4870" x2="1160" y2="4870" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1240" cy="4745" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="1100" y="4857" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1080" y1="4870" x2="1100" y2="4870" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1140" y1="4870" x2="1160" y2="4870" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1120" y="4849" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R8F2</text>
+<text x="1120" y="4901" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">33k</text>
+<line x1="1000" y1="4870" x2="1000" y2="4770" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="4770" x2="1040" y2="4770" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1000" cy="4870" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<rect x="987" y="4950" width="26" height="40" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1000" y1="4930" x2="1000" y2="4950" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="4990" x2="1000" y2="5010" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1021" y="4966" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">R8G2</text>
+<text x="1021" y="4984" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1k</text>
+<line x1="1000" y1="4870" x2="1000" y2="4930" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="5010" x2="1000" y2="5040" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="5040" x2="1000" y2="5060" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="5070" x2="1000" y2="5090" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="5060" x2="1017" y2="5060" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="983" y1="5070" x2="1017" y2="5070" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1024" y="5058" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C8G2</text>
+<text x="1024" y="5076" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<line x1="1000" y1="5090" x2="1000" y2="5120" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1000" y1="5120" x2="1000" y2="5134" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="989.0" y1="5134" x2="1011.0" y2="5134" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="993.0" y1="5141" x2="1007.0" y2="5141" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="997.0" y1="5148" x2="1003.0" y2="5148" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<rect x="1300" y="4732" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1280" y1="4745" x2="1300" y2="4745" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1340" y1="4745" x2="1360" y2="4745" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1320" y="4724" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">R8O</text>
+<text x="1320" y="4776" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">1k</text>
+<line x1="1240" y1="4745" x2="1280" y2="4745" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1360" y1="4745" x2="1440" y2="4745" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1440" cy="4745" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="1440" y1="4765" x2="1440" y2="4785" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="4795" x2="1440" y2="4815" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="4785" x2="1457" y2="4785" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1423" y1="4795" x2="1457" y2="4795" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1464" y="4783" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">C8O</text>
+<text x="1464" y="4801" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">1nF</text>
+<line x1="1440" y1="4815" x2="1440" y2="4845" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1440" y1="4845" x2="1440" y2="4859" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1429.0" y1="4859" x2="1451.0" y2="4859" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1433.0" y1="4866" x2="1447.0" y2="4866" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1437.0" y1="4873" x2="1443.0" y2="4873" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1440" y="4728" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="middle" font-weight="bold">RX8_ADC</text>
+<text x="60" y="4570" font-family="Tahoma, Arial, sans-serif" font-size="18" fill="#1a1a1a" text-anchor="start" font-weight="bold">ช่องรับที่ 8  (U5 section C+D)</text>
+</svg>

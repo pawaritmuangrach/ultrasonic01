@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1580" height="920" viewBox="0 0 1580 920">
+<rect width="1580" height="920" fill="#ffffff"/>
+<text x="790.0" y="44" font-family="Tahoma, Arial, sans-serif" font-size="26" fill="#1a1a1a" text-anchor="middle" font-weight="bold">แผ่น 1/3 · ไฟเลี้ยง และภาคส่ง 3 หัว</text>
+<text x="790.0" y="72" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#8a8a8a" text-anchor="middle">74HCT04 หนึ่งตัวมี 6 เกต ใช้เกตคู่กันต่อ 1 หัวส่ง จึงได้ 3 หัวพอดี</text>
+<rect x="60" y="156" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="91" cy="172" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="167" x2="96" y2="177" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="172" x2="152" y2="172" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="91" cy="208" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="86" y1="203" x2="96" y2="213" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="122" y1="208" x2="152" y2="208" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="91" y="146" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">JP</text>
+<text x="91" y="247" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">5V เข้า</text>
+<line x1="240" y1="152" x2="1210" y2="152" stroke="#2a7a2a" stroke-width="3.2" stroke-linecap="round"/>
+<text x="228" y="157" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#2a7a2a" text-anchor="end" font-weight="bold">P5V</text>
+<line x1="152" y1="172" x2="240" y2="172" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="240" y1="172" x2="240" y2="152" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="240" cy="152" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="152" y1="208" x2="320" y2="208" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="320" y1="208" x2="320" y2="262" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="320" y1="262" x2="320" y2="276" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="309.0" y1="276" x2="331.0" y2="276" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="313.0" y1="283" x2="327.0" y2="283" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="317.0" y1="290" x2="323.0" y2="290" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="420" y1="152" x2="420" y2="172" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="420" y1="182" x2="420" y2="202" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="403" y1="172" x2="437" y2="172" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="403" y1="182" x2="437" y2="182" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="444" y="170" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">CB1</text>
+<text x="444" y="188" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">10uF</text>
+<circle cx="420" cy="152" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="420" y1="202" x2="420" y2="240" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="420" y1="240" x2="420" y2="254" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="409.0" y1="254" x2="431.0" y2="254" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="413.0" y1="261" x2="427.0" y2="261" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="417.0" y1="268" x2="423.0" y2="268" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="520" y1="152" x2="520" y2="172" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="520" y1="182" x2="520" y2="202" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="503" y1="172" x2="537" y2="172" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="503" y1="182" x2="537" y2="182" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="544" y="170" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">CD1</text>
+<text x="544" y="188" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100nF</text>
+<circle cx="520" cy="152" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="520" y1="202" x2="520" y2="240" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="520" y1="240" x2="520" y2="254" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="509.0" y1="254" x2="531.0" y2="254" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="513.0" y1="261" x2="527.0" y2="261" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="517.0" y1="268" x2="523.0" y2="268" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="600" y="200" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#8a8a8a" text-anchor="start">คาปาคู่นี้จ่ายกระแสพุ่งตอนเกตสลับสถานะ</text>
+<text x="600" y="222" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#8a8a8a" text-anchor="start">ตัวใหญ่เก็บพลังไว้ ตัวเล็กตอบสนองเร็ว ต้องมีทั้งคู่</text>
+<rect x="1060" y="196" width="120" height="70" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<text x="1120" y="228" font-family="Tahoma, Arial, sans-serif" font-size="17" fill="#1a1a1a" text-anchor="middle" font-weight="bold">U1</text>
+<text x="1120" y="250" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">SN74HCT04N</text>
+<line x1="1120" y1="152" x2="1120" y2="196" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1120" cy="152" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<line x1="1120" y1="266" x2="1120" y2="300" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1120" y1="300" x2="1120" y2="314" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1109.0" y1="314" x2="1131.0" y2="314" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1113.0" y1="321" x2="1127.0" y2="321" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1117.0" y1="328" x2="1123.0" y2="328" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1196" y="210" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="start">ขา 14 = ไฟเลี้ยง</text>
+<text x="1196" y="258" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="start">ขา 7 = กราวด์</text>
+<text x="60" y="346" font-family="Tahoma, Arial, sans-serif" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="bold">หัวส่งที่ 1</text>
+<polygon points="250,370 250,430 306,400" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="313" cy="400" r="7" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="230" y1="400" x2="250" y2="400" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="320" y1="400" x2="340" y2="400" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="280" y="360" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">ขา 1 -&gt; 2</text>
+<polygon points="430,370 430,430 486,400" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="493" cy="400" r="7" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="410" y1="400" x2="430" y2="400" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="500" y1="400" x2="520" y2="400" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="460" y="360" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">ขา 3 -&gt; 4</text>
+<line x1="150" y1="400" x2="230" y2="400" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="144" y="391" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="end" font-weight="bold">TX1_IN</text>
+<line x1="340" y1="400" x2="410" y2="400" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="390" y="387" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle" font-weight="bold">TX1_MID</text>
+<rect x="620" y="387" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="600" y1="400" x2="620" y2="400" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="660" y1="400" x2="680" y2="400" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="640" y="379" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">RT1</text>
+<text x="640" y="431" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">100R</text>
+<line x1="520" y1="400" x2="600" y2="400" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<rect x="830" y="366" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="861" cy="382" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="856" y1="377" x2="866" y2="387" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="830" y1="382" x2="800" y2="382" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="861" cy="418" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="856" y1="413" x2="866" y2="423" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="830" y1="418" x2="800" y2="418" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="861" y="356" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">T1</text>
+<text x="861" y="457" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">TX1</text>
+<line x1="680" y1="400" x2="740" y2="400" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="740" y1="400" x2="740" y2="382" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="740" y1="382" x2="800" y2="382" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="800" y1="418" x2="776" y2="418" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="776" y1="418" x2="776" y2="458" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="776" y1="458" x2="776" y2="472" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="765.0" y1="472" x2="787.0" y2="472" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="769.0" y1="479" x2="783.0" y2="479" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="773.0" y1="486" x2="779.0" y2="486" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="925" y="394" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="start" font-weight="bold">-&gt; หัวส่ง TX1</text>
+<text x="60" y="511" font-family="Tahoma, Arial, sans-serif" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="bold">หัวส่งที่ 2</text>
+<polygon points="250,535 250,595 306,565" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="313" cy="565" r="7" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="230" y1="565" x2="250" y2="565" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="320" y1="565" x2="340" y2="565" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="280" y="525" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">ขา 13 -&gt; 12</text>
+<polygon points="430,535 430,595 486,565" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="493" cy="565" r="7" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="410" y1="565" x2="430" y2="565" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="500" y1="565" x2="520" y2="565" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="460" y="525" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">ขา 11 -&gt; 10</text>
+<line x1="150" y1="565" x2="230" y2="565" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="144" y="556" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="end" font-weight="bold">TX2_IN</text>
+<line x1="340" y1="565" x2="410" y2="565" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="390" y="552" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle" font-weight="bold">TX2_MID</text>
+<rect x="620" y="552" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="600" y1="565" x2="620" y2="565" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="660" y1="565" x2="680" y2="565" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="640" y="544" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">RT2</text>
+<text x="640" y="596" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">100R</text>
+<line x1="520" y1="565" x2="600" y2="565" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<rect x="830" y="531" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="861" cy="547" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="856" y1="542" x2="866" y2="552" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="830" y1="547" x2="800" y2="547" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="861" cy="583" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="856" y1="578" x2="866" y2="588" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="830" y1="583" x2="800" y2="583" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="861" y="521" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">T2</text>
+<text x="861" y="622" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">TX2</text>
+<line x1="680" y1="565" x2="740" y2="565" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="740" y1="565" x2="740" y2="547" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="740" y1="547" x2="800" y2="547" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="800" y1="583" x2="776" y2="583" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="776" y1="583" x2="776" y2="623" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="776" y1="623" x2="776" y2="637" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="765.0" y1="637" x2="787.0" y2="637" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="769.0" y1="644" x2="783.0" y2="644" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="773.0" y1="651" x2="779.0" y2="651" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="925" y="559" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="start" font-weight="bold">-&gt; หัวส่ง TX2</text>
+<text x="60" y="676" font-family="Tahoma, Arial, sans-serif" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="bold">หัวส่งที่ 3</text>
+<polygon points="250,700 250,760 306,730" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="313" cy="730" r="7" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="230" y1="730" x2="250" y2="730" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="320" y1="730" x2="340" y2="730" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="280" y="690" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">ขา 5 -&gt; 6</text>
+<polygon points="430,700 430,760 486,730" fill="#f2f5fa" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="493" cy="730" r="7" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="410" y1="730" x2="430" y2="730" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="500" y1="730" x2="520" y2="730" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="460" y="690" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle">ขา 9 -&gt; 8</text>
+<line x1="150" y1="730" x2="230" y2="730" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="144" y="721" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="end" font-weight="bold">TX3_IN</text>
+<line x1="340" y1="730" x2="410" y2="730" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="390" y="717" font-family="Tahoma, Arial, sans-serif" font-size="12" fill="#8a8a8a" text-anchor="middle" font-weight="bold">TX3_MID</text>
+<rect x="620" y="717" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="600" y1="730" x2="620" y2="730" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="660" y1="730" x2="680" y2="730" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="640" y="709" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">RT3</text>
+<text x="640" y="761" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">100R</text>
+<line x1="520" y1="730" x2="600" y2="730" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<rect x="830" y="696" width="62" height="68" fill="#fff3e3" stroke="#1a1a1a" stroke-width="2.0"/>
+<circle cx="861" cy="712" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="856" y1="707" x2="866" y2="717" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="830" y1="712" x2="800" y2="712" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="861" cy="748" r="9" fill="#ffffff" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="856" y1="743" x2="866" y2="753" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="830" y1="748" x2="800" y2="748" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="861" y="686" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle" font-weight="bold">T3</text>
+<text x="861" y="787" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="middle" font-weight="bold">TX3</text>
+<line x1="680" y1="730" x2="740" y2="730" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="740" y1="730" x2="740" y2="712" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="740" y1="712" x2="800" y2="712" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="800" y1="748" x2="776" y2="748" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="776" y1="748" x2="776" y2="788" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="776" y1="788" x2="776" y2="802" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="765.0" y1="802" x2="787.0" y2="802" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="769.0" y1="809" x2="783.0" y2="809" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="773.0" y1="816" x2="779.0" y2="816" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="925" y="724" font-family="Tahoma, Arial, sans-serif" font-size="15" fill="#c01c28" text-anchor="start" font-weight="bold">-&gt; หัวส่ง TX3</text>
+<text x="60" y="878" font-family="Tahoma, Arial, sans-serif" font-size="14" fill="#8a8a8a" text-anchor="start">เกตสองตัวต่ออนุกรม = กลับเฟสสองครั้ง กลับมาเฟสเดิม แต่ขับกระแสได้เป็นสองเท่า · 100R กันกระแสพุ่งตอนเริ่มขับ เพราะหัวส่งมีพฤติกรรมเป็นตัวเก็บประจุ</text>
+<text x="1120" y="400" font-family="Tahoma, Arial, sans-serif" font-size="17" fill="#1a1a1a" text-anchor="start" font-weight="bold">ไฟเลี้ยงภาครับ · กรองแยกจากไฟดิจิทัล</text>
+<line x1="1190" y1="470" x2="1230" y2="470" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1182" y="466" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="end" font-weight="bold">MCU3V3</text>
+<rect x="1250" y="457" width="40" height="26" fill="none" stroke="#1a1a1a" stroke-width="2.0"/>
+<line x1="1230" y1="470" x2="1250" y2="470" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1290" y1="470" x2="1310" y2="470" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1270" y="449" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="middle">RF</text>
+<text x="1270" y="501" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="middle">10R</text>
+<line x1="1310" y1="470" x2="1420" y2="470" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<circle cx="1370" cy="470" r="4.5" fill="#1a5fb4" stroke="#1a5fb4" stroke-width="0"/>
+<text x="1430" y="466" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a5fb4" text-anchor="start" font-weight="bold">A3V3</text>
+<line x1="1370" y1="490" x2="1370" y2="510" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1370" y1="520" x2="1370" y2="540" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1353" y1="510" x2="1387" y2="510" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1353" y1="520" x2="1387" y2="520" stroke="#1a1a1a" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1394" y="508" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#1a1a1a" text-anchor="start">CF</text>
+<text x="1394" y="526" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#c01c28" text-anchor="start">100uF</text>
+<line x1="1370" y1="540" x2="1370" y2="576" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1370" y1="576" x2="1370" y2="590" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1359.0" y1="590" x2="1381.0" y2="590" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1363.0" y1="597" x2="1377.0" y2="597" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<line x1="1367.0" y1="604" x2="1373.0" y2="604" stroke="#1a5fb4" stroke-width="2.0" stroke-linecap="round"/>
+<text x="1120" y="650" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#8a8a8a" text-anchor="start">3.3V มาจากเรกูเลเตอร์บน Blue Pill ซึ่งเลี้ยง MCU ที่วิ่ง 72 MHz อยู่ด้วย</text>
+<text x="1120" y="674" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#8a8a8a" text-anchor="start">ภาครับขยายสัญญาณ 1156 เท่า สัญญาณกวนบนรางไฟจึงถูกขยายตามไปหมด</text>
+<text x="1120" y="698" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#8a8a8a" text-anchor="start">10R + 100uF คั่นไว้ · ที่ 40 kHz คาปามีอิมพีแดนซ์แค่ 0.04 โอห์ม</text>
+<text x="1120" y="722" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#8a8a8a" text-anchor="start">แลกกับแรงดันตก 0.2V ที่ 20 mA เหลือ 3.1V</text>
+<text x="1120" y="746" font-family="Tahoma, Arial, sans-serif" font-size="13" fill="#8a8a8a" text-anchor="start">ยังเกินขั้นต่ำ 2.5V ที่ MCP6024 ต้องการ</text>
+</svg>

@@ -118,7 +118,8 @@ def save_pair(out_dir, idx, ping, depth, dt_ms, near_cm=float("nan"), valid=floa
     cv2.imwrite(str(out_dir / f"depth_{idx:06d}.png"), depth)     # uint16 มิลลิเมตร
 
 
-def wait_to_start(us, cam_thread, sec_no, total, gate, show=True):
+def wait_to_start(us, cam_thread, sec_no, total, gate, show=True,
+                  poses=False, hold=6.0):
     """แสดงภาพสดพร้อมข้อความ 'กดเพื่อเริ่ม' — คืน True ถ้าจะอัด · False ถ้าจะเลิก
 
     ทำไมต้องเห็นภาพก่อนเริ่ม: ต้องรู้ว่ากล้องจับเราถูกตัวและอยู่ในระยะแล้วจริง ๆ
@@ -151,7 +152,7 @@ def wait_to_start(us, cam_thread, sec_no, total, gate, show=True):
             cv2.imshow("recording", view.render(
                 depth, ping, m, us.pins, f"READY  -  section {sec_no} of {total}",
                 lines, "SPACE/ENTER = start recording     q = quit",
-                hist=strip,
+                hist=strip, cue=pose_cue_at(0.0, hold, poses),
                 sub=(f"4ch simultaneous  {us.rate:.0f} Hz/ch  {us.samples} samples  "
                      f"period {us.period*1e3:.0f} ms  range {gate[1]:.0f} cm")))
         k = cv2.waitKey(1) & 0xFF
@@ -161,8 +162,28 @@ def wait_to_start(us, cam_thread, sec_no, total, gate, show=True):
             return False
 
 
+
+def pose_cue_at(elapsed, hold, enabled=True):
+    """ท่าที่ควรทำ ณ วินาทีที่ elapsed ของช่วงนี้ — คืน dict ให้ view วาด
+
+    ไล่ตามเวลาที่ผ่านไปตรง ๆ ไม่เก็บสถานะ จึงไม่มีทางหลุดจังหวะกับการอัด
+    ถ้าหยุดช่วงนี้กลางคันแล้วเริ่มใหม่ ก็เริ่มนับใหม่พร้อมกันทั้งคู่
+    """
+    if not enabled:
+        return None
+    import pose_cue as PC
+    n = len(PC.POSES)
+    step = int(elapsed // hold)
+    idx = step % n
+    name, pose = PC.POSES[idx]
+    nxt_name, nxt_pose = PC.POSES[(idx + 1) % n]
+    return {"name": name, "pose": pose, "nxt": nxt_name, "nxt_pose": nxt_pose,
+            "left": hold - (elapsed - step * hold), "hold": hold,
+            "idx": idx, "n": n, "cycle": step // n + 1}
+
+
 def record_section(us, cam_thread, out_dir, seconds, min_valid, sec_no, show=True,
-                   gate=(40.0, 150.0)):
+                   gate=(40.0, 150.0), poses=False, hold=6.0):
     """อัดหนึ่งช่วง คืน (จำนวนที่บันทึก, จำนวนที่ข้าม, ค่าเฉลี่ยความเหลื่อมเวลา ms)
 
     มีหน้าต่างแสดงผลระหว่างอัด (กด q = หยุดช่วงนี้) เพราะดูจาก terminal อย่างเดียว
@@ -231,7 +252,7 @@ def record_section(us, cam_thread, out_dir, seconds, min_valid, sec_no, show=Tru
             cv2.imshow("recording", view.render(
                 depth, ping, m, us.pins, f"RECORDING  section {sec_no}", lines,
                 "q = stop this section early     raw data only, every frame recorded",
-                hist=strip,
+                hist=strip, cue=pose_cue_at(seconds - left, hold, poses),
                 sub=(f"4ch simultaneous  {us.rate:.0f} Hz/ch  {us.samples} samples  "
                      f"period {us.period*1e3:.0f} ms  range {gate[1]:.0f} cm")))
             if (cv2.waitKey(1) & 0xFF) in (ord("q"), 27):
@@ -273,15 +294,15 @@ def _run(a):
     _warmup(DATA_ROOT, nsamp=us.samples, rate=us.rate)
 
     print(f"เปิดกล้อง depth {DEPTH_W}x{DEPTH_H} ...", flush=True)
+    # **ปิด GC ก่อนแตะกล้อง ไม่ใช่หลัง** — การเปิดสตรีมกับการปิดสตรีม
+    # ก็เป็นช่วงที่ OpenNI ทำงานในเธรด native เหมือนกัน ถ้า GC วิ่งตอนนั้น
+    # ได้ access violation เหมือนกัน เจอมาแล้วทั้งตอน create_depth_stream
+    # และตอน oniStreamStop
+    gc.disable()
     cam = Astra(want_rgb=False, depth_size=(DEPTH_W, DEPTH_H))
     keep = max(1, round(cam.depth_fps / a.cam_fps))
     print(f"  กล้องวิ่ง {cam.depth_fps} fps · เก็บทุก {keep} เฟรม "
           f"= {cam.depth_fps/keep:.0f} fps")
-    # **ปิด GC ตลอดช่วงที่กล้องทำงาน** — stack trace ตอนล้มชี้ตรงว่าเป็น
-    # "Garbage-collecting" ในเธรดหลักขณะ OpenNI อ่านเฟรมอยู่อีกเธรด
-    # CPython คืนหน่วยความจำด้วยการนับอ้างอิงอยู่แล้ว ตัว GC มีไว้เก็บวงอ้างอิง
-    # ซึ่งข้อมูลของเรา (numpy array + dict ธรรมดา) แทบไม่มี จึงปิดได้อย่างปลอดภัย
-    gc.disable()
     th = DepthThread(cam, keep)
     th.start()
     time.sleep(0.6)                            # ให้เธรดมีเฟรมแรกก่อนเริ่มจับเวลา
@@ -304,12 +325,14 @@ def _run(a):
                         print(f"  เริ่มอัดใน {k} วินาที ...", flush=True)
                     time.sleep(1)
             elif not wait_to_start(us, th, s, a.start + a.sections - 1,
-                                   (40.0, a.max_cm), show=not a.no_view):
+                                   (40.0, a.max_cm), show=not a.no_view,
+                                   poses=a.poses, hold=a.pose_hold):
                 print("  เลิกตามที่กด q")
                 break
             n, sk, sync = record_section(us, th, out, secs, a.min_valid,
                                          s, show=not a.no_view,
-                                         gate=(40.0, a.max_cm))
+                                         gate=(40.0, a.max_cm),
+                                         poses=a.poses, hold=a.pose_hold)
             (out / "meta.json").write_text(json.dumps({
                 "section": s, "samples": n, "skipped": sk,
                 "seconds": secs, "pins": a.pins, "simultaneous": True,
@@ -329,11 +352,11 @@ def _run(a):
     finally:
         th.stop_flag = True
         time.sleep(0.3)
-        gc.enable()                     # เปิดคืนหลังกล้องหยุดแล้วเท่านั้น
         try:
             cam.close()
         except Exception:
             pass
+        gc.enable()          # เปิดคืน **หลัง** กล้องหยุดจริงแล้วเท่านั้น
         us.close()
 
     if report:
@@ -364,6 +387,12 @@ def main():
                     help="fps ที่ 'เก็บ' จากกล้อง (ฮาร์ดแวร์วิ่ง 30 เสมอ ตัวนี้คือหารลง)")
     ap.add_argument("--gap", type=float, default=30.0,
                     help="วินาทีพักระหว่าง section ตอนใช้ --auto")
+    ap.add_argument("--poses", action="store_true",
+                    help="แสดงท่าที่ต้องทำใต้ภาพ depth · ไล่ท่าตามเวลาที่อัดไปแล้ว "
+                         "ทำให้ท่าทางเปลี่ยนขณะตำแหน่งคงที่ ซึ่งเป็นสิ่งที่ชุดข้อมูล "
+                         "รอบแรกขาดไป (ดู car/DATASET2.md)")
+    ap.add_argument("--pose-hold", type=float, default=6.0,
+                    help="ถือท่าละกี่วินาที")
     ap.add_argument("--no-view", action="store_true",
                     help="ไม่ต้องเปิดหน้าต่างแสดงผล (เร็วขึ้นเล็กน้อย)")
     ap.add_argument("--overwrite", action="store_true",

@@ -225,8 +225,12 @@ def live_src(a):
     _warmup(Path(HERE) / "data", nsamp=us.samples, rate=us.rate)
     pr.warmup(us.samples)
     print(f"เปิดกล้อง depth {w}x{h} ...", flush=True)
+    # **ปิด GC ก่อนแตะกล้อง ไม่ใช่หลัง** — การเปิดสตรีมกับการปิดสตรีม
+    # ก็เป็นช่วงที่ OpenNI ทำงานในเธรด native เหมือนกัน ถ้า GC วิ่งตอนนั้น
+    # ได้ access violation เหมือนกัน เจอมาแล้วทั้งตอน create_depth_stream
+    # และตอน oniStreamStop
+    gc.disable()
     cam = Astra(want_rgb=False, depth_size=(w, h))
-    gc.disable()          # GC ชนกับ OpenNI ทำให้ heap พัง — ดูเหตุผลใน record.py
     th = DepthThread(cam, 1)
     th.start()
     time.sleep(0.6)

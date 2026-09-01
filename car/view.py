@@ -173,7 +173,7 @@ def _traces(img, m, pins):
         cv2.putText(img, name, (x0 + 6, y0 + 14),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.42, col, 1, cv2.LINE_AA)
         cv2.putText(img, f"GPIO{pins[ci]}   min {int(raw.min())}  max {int(raw.max())}",
-                    (x0 + 78, y0 + 14), cv2.FONT_HERSHEY_SIMPLEX, 0.38,
+                    (x0 + 112, y0 + 14), cv2.FONT_HERSHEY_SIMPLEX, 0.38,
                     (150, 155, 165), 1, cv2.LINE_AA)
 
     # ---- แผงล่างสุด: ประวัติแบบเลื่อน ----
@@ -252,7 +252,50 @@ def _history_panel(img, hist, pins):
 _CANVAS = None
 
 
-def render(depth, ping, m, pins, title, lines, foot="", sub="", hist=None):
+# ---------------------------------------------------------------- แผงบอกท่า
+# ใต้ภาพ depth มีที่ว่าง 480x290 เพราะคอลัมน์กราฟทางขวาสูงกว่าภาพ
+# เอามาใส่ท่าที่ต้องทำ จะได้ดูจอเดียว ไม่ต้องเปิดสองหน้าต่างแล้วสลับไปมา
+POSE_X, POSE_Y = PAD, TOP + DH + 16
+POSE_W, POSE_H = DW, 286
+
+
+def _pose_panel(img, cue):
+    """วาดท่าที่ต้องทำตอนนี้ + ท่าถัดไป + แถบนับถอยหลัง
+
+    cue = None แปลว่าไม่ได้เปิดโหมดเก็บท่า ก็ไม่วาดอะไร
+    """
+    import cv2
+    import pose_cue
+    x0, y0, w, h = POSE_X, POSE_Y, POSE_W, POSE_H
+    cv2.rectangle(img, (x0, y0), (x0 + w, y0 + h), PANEL, -1)
+    if cue is None:
+        cv2.putText(img, "pose coach off  (--poses to enable)",
+                    (x0 + 14, y0 + 28), cv2.FONT_HERSHEY_SIMPLEX, 0.44,
+                    (110, 116, 126), 1, cv2.LINE_AA)
+        return
+    cv2.putText(img, f"HOLD THIS POSE   cycle {cue['cycle']}  "
+                     f"{cue['idx'] + 1}/{cue['n']}",
+                (x0 + 14, y0 + 26), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                (80, 200, 250), 1, cv2.LINE_AA)
+    pose_cue.draw_figure(img, cue["pose"], x0 + 20, y0 + 40, 150, 180, (245, 248, 252), 5)
+    cv2.putText(img, cue["name"], (x0 + 14, y0 + 246),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.66, (245, 248, 252), 2, cv2.LINE_AA)
+    cv2.putText(img, "NEXT", (x0 + 250, y0 + 56), cv2.FONT_HERSHEY_SIMPLEX,
+                0.4, (120, 126, 136), 1, cv2.LINE_AA)
+    pose_cue.draw_figure(img, cue["nxt_pose"], x0 + 250, y0 + 64, 110, 140,
+                         (120, 126, 136), 3)
+    cv2.putText(img, cue["nxt"], (x0 + 250, y0 + 228),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.44, (120, 126, 136), 1, cv2.LINE_AA)
+    f = max(0.0, cue["left"]) / max(cue["hold"], 1e-6)
+    by = y0 + h - 26
+    cv2.rectangle(img, (x0 + 14, by), (x0 + w - 14, by + 14), (48, 52, 60), -1)
+    cv2.rectangle(img, (x0 + 14, by), (x0 + 14 + int((w - 28) * f), by + 14),
+                  (80, 200, 250), -1)
+    cv2.putText(img, f"{cue['left']:4.1f}s", (x0 + w - 76, by - 6),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.46, (220, 225, 235), 1, cv2.LINE_AA)
+
+
+def render(depth, ping, m, pins, title, lines, foot="", sub="", hist=None, cue=None):
     """คืนภาพ BGR พร้อมแสดง — lines = [(ข้อความ, สี)] แถวสถานะบนสุด
 
     **ใช้ผืนภาพเดิมซ้ำทุกครั้ง** ไม่จองใหม่ — ภาพขนาด 832x1050x3 คือ 2.6 MB
@@ -277,6 +320,7 @@ def render(depth, ping, m, pins, title, lines, foot="", sub="", hist=None):
         cv2.putText(img, sub, (PAD, 76), cv2.FONT_HERSHEY_SIMPLEX, 0.43,
                     (130, 136, 146), 1, cv2.LINE_AA)
     _depth_panel(img, depth, m)
+    _pose_panel(img, cue)
     _traces(img, m, pins)
     _history_panel(img, hist, pins)
 
@@ -295,7 +339,7 @@ def render(depth, ping, m, pins, title, lines, foot="", sub="", hist=None):
             ("label angle", deg, (250, 250, 250)),
             ("depth valid", f"{m['valid']:.0%}",
              OKC if m["valid"] > 0.4 else WARNC),
-            ("raw min-max  L->R", rng_txt, (200, 206, 216)))):
+            ("raw min-max  TL TR BL BR", rng_txt, (200, 206, 216)))):
         bx = PAD + 10 + i * 190
         cv2.putText(img, lab, (bx, y - 4), cv2.FONT_HERSHEY_SIMPLEX, 0.4,
                     (140, 146, 156), 1, cv2.LINE_AA)

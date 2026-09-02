@@ -373,7 +373,10 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--port", default="COM5")
-    ap.add_argument("--pins", default="34,35,32,33")
+    # ต้องตรงกับ rig2.PINS (TL TR BL BR) · mapdata2 เรียงช่องใหม่ตามเลขขา
+    # ที่บันทึกไว้ในไฟล์อยู่แล้ว ลำดับจึงไม่เพี้ยนแม้ใส่สลับ แต่ให้ตรงกันไว้
+    # จะได้ไม่ต้องมานั่งสงสัยทีหลังว่าอันไหนถูก
+    ap.add_argument("--pins", default="35,34,32,33")
     ap.add_argument("--name", default="rec", help="ชื่อชุด → โฟลเดอร์ <ชื่อ>_s1.._sN")
     ap.add_argument("--sections", type=int, default=4, help="อัดกี่ช่วงในการรันครั้งนี้")
     ap.add_argument("--start", type=int, default=1,

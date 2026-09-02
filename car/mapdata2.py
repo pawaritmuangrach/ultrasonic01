@@ -9,6 +9,7 @@
 สิ่งที่หวังว่าจะได้เพิ่มจริงคือ **ท่าทาง** ซึ่งเป็นการเปลี่ยนแปลงระดับ 40-60 องศา
 """
 import json
+import os
 from pathlib import Path
 
 import numpy as np
@@ -17,12 +18,30 @@ from rig2 import PINS, FOV_H_DEG, FOV_V_DEG
 
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
-CACHE = DATA / "_map2_cache"
 
 GW, GH, BLK = 80, 60, 4
 NEAR_CM, FAR_CM = 40.0, 200.0
 
-SETS = ([f"pose_s{i}" for i in range(1, 6)] + [f"free_s{i}" for i in range(1, 4)])
+# ชุดข้อมูลแยกตามรอบ · **แคชกับโมเดลของแต่ละรอบต้องอยู่คนละที่**
+# ไม่งั้นพอเก็บข้อมูลรอบใหม่แล้วสร้างแคช ของรอบเก่าจะถูกทับหายทั้งข้อมูล
+# ทั้งโมเดลที่เทรนไว้แล้ว แล้วย้อนกลับไปเทียบหรือใช้ของเดิมไม่ได้อีกเลย
+#
+#   r2 = ท่าตามคิว 5 ช่วง + เดินอิสระ 3 ช่วง · แต่ละช่วงยืนที่เดียว
+#        ปัญหาของชุดนี้: ช่วง = ตำแหน่ง กันทั้งช่วงไว้ทดสอบจึงเท่ากับ
+#        กันตำแหน่งนั้นออกจากการเทรน ต้องเลี่ยงด้วยการแบ่งตามเวลาแทน
+#   r3 = 5 ช่วง ช่วงละ 5 นาที **ทุกช่วงทำเหมือนกันและครอบคลุมเหมือนกัน**
+#        ชุดนี้กันทั้งช่วงไว้ทดสอบได้ตรง ๆ เพราะทุกช่วงมีการกระจายเดียวกัน
+ROUNDS = {
+    "r2": [f"pose_s{i}" for i in range(1, 6)] + [f"free_s{i}" for i in range(1, 4)],
+    "r3": [f"mix_s{i}" for i in range(1, 6)],
+}
+ROUND = os.environ.get("MAP2_ROUND", "r3")
+if ROUND not in ROUNDS:
+    raise SystemExit(f"ไม่รู้จักรอบ {ROUND} · มีให้เลือก {list(ROUNDS)}")
+SETS = ROUNDS[ROUND]
+# r2 ใช้ชื่อเดิมไม่เติมท้าย เพื่อไม่ต้องย้ายไฟล์ที่มีอยู่แล้ว
+CACHE = DATA / ("_map2_cache" if ROUND == "r2" else f"_map2_cache_{ROUND}")
+MODEL = DATA / ("_map2_model.pt" if ROUND == "r2" else f"_map2_model_{ROUND}.pt")
 
 
 def shrink(depth_mm):

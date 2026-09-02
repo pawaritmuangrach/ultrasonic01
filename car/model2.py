@@ -25,6 +25,7 @@ from pathlib import Path
 
 import numpy as np
 
+import mapdata2 as MD
 from mapdata2 import GW, GH, NEAR_CM, FAR_CM, DATA, read_counts
 from rig2 import PINS
 
@@ -171,7 +172,7 @@ class MapPredictor:
         from collections import deque
         torch.set_num_threads(1)   # เธรดพูล torch ชนกับเธรดกล้อง ดู warmup()
         self.torch = torch
-        p = Path(path) if path else (DATA / "_map2_model.pt")
+        p = Path(path) if path else MD.MODEL
         if not p.exists():
             sys.exit(f"ยังไม่มีโมเดลที่ {p} — เทรนก่อนด้วย:\n"
                      f"  python car/train_map2.py --test 1")

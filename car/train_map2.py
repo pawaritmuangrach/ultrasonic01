@@ -302,8 +302,8 @@ def main():
                 "score": {"iou": iou, "thr": thr, "mae_cm": mae, "h_r2": rh,
                           "shuffle_iou": s_iou, "mean_iou": b1i, "mean_mae": b1e,
                           "tmpl_iou": b2i, "tmpl_mae": b2e, "pos_h_r2": r_pos}},
-               MD.DATA / "_map2_model.pt")
-    print(f"เก็บโมเดลที่ {MD.DATA / '_map2_model.pt'}")
+               MD.MODEL)
+    print(f"เก็บโมเดลที่ {MD.MODEL}  (รอบ {MD.ROUND})")
 
 
 if __name__ == "__main__":

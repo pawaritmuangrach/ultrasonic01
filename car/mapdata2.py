@@ -19,8 +19,14 @@ from rig2 import PINS, FOV_H_DEG, FOV_V_DEG
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
 
-GW, GH, BLK = 80, 60, 4
 NEAR_CM, FAR_CM = 40.0, 200.0
+
+# ความละเอียดของภาพเป้าหมาย แยกตามรอบ
+# **40x30 ไม่ได้หยาบกว่าอย่างเสียเปล่า** อาเรย์เบลอจริงที่ 4.5 องศา
+#   80x60 ช่องละ 0.73 องศา -> ความเบลอกินไป 6 ช่อง = ได้ความเนียน ไม่ใช่ความละเอียด
+#   40x30 ช่องละ 1.46 องศา -> ความเบลอกินไป 3 ช่อง = ใกล้เคียงของจริงกว่า
+# และช่องออกน้อยลง 4 เท่า โอกาสจำข้อมูลแทนการเรียนก็น้อยลงตาม
+GRIDS = {"r2": (80, 60, 4), "r3": (40, 30, 8)}
 
 # ชุดข้อมูลแยกตามรอบ · **แคชกับโมเดลของแต่ละรอบต้องอยู่คนละที่**
 # ไม่งั้นพอเก็บข้อมูลรอบใหม่แล้วสร้างแคช ของรอบเก่าจะถูกทับหายทั้งข้อมูล
@@ -39,9 +45,11 @@ ROUND = os.environ.get("MAP2_ROUND", "r3")
 if ROUND not in ROUNDS:
     raise SystemExit(f"ไม่รู้จักรอบ {ROUND} · มีให้เลือก {list(ROUNDS)}")
 SETS = ROUNDS[ROUND]
+GW, GH, BLK = GRIDS[ROUND]
 # r2 ใช้ชื่อเดิมไม่เติมท้าย เพื่อไม่ต้องย้ายไฟล์ที่มีอยู่แล้ว
-CACHE = DATA / ("_map2_cache" if ROUND == "r2" else f"_map2_cache_{ROUND}")
-MODEL = DATA / ("_map2_model.pt" if ROUND == "r2" else f"_map2_model_{ROUND}.pt")
+_tag = "" if ROUND == "r2" else f"_{ROUND}_{GW}x{GH}"
+CACHE = DATA / f"_map2_cache{_tag}"
+MODEL = DATA / f"_map2_model{_tag}.pt"
 
 
 def shrink(depth_mm):

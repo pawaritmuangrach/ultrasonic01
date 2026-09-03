@@ -1,17 +1,17 @@
-"""หน้าจอดูโมเดลรอบสอง — กลุ่มจุด 80x60 ไล่เฉดตามระยะ
+"""หน้าจอดูโมเดลรอบสาม — กลุ่มจุดไล่เฉดตามระยะ
 
 ═══════════════════════════════════════════════════════════════════════
   ส่วนที่ 1 : INTERFACE   (ไฟล์นี้ทั้งไฟล์)
 ═══════════════════════════════════════════════════════════════════════
 
 ไฟล์นี้ **ไม่มีโค้ด ML เลย** มีแต่การวาดภาพและการอ่านปุ่ม
-ตัวโมเดลอยู่ที่ model2.py · การเทรนอยู่ที่ train_map2.py
+ตัวโมเดลอยู่ที่ model3.py · การเทรนอยู่ที่ train_map3.py
 แยกกันเพื่อให้อ่านทีละเรื่อง และเปลี่ยนหน้าจอได้โดยไม่แตะโมเดล
 
-    python car/live_map2.py --port COM5                ดูสด
-    python car/live_map2.py --name pose --section 1     เล่นย้อนจากที่อัดไว้
+    python car/live_map2.py --port COM5 --no-cam       ดูสด เสียงล้วน
+    python car/live_map2.py --name mix --section 4      เล่นย้อนจากที่อัดไว้
 
-ซ้าย = กล้อง (ความจริง) · ขวา = เสียงล้วน (โมเดล) วาดบนตารางเดียวกัน 80x60
+ซ้าย = กล้อง (ความจริง) · ขวา = เสียงล้วน (โมเดล) วาดบนตารางเดียวกัน
 สีฟ้า = ใกล้ · สีม่วง = ไกล (ช่วงที่เซ็นเซอร์เห็นคือ 40-200 ซม.)
 """
 import argparse
@@ -52,8 +52,9 @@ def depth_lut():
 def cloud(img, x0, y0, w, h, occ, dep, lut, thr=0.5, title="", sub=""):
     """วาดกลุ่มจุด · สีบอกระยะ · ขนาดบอกความมั่นใจ
 
-    ที่ตาราง 80x60 จุดเล็กลงกว่ารอบแรกมาก จึงวาดด้วยการเติมสี่เหลี่ยมลงอาเรย์
-    แล้วค่อยขยาย แทนการวาดวงกลมทีละจุด — 4,800 ช่องถ้าวาดทีละวงกลมช้าเกินไป
+    วาดด้วยการเติมสี่เหลี่ยมลงอาเรย์แล้วค่อยขยาย แทนการวาดวงกลมทีละจุด
+    เพราะตอนตาราง 80x60 มี 4,800 ช่อง วาดทีละวงกลมช้าเกินไป
+    ตอนนี้ 40x30 เหลือ 1,200 ช่องแล้วแต่วิธีนี้ก็ยังเร็วกว่าอยู่ดี
     """
     import cv2
     cv2.rectangle(img, (x0 - 1, y0 - 1), (x0 + w, y0 + h), LINE, 1)
@@ -103,7 +104,7 @@ def render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps, banner, foot, thr,
     img = np.full((H, W, 3), BG, np.uint8)
     _text(img, "DEPTH MAP  -  from sound alone", (PAD, 44), 0.86, TRUE, 2)
     _text(img, f"ML model, {sc.get('params', 0):,} params  |  no hand-written DSP  |  "
-               f"grid {GW}x{GH}  |  square array, so height is real",
+               f"grid {GW}x{GH}  |  position and range work - pose does not",
           (PAD, 70), 0.46, DIM)
     if banner:
         txt, col = banner
@@ -166,9 +167,8 @@ def height_of(mask):
 def banner_for(held):
     """ป้ายบอกว่าเฟรมที่กำลังดูอยู่ โมเดลเคยเห็นตอนเทรนหรือยัง
 
-    ต้องดูรายเฟรม ไม่ใช่รายช่วง เพราะการแบ่งแบบใหม่กัน 25% ท้ายของทุกช่วง
-    ไว้วัดผล เล่นย้อนช่วงหนึ่งจึงผ่านทั้งข้อมูลที่เคยเห็นและไม่เคยเห็น
-    ถ้าติดป้ายเดียวทั้งช่วงจะโกหกไปครึ่งหนึ่งของเวลา
+    รอบสามกันทั้ง section ไว้วัดผล ทั้ง section จึงเป็นอย่างใดอย่างหนึ่งไปเลย
+    (รอบสองกันแค่ท้ายของทุกช่วง ป้ายจึงต้องเปลี่ยนกลางทาง)
     """
     if held is None:
         return None
@@ -236,27 +236,27 @@ def run_loop(src, pr, thr, fps_target, foot, live=False, state=None):
     return run, time.time() - t0
 
 
-def replay_src(name, section, tail, held_only=False):
-    """เล่นย้อนข้อมูลที่อัดไว้ · บอกไปด้วยว่าเฟรมไหนโมเดลเคยเห็นตอนเทรน
+def replay_src(name, section, test_section, held_only=False):
+    """เล่นย้อนข้อมูลที่อัดไว้ · บอกด้วยว่า section นี้โมเดลเคยเห็นตอนเทรนไหม
 
-    ตอนเทรนกัน tail ท้ายของทุกช่วงไว้วัดผล เฟรมท้าย ๆ จึงเป็นของจริงที่ไม่เคยเห็น
-    ส่วนเฟรมต้น ๆ โมเดลเคยเห็นแล้ว คะแนนตรงนั้นจะดูดีเกินจริง
+    รอบสามกัน **ทั้ง section** ไว้วัดผล ต่างจากรอบสองที่กันแค่ท้ายของทุกช่วง
+    ทั้ง section จึงเป็นอย่างใดอย่างหนึ่งไปเลย ไม่ใช่ครึ่ง ๆ กลาง ๆ
     """
     import cv2
     d = f"{name}_s{section}"
     fs = MD.frame_files(d)
     if not fs:
         sys.exit(f"ไม่พบข้อมูลที่ {MD.DATA / d}")
-    cut = int(len(fs) * (1.0 - tail))
-    print(f"เล่นย้อน {d} · {len(fs)} เฟรม · "
-          f"{cut} เฟรมแรกโมเดลเคยเห็นตอนเทรน · "
-          f"{len(fs) - cut} เฟรมท้ายไม่เคยเห็น (ใช้วัดผลจริง)")
-    for i, (u, p) in enumerate(fs):
-        if held_only and i < cut:
-            continue
+    held = section == test_section
+    tag = ("ไม่เคยเห็นตอนเทรน — คะแนนที่เห็นคือของจริง" if held
+           else "**โมเดลเคยเห็น section นี้ตอนเทรน คะแนนจะดูดีเกินจริง**")
+    print(f"เล่นย้อน {d} · {len(fs)} เฟรม · {tag}")
+    if held_only and not held:
+        sys.exit(f"--held-only ต้องใช้กับ section {test_section} เท่านั้น")
+    for u, p in fs:
         z = np.load(u)
         yield ({"counts": z["counts"], "pins": z["pins"]},
-               cv2.imread(str(p), cv2.IMREAD_UNCHANGED), i >= cut)
+               cv2.imread(str(p), cv2.IMREAD_UNCHANGED), held)
 
 
 def live_src(a, state):
@@ -323,34 +323,43 @@ def live_src(a, state):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--port", help="ต่อเซ็นเซอร์จริง เช่น COM5")
-    ap.add_argument("--name", default="pose")
-    ap.add_argument("--section", type=int, default=1)
+    ap.add_argument("--name", default="mix")
+    ap.add_argument("--section", type=int, default=4)
     ap.add_argument("--pins", default="35,34,32,33")
     ap.add_argument("--max-cm", type=float, default=200.0)
     ap.add_argument("--period-ms", type=float, default=55.0)
     ap.add_argument("--size", default="320x240")
     ap.add_argument("--fps", type=float, default=15.0)
     ap.add_argument("--thr", type=float, default=None)
-    ap.add_argument("--smooth", type=int, default=5)
+    # รอบสามป้อน 5 การยิงเข้าโมเดลพร้อมกันอยู่แล้ว การเกลี่ยผลลัพธ์ทีหลัง
+    # จึงไม่จำเป็นอีก และจะทำให้ภาพหน่วงโดยไม่ได้อะไรเพิ่ม
+    ap.add_argument("--smooth", type=int, default=1)
     ap.add_argument("--held-only", action="store_true",
                     help="ข้ามเฟรมที่โมเดลเคยเห็นตอนเทรน ดูเฉพาะของจริง")
     ap.add_argument("--no-cam", action="store_true",
                     help="โหมดสดแบบเสียงล้วน ไม่เปิดกล้อง")
     a = ap.parse_args()
 
-    from model2 import MapPredictor
+    if MD.ROUND != "r3":
+        sys.exit(f"หน้าจอนี้ใช้กับโมเดลรอบ 3 เท่านั้น "
+                 f"(ตอนนี้ MAP2_ROUND={MD.ROUND}) · "
+                 f"โมเดลรอบเก่าโครงสร้างต่างกันจนโหลดข้ามกันไม่ได้")
+    from model3 import MapPredictor
     pr = MapPredictor(smooth=a.smooth)
     s = pr.score
     if a.thr is None:
         a.thr = float(s.get("thr", 0.5))
         print(f"  ใช้จุดตัด {a.thr:.2f} (ค่าที่ดีที่สุดตอนเทรน)")
-    how = (f"กัน {pr.tail:.0%} ท้ายของทุกช่วงไว้วัดผล" if pr.split == "time"
-           else f"กันทั้งช่วง s{pr.holdout} ไว้วัดผล")
-    print(f"โมเดล {pr.params:,} พารามิเตอร์ · {how}")
-    print(f"  IoU {s.get('iou', float('nan')):.3f} · "
-          f"ระยะพลาด {s.get('mae_cm', float('nan')):.1f} ซม. · "
-          f"สูงเงา R2 {s.get('h_r2', float('nan')):+.3f} "
-          f"(เพดานจากตำแหน่ง {s.get('pos_h_r2', float('nan')):+.3f})")
+    print(f"โมเดล {pr.params:,} พารามิเตอร์ · ตาราง {pr.gw}x{pr.gh} · "
+          f"{pr.stack} การยิงต่อภาพ · กันทั้ง section {pr.test_section} ไว้วัดผล")
+    print(f"  IoU {s.get('iou', float('nan')):.3f} "
+          f"(ทายค่าเฉลี่ยได้ {s.get('mean_iou', float('nan')):.3f}) · "
+          f"ระยะพลาด {s.get('mae_cm', float('nan')):.1f} ซม. "
+          f"(ทายค่าเฉลี่ยได้ {s.get('mean_mae', float('nan')):.1f}) · "
+          f"สูงเงา R2 {s.get('h_r2', float('nan')):+.3f}")
+    if s.get("h_r2", 0.0) <= 0.02:
+        print("  ** ท่าทางยังทายไม่ได้ดีกว่าการเดาค่าเฉลี่ย **")
+        print("  รูปร่างบนจอบอกตำแหน่งกับระยะได้ แต่ยังบอกท่าทางไม่ได้")
 
     import cv2  # noqa: F401
     foot = "q ออก · space หยุด/เล่นต่อ · s เซฟภาพ"
@@ -362,8 +371,8 @@ def main():
         run, el = run_loop(live_src(a, state), pr, a.thr, a.fps, foot,
                            live=True, state=state)
     else:
-        run, el = run_loop(replay_src(a.name, a.section, pr.tail, a.held_only),
-                           pr, a.thr, a.fps, foot)
+        run, el = run_loop(replay_src(a.name, a.section, pr.test_section,
+                                      a.held_only), pr, a.thr, a.fps, foot)
     if run["n"]:
         what = ("เฉพาะเฟรมที่ไม่เคยเห็นตอนเทรน" if run.get("honest")
                 else "ทุกเฟรม (มีเฟรมที่โมเดลเคยเห็นปนอยู่ เลขจึงดูดีเกินจริง)")

@@ -106,26 +106,37 @@ def main():
     from torch import nn
 
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--test", type=int, default=4, help="กัน section ไหนไว้วัดผล")
+    ap.add_argument("--test", type=int, default=4,
+                    help="section ที่ใช้รายงานผล · **ไม่แตะเลยระหว่างเทรน**")
+    ap.add_argument("--val", type=int, default=5,
+                    help="section ที่ใช้เลือกเช็คพอยต์ · ต้องคนละอันกับ --test")
     ap.add_argument("--epochs", type=int, default=20)
     ap.add_argument("--batch", type=int, default=48)
     ap.add_argument("--lr", type=float, default=2e-3)
     ap.add_argument("--stack", type=int, default=M3.STACK)
     ap.add_argument("--w-depth", type=float, default=2.0)
-    ap.add_argument("--w-height", type=float, default=0.5)
+    ap.add_argument("--w-height", type=float, default=3.0)
     ap.add_argument("--w-dice", type=float, default=1.0)
     ap.add_argument("--huber", type=float, default=0.1,
                     help="เส้นแบ่งว่าผิดแค่ไหนถือว่ามาก · 0.1 = 16 ซม.")
     a = ap.parse_args()
     torch.manual_seed(0)
 
+    if a.val == a.test:
+        raise SystemExit("--val กับ --test ต้องคนละ section")
     counts, dmm, sec, src, meta = MD.load()
     ends = M3.stack_index(sec, src, a.stack)
-    tr = ends[sec[ends] != a.test]
+    # **สาม section แยกหน้าที่กันชัดเจน**
+    # ถ้าเลือกเช็คพอยต์ด้วยคะแนนของ section เดียวกับที่ใช้รายงาน เท่ากับ
+    # เลือกตัวที่บังเอิญเข้าทางข้อสอบ ตัวเลขที่รายงานจะดูดีเกินจริง
+    tr = ends[(sec[ends] != a.test) & (sec[ends] != a.val)]
+    va = ends[sec[ends] == a.val]
     te = ends[sec[ends] == a.test]
     dc, scale = M3.norm_params(counts, tr)
-    print(f"ตาราง {GW}x{GH} · {a.stack} การยิงต่อภาพ · "
-          f"เทรน {len(tr):,} · ทดสอบ {len(te):,} (กัน section {a.test})")
+    print(f"ตาราง {GW}x{GH} · {a.stack} การยิงต่อภาพ")
+    print(f"เทรน {len(tr):,} (section ที่เหลือ) · "
+          f"เลือกเช็คพอยต์ {len(va):,} (s{a.val}) · "
+          f"รายงาน {len(te):,} (s{a.test})")
     print(f"ปรับค่าจาก section เทรนเท่านั้น: จุดกลาง {dc:.0f} · สเกล {scale:.0f}")
 
     print("\nคำนวณคู่เทียบ ...")
@@ -140,6 +151,8 @@ def main():
     nb = max(1, len(tr) // a.batch + 1)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, a.lr, epochs=a.epochs,
                                                 steps_per_epoch=nb)
+    occ_v, dep_v = dmm[va] > 0, dmm[va].astype(np.float32) / 10.0
+    h_val = shadow_height(occ_v)
     occ_t = dmm[te] > 0
     z_te = np.clip((dmm[te] / 10.0 - NEAR_CM) / (FAR_CM - NEAR_CM), 0, 1)
     # เฉลยระยะเป็นเซนติเมตร · to_cm คืนค่าเป็นเซนติเมตรอยู่แล้ว เทียบกันตรง ๆ
@@ -185,17 +198,24 @@ def main():
             sched.step()
             tot += float(loss.detach())
 
-        O, D = evaluate(torch, net, counts, te, dc, scale, a.stack)
-        iou, thr = best_iou(O, occ_t)
-        mae = float(np.abs(D - dep_te)[occ_t].mean())
-        rh = r2(shadow_height(O >= thr), h_true)
+        # วัดด้วย section เลือกเช็คพอยต์เท่านั้น · section รายงานยังไม่แตะ
+        O, D = evaluate(torch, net, counts, va, dc, scale, a.stack)
+        iou, thr = best_iou(O, occ_v)
+        mae = float(np.abs(D - dep_v)[occ_v].mean())
+        rh = r2(shadow_height(O >= thr), h_val)
+        # เลือกด้วยคะแนนรวม ไม่ใช่ IoU อย่างเดียว
+        # รอบก่อนเลือกด้วย IoU แล้วทิ้งเช็คพอยต์ที่ R2 ดีกว่า 0.20
+        # ไปแลกกับ IoU ที่ดีกว่าแค่ 0.003 ซึ่งเป็นสัญญาณรบกวน
+        score = iou + rh
         hist.append((ep, iou, mae, rh))
         mark = ""
-        if iou > best:
-            best, mark = iou, "  <- ดีสุด"
+        if score > best:
+            best, mark = score, "  <- ดีสุด"
             torch.save({"model": net.state_dict(), "grid": (GW, GH),
                         "stack": a.stack, "norm": (dc, scale),
                         "params": npar, "test": a.test,
+                        "val": {"iou": iou, "thr": thr, "mae_cm": mae,
+                                "h_r2": rh},
                         "score": {"iou": iou, "thr": thr, "mae_cm": mae,
                                   "h_r2": rh, "mean_iou": m_iou,
                                   "mean_mae": m_mae, "tmpl_iou": t_iou}},
@@ -203,10 +223,19 @@ def main():
         print(f"ep {ep:3d}  loss {tot/nb:.4f} | IoU {iou:.3f}  ระยะ {mae:5.1f} ซม."
               f"  สูงเงา R2 {rh:+.3f}  ({time.time()-t0:.0f}s){mark}")
 
+    # ---- ถึงตรงนี้ค่อยแตะ section รายงาน ครั้งเดียว
     ck = torch.load(MD.MODEL, map_location="cpu", weights_only=False)
     net.load_state_dict(ck["model"])
-    s = ck["score"]
+    v = ck["val"]
+    print(f"\nเลือกเช็คพอยต์จาก s{a.val}: IoU {v['iou']:.3f} · "
+          f"ระยะ {v['mae_cm']:.1f} ซม. · R2 {v['h_r2']:+.3f}")
     O, D = evaluate(torch, net, counts, te, dc, scale, a.stack)
+    iou_te, thr_te = best_iou(O, occ_t)
+    mae_te = float(np.abs(D - dep_te)[occ_t].mean())
+    rh_te = r2(shadow_height(O >= thr_te), h_true)
+    s = {"iou": iou_te, "thr": thr_te, "mae_cm": mae_te, "h_r2": rh_te}
+    ck["score"].update(s)
+    torch.save(ck, MD.MODEL)
     # สลับคลื่น: จับคู่คลื่นกับเฉลยผิดคู่ · ถ้าคะแนนไม่ตก แปลว่าไม่ได้ใช้เสียง
     sh = np.random.permutation(len(te))
     Os, Ds = O[sh], D[sh]

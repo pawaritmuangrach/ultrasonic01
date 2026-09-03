@@ -108,35 +108,41 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--test", type=int, default=4,
                     help="section ที่ใช้รายงานผล · **ไม่แตะเลยระหว่างเทรน**")
-    ap.add_argument("--val", type=int, default=5,
-                    help="section ที่ใช้เลือกเช็คพอยต์ · ต้องคนละอันกับ --test")
+    ap.add_argument("--val-tail", type=float, default=0.15,
+                    help="ใช้ท้าย section เทรนกี่ส่วนเป็นชุดเลือกเช็คพอยต์")
     ap.add_argument("--epochs", type=int, default=20)
     ap.add_argument("--batch", type=int, default=48)
     ap.add_argument("--lr", type=float, default=2e-3)
     ap.add_argument("--stack", type=int, default=M3.STACK)
     ap.add_argument("--w-depth", type=float, default=2.0)
-    ap.add_argument("--w-height", type=float, default=3.0)
+    ap.add_argument("--w-height", type=float, default=0.5)
     ap.add_argument("--w-dice", type=float, default=1.0)
     ap.add_argument("--huber", type=float, default=0.1,
                     help="เส้นแบ่งว่าผิดแค่ไหนถือว่ามาก · 0.1 = 16 ซม.")
     a = ap.parse_args()
     torch.manual_seed(0)
 
-    if a.val == a.test:
-        raise SystemExit("--val กับ --test ต้องคนละ section")
     counts, dmm, sec, src, meta = MD.load()
     ends = M3.stack_index(sec, src, a.stack)
-    # **สาม section แยกหน้าที่กันชัดเจน**
-    # ถ้าเลือกเช็คพอยต์ด้วยคะแนนของ section เดียวกับที่ใช้รายงาน เท่ากับ
-    # เลือกตัวที่บังเอิญเข้าทางข้อสอบ ตัวเลขที่รายงานจะดูดีเกินจริง
-    tr = ends[(sec[ends] != a.test) & (sec[ends] != a.val)]
-    va = ends[sec[ends] == a.val]
     te = ends[sec[ends] == a.test]
+    # **section 4 ไม่ถูกแตะเลยจนกว่าจะจบการเทรน**
+    # ชุดเลือกเช็คพอยต์เอามาจากท้าย section เทรน ไม่ใช่กินทั้ง section
+    # เพราะกินทั้ง section ทำให้ข้อมูลเทรนหายไป 25% ซึ่งรอบก่อนเห็นแล้วว่าเจ็บ
+    # ชุดนี้อยู่เซสชันเดียวกับชุดเทรนจึงไม่เหมาะจะใช้รายงาน แต่ใช้จัดอันดับ
+    # ว่ารอบไหนดีกว่ารอบไหนได้ ซึ่งเป็นงานที่เบากว่ามาก
+    rest = ends[sec[ends] != a.test]
+    tr_l, va_l = [], []
+    for sv in np.unique(sec[rest]):
+        m = np.sort(rest[sec[rest] == sv])
+        cut = int(len(m) * (1.0 - a.val_tail))
+        tr_l.append(m[:cut])
+        va_l.append(m[cut:])
+    tr, va = np.concatenate(tr_l), np.concatenate(va_l)
     dc, scale = M3.norm_params(counts, tr)
     print(f"ตาราง {GW}x{GH} · {a.stack} การยิงต่อภาพ")
-    print(f"เทรน {len(tr):,} (section ที่เหลือ) · "
-          f"เลือกเช็คพอยต์ {len(va):,} (s{a.val}) · "
-          f"รายงาน {len(te):,} (s{a.test})")
+    print(f"เทรน {len(tr):,} · เลือกเช็คพอยต์ {len(va):,} "
+          f"({a.val_tail:.0%} ท้ายของ section เทรน) · "
+          f"รายงาน {len(te):,} (s{a.test} ไม่แตะระหว่างเทรน)")
     print(f"ปรับค่าจาก section เทรนเท่านั้น: จุดกลาง {dc:.0f} · สเกล {scale:.0f}")
 
     print("\nคำนวณคู่เทียบ ...")
@@ -162,7 +168,10 @@ def main():
     h_true = shadow_height(occ_t)
     print(f"\nโมเดล {npar:,} พารามิเตอร์ · เทรน {a.epochs} รอบ")
 
-    best, hist = -1.0, []
+    P_IOU = MD.MODEL
+    P_R2 = MD.MODEL.with_name(MD.MODEL.stem + "_r2.pt")
+    best = {"iou": -9e9, "r2": -9e9}
+    hist = []
     for ep in range(1, a.epochs + 1):
         net.train()
         t0 = time.time()
@@ -203,60 +212,68 @@ def main():
         iou, thr = best_iou(O, occ_v)
         mae = float(np.abs(D - dep_v)[occ_v].mean())
         rh = r2(shadow_height(O >= thr), h_val)
-        # เลือกด้วยคะแนนรวม ไม่ใช่ IoU อย่างเดียว
-        # รอบก่อนเลือกด้วย IoU แล้วทิ้งเช็คพอยต์ที่ R2 ดีกว่า 0.20
-        # ไปแลกกับ IoU ที่ดีกว่าแค่ 0.003 ซึ่งเป็นสัญญาณรบกวน
-        score = iou + rh
+        # **เก็บสองเช็คพอยต์แยกกัน** ไม่รวมคะแนนเป็นตัวเดียว
+        # รอบก่อนใช้ IoU + R2 ซึ่งพัง เพราะ IoU อยู่ช่วง 0.3-0.45
+        # แต่ R2 แกว่งถึง -4.2 ผลรวมจึงถูก R2 กลืนจนไปเลือกรอบที่ยังเทรนไม่ทัน
+        # แยกเก็บแล้ววัดทั้งคู่ตอนจบ จะได้เห็นว่าเลือกเพื่อท่าทางแลกมาด้วยอะไร
         hist.append((ep, iou, mae, rh))
+        snap = {"model": net.state_dict(), "grid": (GW, GH),
+                "stack": a.stack, "norm": (dc, scale), "params": npar,
+                "test": a.test, "epoch": ep,
+                "val": {"iou": iou, "thr": thr, "mae_cm": mae, "h_r2": rh},
+                "score": {"mean_iou": m_iou, "mean_mae": m_mae,
+                          "tmpl_iou": t_iou}}
         mark = ""
-        if score > best:
-            best, mark = score, "  <- ดีสุด"
-            torch.save({"model": net.state_dict(), "grid": (GW, GH),
-                        "stack": a.stack, "norm": (dc, scale),
-                        "params": npar, "test": a.test,
-                        "val": {"iou": iou, "thr": thr, "mae_cm": mae,
-                                "h_r2": rh},
-                        "score": {"iou": iou, "thr": thr, "mae_cm": mae,
-                                  "h_r2": rh, "mean_iou": m_iou,
-                                  "mean_mae": m_mae, "tmpl_iou": t_iou}},
-                       MD.MODEL)
+        if iou > best["iou"]:
+            best["iou"] = iou
+            torch.save(snap, P_IOU)
+            mark += "  <-IoU"
+        if rh > best["r2"]:
+            best["r2"] = rh
+            torch.save(snap, P_R2)
+            mark += "  <-R2"
         print(f"ep {ep:3d}  loss {tot/nb:.4f} | IoU {iou:.3f}  ระยะ {mae:5.1f} ซม."
               f"  สูงเงา R2 {rh:+.3f}  ({time.time()-t0:.0f}s){mark}")
 
-    # ---- ถึงตรงนี้ค่อยแตะ section รายงาน ครั้งเดียว
-    ck = torch.load(MD.MODEL, map_location="cpu", weights_only=False)
-    net.load_state_dict(ck["model"])
-    v = ck["val"]
-    print(f"\nเลือกเช็คพอยต์จาก s{a.val}: IoU {v['iou']:.3f} · "
-          f"ระยะ {v['mae_cm']:.1f} ซม. · R2 {v['h_r2']:+.3f}")
-    O, D = evaluate(torch, net, counts, te, dc, scale, a.stack)
-    iou_te, thr_te = best_iou(O, occ_t)
-    mae_te = float(np.abs(D - dep_te)[occ_t].mean())
-    rh_te = r2(shadow_height(O >= thr_te), h_true)
-    s = {"iou": iou_te, "thr": thr_te, "mae_cm": mae_te, "h_r2": rh_te}
-    ck["score"].update(s)
-    torch.save(ck, MD.MODEL)
-    # สลับคลื่น: จับคู่คลื่นกับเฉลยผิดคู่ · ถ้าคะแนนไม่ตก แปลว่าไม่ได้ใช้เสียง
-    sh = np.random.permutation(len(te))
-    Os, Ds = O[sh], D[sh]
-    s_iou = iou_at(Os >= s["thr"], occ_t, 0.5)
-    s_mae = float(np.abs(Ds - dep_te)[occ_t].mean())
+    # ---- ถึงตรงนี้ค่อยแตะ section รายงาน · ครั้งเดียว ตอนจบ
+    print("\n" + "=" * 72)
+    print(f"{'':26}{'IoU':>8}{'ระยะพลาด':>12}{'สูงเงา R2':>12}")
+    print(f"{'1. ทายค่าเฉลี่ย':26}{m_iou:8.3f}{m_mae:9.1f} ซม.")
+    print(f"{'2. แม่แบบรู้ตำแหน่ง':26}{t_iou:8.3f}")
 
-    print("\n" + "=" * 64)
-    print(f"{'':24}{'IoU':>8}{'ระยะพลาด':>12}{'สูงเงา R2':>12}")
-    print(f"{'1. ทายค่าเฉลี่ย':24}{m_iou:8.3f}{m_mae:9.1f} ซม.")
-    print(f"{'2. แม่แบบรู้ตำแหน่ง':24}{t_iou:8.3f}")
-    print(f"{'3. โมเดล เสียงล้วน':24}{s['iou']:8.3f}{s['mae_cm']:9.1f} ซม."
-          f"{s['h_r2']:+12.3f}")
-    print(f"{'4. โมเดล+สลับคลื่น':24}{s_iou:8.3f}{s_mae:9.1f} ซม.")
-    print("=" * 64)
-    if s["iou"] > m_iou and s["h_r2"] > 0:
-        print("อ่านผล: ชนะการทายค่าเฉลี่ยทั้งรูปร่างและท่าทาง")
-    elif s["iou"] > m_iou:
-        print("อ่านผล: รูปร่างดีขึ้น แต่ท่าทางยังไม่ดีกว่าการเดาค่าเฉลี่ย")
+    out = {}
+    for tag, path in (("เลือกด้วย IoU", P_IOU), ("เลือกด้วย R2", P_R2)):
+        ck = torch.load(path, map_location="cpu", weights_only=False)
+        net.load_state_dict(ck["model"])
+        O, D = evaluate(torch, net, counts, te, dc, scale, a.stack)
+        iou_te, thr_te = best_iou(O, occ_t)
+        mae_te = float(np.abs(D - dep_te)[occ_t].mean())
+        rh_te = r2(shadow_height(O >= thr_te), h_true)
+        # สลับคลื่น: จับคู่คลื่นกับเฉลยผิดคู่ · ถ้าคะแนนไม่ตก แปลว่าไม่ได้ใช้เสียง
+        sh = np.random.permutation(len(te))
+        s_iou = iou_at(O[sh] >= thr_te, occ_t, 0.5)
+        s_mae = float(np.abs(D[sh] - dep_te)[occ_t].mean())
+        ck["score"].update({"iou": iou_te, "thr": thr_te, "mae_cm": mae_te,
+                            "h_r2": rh_te, "shuffle_iou": s_iou,
+                            "shuffle_mae": s_mae})
+        torch.save(ck, path)
+        out[tag] = (ck, iou_te, mae_te, rh_te, s_iou, s_mae)
+        v = ck["val"]
+        print(f"{'3. โมเดล · ' + tag:26}{iou_te:8.3f}{mae_te:9.1f} ซม."
+              f"{rh_te:+12.3f}   (รอบ {ck['epoch']} · "
+              f"ชุดเลือก IoU {v['iou']:.3f} R2 {v['h_r2']:+.3f})")
+        print(f"{'   สลับคลื่น':26}{s_iou:8.3f}{s_mae:9.1f} ซม.")
+    print("=" * 72)
+
+    a_iou, a_r2 = out["เลือกด้วย IoU"], out["เลือกด้วย R2"]
+    print(f"เลือกเพื่อท่าทางแลกมาด้วย IoU {a_iou[1]-a_r2[1]:+.3f} "
+          f"และระยะ {a_r2[2]-a_iou[2]:+.1f} ซม. "
+          f"เพื่อ R2 ที่ดีขึ้น {a_r2[3]-a_iou[3]:+.3f}")
+    if max(a_iou[3], a_r2[3]) > 0:
+        print("อ่านผล: มีเช็คพอยต์ที่ทายท่าทางได้ดีกว่าการเดาค่าเฉลี่ย")
     else:
-        print("อ่านผล: ยังไม่ชนะการทายค่าเฉลี่ย")
-    print(f"เก็บโมเดลที่ {MD.MODEL}")
+        print("อ่านผล: ไม่มีเช็คพอยต์ไหนทายท่าทางได้ดีกว่าการเดาค่าเฉลี่ย")
+    print(f"เก็บที่ {P_IOU.name} และ {P_R2.name}")
 
 
 if __name__ == "__main__":

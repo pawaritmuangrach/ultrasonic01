@@ -89,6 +89,11 @@ class Sync4:
         self.tx_ms = self.samples * 4 * 2 * 10 / baud * 1e3
         self.acoustic_ms = 2 * self.max_cm / 100.0 / C * 1e3
         floor_ms = max(self.acoustic_ms * 1.3, self.acq_ms + self.tx_ms)
+        # ตั้งแต่ตรงนี้เป็นต้นไปอ่านเฟรมซ้ำ ๆ ตามจังหวะ จึงไม่ต้องรอ 10 วินาทีแบบตอนบูต
+        # เฟรมเต็มใช้ acq+tx (~0.1-0.3 s) ถ้าเกินนี้หลายเท่าแปลว่าไบต์หายไปแล้วไม่มีวันมา
+        # (วัดแล้ว: ที่หายคือแพ็กเก็ต USB 64 ไบต์ ไม่ใช่มาช้า) รอ 10 วินาทีต่อครั้งทำให้
+        # หน้าต่างที่เรียกอยู่ค้าง "Not Responding" ทุกครั้งที่เฟรมหาย
+        self.ser.timeout = max(1.5, 5.0 * (self.acq_ms + self.tx_ms) / 1e3)
         self.period = (period_ms if period_ms else floor_ms + 3.0) / 1e3
         if period_ms and period_ms < floor_ms:
             # เตือนแต่ไม่ห้าม — ถ้าคาบสั้นกว่างานจริง จังหวะจะรวนและอาจเกิดเอคโค่ทับรอบ
@@ -112,7 +117,7 @@ class Sync4:
         for _ in range(retries):
             self.ser.reset_input_buffer()
             self.ser.write(b"r\n")
-            fr = read_frame(self.ser, verbose=False)
+            fr = read_frame(self.ser, verbose=False, wait=2.0 * self.ser.timeout)
             if fr is not None:
                 return fr
             self.bad_frames += 1

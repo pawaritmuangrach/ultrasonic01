@@ -209,10 +209,15 @@ def send_command(ser, text, settle=0.4):
             print(f"  esp32: {line}")
 
 
-def read_frame(ser, verbose=True):
-    """Block until one complete frame arrives. Returns a dict or None."""
+def read_frame(ser, verbose=True, wait=10.0):
+    """Block until one complete frame arrives. Returns a dict or None.
+
+    wait = seconds to look for the "#FRAME" header before giving up. The default
+    is generous because the first frame after boot can be slow; a caller that
+    streams frames at a steady rate should pass something near its own period,
+    otherwise one lost frame freezes it for the full 10 s."""
     header = None
-    deadline = time.time() + 10.0
+    deadline = time.time() + wait
     while time.time() < deadline:
         raw = ser.readline()
         if not raw:

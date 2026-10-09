@@ -37,6 +37,27 @@ _STACK = TH * 4 + HIST_GAP + OV_H + 28
 H = TOP + max(DH, _STACK) + 74
 
 BG, PANEL = (22, 24, 29), (34, 38, 46)
+
+# แกนตั้งของกราฟเว้นที่เหนือ/ใต้ขีดจำกัดของ ADC ไว้ข้างละ ~12%
+# เดิมแกนเริ่มที่ 0 พอดีและจบที่ 4095 พอดี สัญญาณที่แรงจนชนขอบ ADC จึงไปชิดขอบกรอบ
+# ดูเหมือนทะลุออกนอกกราฟ ทั้งที่จริงมัน **ถูก ADC ตัดแบน** ที่ 0 หรือ 4095 เอง
+# (ค่าเกินนั้นไม่เคยถูกวัด ไม่มีทางวาดได้ ไม่ว่าจะขยายแกนเท่าไร)
+# ที่เว้นไว้ทำให้เห็นเส้นตัดแบนอยู่ในกรอบ แยกออกจากขอบกรอบได้ชัด
+ADC_MAX = 4095.0
+Y_LO, Y_HI = -500.0, 4595.0
+RAILC = (80, 70, 190)            # เส้นขีดจำกัด ADC (BGR แดงจาง)
+CLIP_FRAC_WARN = 0.005           # ตัดแบนเกิน 0.5% ของตัวอย่างถือว่าเสียข้อมูลจริง
+
+
+def _yfrac(v):
+    """ตำแหน่งแนวตั้ง 0..1 (0 = ล่างสุดของกรอบ) ของค่า ADC"""
+    return (v - Y_LO) / (Y_HI - Y_LO)
+
+
+def clip_fraction(raw):
+    """สัดส่วนตัวอย่างที่ติดขอบ ADC · เผื่อ 2 เคาน์ตเพราะ ADC ไม่ค่อยลงถึง 0 เป๊ะ"""
+    r = np.asarray(raw)
+    return float(((r <= 2) | (r >= ADC_MAX - 2)).mean()) if r.size else 0.0
 CH_COL = [(90, 220, 90), (250, 200, 90), (90, 190, 250), (200, 130, 250)]
 OKC, BADC, WARNC = (110, 230, 130), (90, 90, 245), (80, 200, 250)
 VIS_MIN_MM, VIS_MAX_MM = 0, 2000     # ไล่สี 0-200 cm · ค่า 0 (อ่านไม่ได้) วาดดำแยก
@@ -130,7 +151,7 @@ def _traces(img, m, pins):
     """
     import cv2
     x0 = PAD * 2 + DW
-    cv2.putText(img, "ULTRASONIC  raw ADC counts, full scale 0-4095   no filtering, no scaling",
+    cv2.putText(img, "ULTRASONIC  raw ADC counts   no filtering   red line = ADC limit (0 / 4095)",
                 (x0, TOP - 12), cv2.FONT_HERSHEY_SIMPLEX, 0.45,
                 (170, 175, 185), 1, cv2.LINE_AA)
     if m["counts"] is None:
@@ -141,19 +162,20 @@ def _traces(img, m, pins):
     cnt, rate = m["counts"], m["rate"]
     nch, n = cnt.shape
     order = channel_order(pins)
-    # **แกนตั้งตรึงที่ 0-4095 เสมอ** — ไม่ปรับสเกล ไม่เลื่อนศูนย์กลาง
+    # **แกนตั้งตรึงเสมอ** — ไม่ปรับสเกล ไม่เลื่อนศูนย์กลาง
     # ความสูงบนจอ = ค่าจาก ADC จริง ๆ อ่านเทียบกันข้ามช่องและข้ามเฟรมได้ตรง ๆ
-    FULL = 4095.0
     for slot, (ci, name) in enumerate(order):
         y0 = TOP + slot * TH
         yh = TH - 8
         col = CH_COL[slot % 4]
         cv2.rectangle(img, (x0, y0), (x0 + TW, y0 + yh), PANEL, -1)
         for lvl in (0, 1024, 2048, 3072, 4095):
-            gy = int(y0 + yh - lvl / FULL * (yh - 1))
-            cv2.line(img, (x0, gy), (x0 + TW, gy), (46, 50, 58), 1)
+            gy = int(y0 + yh - _yfrac(lvl) * (yh - 1))
+            rail = lvl in (0, 4095)
+            cv2.line(img, (x0, gy), (x0 + TW, gy), RAILC if rail else (46, 50, 58), 1)
             cv2.putText(img, str(lvl), (x0 + TW + 3, gy + 4),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.3, (95, 100, 110), 1, cv2.LINE_AA)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.3,
+                        RAILC if rail else (95, 100, 110), 1, cv2.LINE_AA)
         raw = cnt[ci].astype(np.float32)
         if raw.size >= TW:
             k_ = raw.size // TW
@@ -164,8 +186,8 @@ def _traces(img, m, pins):
             lo_v = hi_v = raw[idxs]
         # เติมแท่ง min-max ด้วยหน้ากากทั้งผืนทีเดียว ไม่วนเรียก cv2.line ทีละพิกเซล
         # (วนแบบเดิม 500 ครั้ง x 4 ช่อง กินเวลา ~8 ms/เฟรม ซึ่งทำให้คาบยิงหลุดจาก 50 ms)
-        y_lo = np.clip((yh - lo_v / FULL * (yh - 1)).astype(np.int32), 0, yh - 1)
-        y_hi = np.clip((yh - hi_v / FULL * (yh - 1)).astype(np.int32), 0, yh - 1)
+        y_lo = np.clip((yh - _yfrac(lo_v) * (yh - 1)).astype(np.int32), 0, yh - 1)
+        y_hi = np.clip((yh - _yfrac(hi_v) * (yh - 1)).astype(np.int32), 0, yh - 1)
         rows = np.arange(yh)[:, None]
         mask = (rows >= y_hi[None, :]) & (rows <= y_lo[None, :])
         sub = img[y0:y0 + yh, x0:x0 + TW]
@@ -175,13 +197,21 @@ def _traces(img, m, pins):
         cv2.putText(img, f"GPIO{pins[ci]}   min {int(raw.min())}  max {int(raw.max())}",
                     (x0 + 112, y0 + 14), cv2.FONT_HERSHEY_SIMPLEX, 0.38,
                     (150, 155, 165), 1, cv2.LINE_AA)
+        cf = clip_fraction(raw)
+        if cf > CLIP_FRAC_WARN:
+            # ตัดแบนแล้วยอดคลื่นจริงหายไป ขยายกราฟก็ไม่เห็น ต้องลดเกน/ถอยออกมาแล้ววัดใหม่
+            cv2.putText(img, f"CLIPPED {cf * 100:.0f}%  true peak unknown",
+                        (x0 + TW - 168, y0 + 14), cv2.FONT_HERSHEY_SIMPLEX, 0.38,
+                        BADC, 1, cv2.LINE_AA)
 
     # ---- แผงล่างสุด: ประวัติแบบเลื่อน ----
     # วาดในฟังก์ชัน render() แทน เพราะต้องใช้บัฟเฟอร์ที่ข้ามเฟรม
     # แกนระยะ = การแปลงหน่วยของแกนเวลา (index / rate) ไม่ได้แตะข้อมูล
     yb = TOP + TH * 4
     far = (n / rate * 1e6 - T0_US) * 1e-6 * C / 2 * 100
-    for cm in range(0, int(far) + 1, 25):
+    # ป้ายระยะห่างตามความยาวแกน 25 ซม. ใช้ได้ถึง ~3 ม. เกินนั้นป้ายจะซ้อนกันอ่านไม่ออก
+    step = 25 if far <= 300 else 50 if far <= 600 else 100
+    for cm in range(0, int(far) + 1, step):
         idx = (T0_US + 2 * cm / 100 / C * 1e6) * 1e-6 * rate
         x = int(x0 + idx / max(n - 1, 1) * TW)
         if not (x0 <= x <= x0 + TW):
@@ -220,12 +250,13 @@ def _history_panel(img, hist, pins):
     cv2.putText(img, "HISTORY  raw min-max per channel   (newest on the LEFT)",
                 (x0, oy - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.45,
                 (170, 175, 185), 1, cv2.LINE_AA)
-    FULL = 4095.0
     for lvl in (0, 1024, 2048, 3072, 4095):
-        gy = int(oy + OV_H - lvl / FULL * (OV_H - 1))
-        cv2.line(img, (x0, gy), (x0 + TW, gy), (46, 50, 58), 1)
+        gy = int(oy + OV_H - _yfrac(lvl) * (OV_H - 1))
+        rail = lvl in (0, 4095)
+        cv2.line(img, (x0, gy), (x0 + TW, gy), RAILC if rail else (46, 50, 58), 1)
         cv2.putText(img, str(lvl), (x0 + TW + 3, gy + 4),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.3, (95, 100, 110), 1, cv2.LINE_AA)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.3,
+                    RAILC if rail else (95, 100, 110), 1, cv2.LINE_AA)
     if hist is not None and hist.cols:
         cols = list(hist.cols)[:TW]
         xs = (x0 + np.arange(len(cols))).astype(np.int32)   # ซ้ายสุด = ใหม่สุด
@@ -236,7 +267,7 @@ def _history_panel(img, hist, pins):
                 continue
             for pick in (1, 0):                             # 1 = max, 0 = min
                 v = np.array([c[ci][pick] for c in cols], np.float32)
-                ys = (oy + OV_H - v / FULL * (OV_H - 1)).astype(np.int32)
+                ys = (oy + OV_H - _yfrac(v) * (OV_H - 1)).astype(np.int32)
                 cv2.polylines(img, [np.stack([xs, ys], 1).reshape(-1, 1, 2)], False,
                               CH_COL[slot % 4], 1, cv2.LINE_AA)
         n = len(hist.cols)

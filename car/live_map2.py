@@ -8,11 +8,15 @@
 ตัวโมเดลอยู่ที่ model3.py · การเทรนอยู่ที่ train_map3.py
 แยกกันเพื่อให้อ่านทีละเรื่อง และเปลี่ยนหน้าจอได้โดยไม่แตะโมเดล
 
-    python car/live_map2.py --port COM5 --no-cam       ดูสด เสียงล้วน
+    python car/live_map2.py --port COM6 --no-cam       ดูสด เสียงล้วน
     python car/live_map2.py --name mix --section 4      เล่นย้อนจากที่อัดไว้
 
 ซ้าย = กล้อง (ความจริง) · ขวา = เสียงล้วน (โมเดล) วาดบนตารางเดียวกัน
 สีฟ้า = ใกล้ · สีม่วง = ไกล (ช่วงที่เซ็นเซอร์เห็นคือ 40-200 ซม.)
+
+**ถ้าไม่เปิดกล้อง ช่องซ้ายจะกลายเป็นแผงเช็คคลื่นดิบสี่ช่อง** (กด c สลับได้ทุกเมื่อ)
+มีไว้เพราะภาพขวาที่ดูมั่วตอบไม่ได้ว่าเป็นที่โมเดลหรือที่วงจร — แผงซ้ายตอบให้
+ช่องไหนเสียจะขึ้นแดงพร้อมบอกว่าเสียแบบไหน ดู chan_health() ว่าตัดสินจากอะไร
 """
 import argparse
 import gc
@@ -25,6 +29,7 @@ import numpy as np
 
 import mapdata2 as MD
 from mapdata2 import GW, GH, NEAR_CM, FAR_CM
+from rig2 import PINS, NAMES
 
 HERE = Path(__file__).resolve().parent
 W, H = 1600, 900
@@ -36,6 +41,8 @@ DIM = (128, 134, 146)
 TRUE = (235, 240, 248)
 WARN = (60, 210, 250)
 GOOD = (120, 230, 140)
+BAD = (86, 86, 246)
+FULL = 4095.0                # ADC 12 บิต — สเกลคงที่ ไม่ปรับตามสัญญาณ
 
 
 def _text(img, s, xy, sc=0.45, col=DIM, th=1):
@@ -93,13 +100,139 @@ def legend(img, x0, y0, w, lut):
     _text(img, "far   (cm)", (x0 + w - 62, y0 - 6), 0.42, DIM)
 
 
+def chan_health(counts, ref=None):
+    """สภาพรายช่องจากคลื่นดิบ
+
+    ref = (dc, scale) ที่โมเดลใช้ทำ normalize ตอนเทรน อ่านจากเช็คพอยต์
+
+    **ระดับพักเทียบกับ DC ที่โมเดลเทรนมา ไม่ใช่ค่ากลางของสี่ช่อง**
+    เวอร์ชันแรกเทียบกับค่ากลางของสี่ช่อง แล้วพังบนบอร์ดจริงทันที:
+    COM6 อ่านได้ 2095 / 782 / 1904 / 482 → ค่ากลาง 1343 ตกอยู่ระหว่างสองกลุ่ม
+    ทุกช่องห่างจากมันเกิน 200 เลยโดนฟ้องว่าเสียทั้งสี่ รวมถึง BL ที่ดีเกือบเป๊ะ
+    แค่เสียสองช่องก็หลอกได้แล้ว ไม่ต้องถึงสาม
+
+    DC ของโมเดลไม่ใช่ค่าคงที่ของวงจรที่ฝังไว้ มันอ่านจากเช็คพอยต์ เทรนใหม่ก็ตามเอง
+    และเป็นคำถามที่ถูกสำหรับจอนี้พอดี: **"คลื่นที่เข้าไปหน้าตาเหมือนที่โมเดลเคยเห็นไหม"**
+    เกณฑ์คือห่างเกินครึ่งหนึ่งของ scale — prep() ตัดสัญญาณที่ dc±scale ทิ้ง
+    ระดับพักที่เลื่อนไปครึ่งช่วงแล้วแปลว่าครึ่งหนึ่งของคลื่นถูกตัดหายก่อนถึงโมเดล
+    ไม่มีโมเดล (ref=None) ค่อยถอยไปใช้ค่ากลางของสี่ช่อง
+
+    **ความแรงก็พังแบบเดียวกัน** ถ้าเทียบกันเอง: บน COM6 ทุกช่องเกนสูงพร้อมกัน
+    BL แกว่ง 654 ขณะที่ข้อมูลเทรนแกว่งแค่ ~105 แต่เทียบกับเพื่อนที่แรงพอกันก็ดูปกติ
+    ทางที่ถูกคือวัด **"โมเดลเห็นคลื่นกี่ %"** = สัดส่วนตัวอย่างที่อยู่ใน dc±scale
+    ไม่โดน prep() ตัดทิ้ง ข้อมูลเทรนได้ 99.8-100% ทุกช่อง ต่ำกว่า 90% คือผิดปกติ
+
+    ธงที่ใช้ตัดสิน เรียงจากร้ายไปเบา:
+      CLIP   ชนขอบบนหรือล่างของ ADC -> ขยายแรงไป ข้อมูลตรงยอดหายไปแล้ว
+      DEAD   แทบไม่ขยับ -> สายหลุด ไมค์เสีย หรือออปแอมป์ไม่ทำงาน
+      DC OFF ระดับพักห่างจากที่โมเดลเทรนมา -> บัส VREF ของช่องนั้นผิด
+      hot    โมเดลเห็นคลื่นไม่ถึง 90% (ไม่มีโมเดล: แรงกว่าเพื่อน 2.5 เท่า) -> เกนสูงเกิน
+      weak   แกว่งไม่ถึงหนึ่งในสี่ของ scale (ไม่มีโมเดล: เบากว่าเพื่อนมาก) -> เกนต่ำ
+    """
+    v = counts.astype(np.float32)
+    dc = np.median(v, 1)
+    # ใช้เปอร์เซ็นไทล์แทนค่าสุดขั้ว จุดหลงตัวเดียวจะได้ไม่ตัดสินทั้งช่อง
+    sw = np.percentile(v, 99.5, 1) - np.percentile(v, 0.5, 1)
+    clip = ((v <= 8) | (v >= FULL - 8)).mean(1)
+    msw = max(float(np.median(sw)), 1.0)
+    if ref is not None:
+        mid, scale = float(ref[0]), float(ref[1])
+        tol = 0.5 * scale
+        seen = (np.abs(v - mid) < scale).mean(1)
+        is_hot = seen < 0.90
+        is_weak = sw < 0.25 * scale
+    else:
+        mid, tol = float(np.median(dc)), 200.0
+        seen = np.full(len(dc), np.nan)
+        is_hot = sw > 2.5 * msw
+        is_weak = sw < 0.35 * msw
+    out = []
+    for i in range(len(dc)):
+        if clip[i] > 1e-3:
+            st, col = "CLIP", BAD
+        elif sw[i] < 15:
+            st, col = "DEAD", BAD
+        elif abs(dc[i] - mid) > tol:
+            # มาก่อน hot เสมอ: ช่องที่ DC หนีไปไกลโมเดลก็เห็น 0% อยู่แล้ว
+            # แต่ต้นเหตุคือ VREF ไม่ใช่เกน ป้ายต้องชี้ไปที่ต้นเหตุ
+            st, col = "DC OFF", BAD
+        elif is_hot[i]:
+            st, col = "hot", BAD if ref is not None else WARN
+        elif is_weak[i]:
+            st, col = "weak", WARN
+        else:
+            st, col = "ok", GOOD
+        out.append({"dc": float(dc[i]), "swing": float(sw[i]),
+                    "clip": float(clip[i]), "seen": float(seen[i]),
+                    "state": st, "col": col,
+                    "ref": mid, "has_ref": ref is not None})
+    return out
+
+
+def chan_panel(img, x0, y0, w, h, counts, hl):
+    """คลื่นดิบสี่ช่องซ้อนกัน · **ทั้งสี่ช่องใช้สเกลเดียวกันเสมอ**
+
+    จุดสำคัญคือสเกลร่วม ไม่ใช่สเกลคงที่ ถ้าปล่อยให้แต่ละช่องปรับสเกลของตัวเอง
+    ช่องที่เงียบสนิทกับช่องที่ดังปกติจะวาดออกมาสูงเท่ากัน ซึ่งกลบอาการที่
+    ต้องการดูพอดี พอใช้สเกลร่วม ช่องที่เบากว่าเพื่อนจะแบนกว่าเพื่อนให้เห็น
+
+    หน้าต่างกว้าง 2.5 เท่าของการแกว่งกลาง (อย่างน้อย +-300) ไม่ใช่ 0-4095 เต็ม
+    เพราะสัญญาณจริงแกว่งแค่ ~150 จาก 4095 ถ้ากางเต็มสเกลจะเหลือเส้นบาง ๆ
+    มองไม่ออกว่าเป็นคลื่นหรือเส้นตรง · ช่องที่หลุดกรอบ (DC เพี้ยนหรือ CLIP)
+    จะอัดแน่นอยู่ที่ขอบ ซึ่งเป็นสัญญาณที่อ่านง่ายอยู่แล้วว่ามันผิด
+    """
+    import cv2
+    cv2.rectangle(img, (x0 - 1, y0 - 1), (x0 + w, y0 + h), LINE, 1)
+    rh = h // 4
+    # กึ่งกลางกรอบ = ระดับเดียวกับที่ chan_health ใช้ตัดสิน (DC ของโมเดลถ้ามี)
+    # ช่องที่ลอยหนีเส้นประคือช่องที่โดนฟ้อง DC OFF พอดี ภาพกับป้ายจะได้ตรงกัน
+    mid = hl[0]["ref"]
+    half = max(300.0, 2.5 * max(float(np.median([d["swing"] for d in hl])), 1.0))
+    lo_v, span_v = mid - half, 2 * half
+    for i in range(4):
+        ry, d = y0 + i * rh, hl[i]
+        if i:
+            cv2.line(img, (x0, ry), (x0 + w, ry), LINE, 1)
+        s = counts[i].astype(np.float32)
+        k = max(len(s) // w, 1)
+        b = s[:len(s) // k * k].reshape(-1, k)
+        lo, hi = b.min(1), b.max(1)
+        pad, n = 22, len(lo)
+        span = rh - 2 * pad
+
+        def ypos(v):
+            return np.clip(ry + rh - pad - (v - lo_v) / span_v * span,
+                           ry + 2, ry + rh - 2).astype(int)
+
+        # แถบจาก min ถึง max ของแต่ละคอลัมน์ = เห็นเปลือกคลื่นโดยไม่ต้องวาดทุกจุด
+        ylo, yhi = ypos(lo), ypos(hi)
+        yy = np.arange(ry, ry + rh)[:, None]
+        img[ry:ry + rh, x0:x0 + n][(yy >= yhi[None, :]) & (yy <= ylo[None, :])] = d["col"]
+        # เส้นอ้างอิง = ระดับพักของค่ากลาง ช่องที่ลอยหนีจะเห็นว่าไม่อยู่บนเส้น
+        img[int(ypos(np.array([mid]))[0]), x0:x0 + w:6] = LINE
+        # แถบมืดรองข้อความ — ช่องที่ CLIP จะถมสีเต็มแถว ป้ายจะอ่านไม่ออกถ้าไม่รอง
+        band = img[ry + 2:ry + 26, x0:x0 + w]
+        band[:] = (band * 0.25).astype(np.uint8)
+        _text(img, f"{NAMES[i]}  GPIO{PINS[i]}", (x0 + 8, ry + 18), 0.46, TRUE, 1)
+        _text(img, f"dc {d['dc']:.0f}   swing {d['swing']:.0f}"
+                   + (f"   model sees {d['seen']*100:.0f}%" if d["has_ref"] else "")
+                   + (f"   clipped {d['clip']*100:.1f}%" if d["clip"] > 1e-3 else ""),
+              (x0 + 132, ry + 18), 0.42, DIM)
+        _text(img, d["state"], (x0 + w - 76, ry + 18), 0.52, d["col"], 2)
+    what = (f"level the model was trained on ({mid:.0f})" if hl[0]["has_ref"]
+            else "median resting level of the four")
+    _text(img, f"shared scale  {mid - half:.0f} - {mid + half:.0f} counts "
+               f"(of 0-{FULL:.0f})   dotted line = {what}",
+          (x0 + 8, y0 + h - 7), 0.4, DIM)
+
+
 def stat(img, x, y, k, v, col=TRUE):
     _text(img, k, (x, y), 0.42, DIM)
     _text(img, v, (x, y + 26), 0.72, col, 2)
 
 
 def render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps, banner, foot, thr,
-           echo=None, cam_on=True):
+           echo=None, cam_on=True, hl=None, counts=None):
     import cv2
     img = np.full((H, W, 3), BG, np.uint8)
     _text(img, "DEPTH MAP  -  from sound alone", (PAD, 44), 0.86, TRUE, 2)
@@ -113,10 +246,25 @@ def render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps, banner, foot, thr,
 
     pw, ph = PANEL
     top = 128
-    cloud(img, PAD, top, pw, ph, occ_t.astype(float), dep_t, lut, 0.5,
-          "CAMERA   ground truth" if cam_on else "CAMERA   off",
-          "reduced to the same grid the model predicts, so the two are comparable"
-          if cam_on else "running on sound alone - nothing to compare against")
+    if cam_on:
+        cloud(img, PAD, top, pw, ph, occ_t.astype(float), dep_t, lut, 0.5,
+              "CAMERA   ground truth",
+              "reduced to the same grid the model predicts, so the two are comparable")
+    elif hl is not None:
+        # ไม่มีกล้อง = ช่องซ้ายว่าง เอามาโชว์คลื่นดิบแทน ซึ่งมีประโยชน์กว่า
+        # ช่องว่าง ๆ มาก: ถ้าภาพขวาดูมั่ว จะได้รู้ทันทีว่าเป็นที่โมเดลหรือที่วงจร
+        bad = [NAMES[i] for i, d in enumerate(hl) if d["col"] is BAD]
+        chan_panel(img, PAD, top, pw, ph, counts, hl)
+        _text(img, "SENSORS   raw waveform, all four", (PAD, top - 26), 0.62, TRUE, 2)
+        # ข้อความบนจอเป็นอังกฤษทั้งหมด — ฟอนต์ Hershey ของ OpenCV ไม่มีตัวไทย
+        _text(img, ("all four channels look healthy" if not bad else
+                    "FAULTY: " + ", ".join(bad)
+                    + "   -   the map on the right cannot be trusted until fixed"),
+              (PAD, top - 8), 0.42, BAD if bad else DIM)
+    else:
+        cloud(img, PAD, top, pw, ph, occ_t.astype(float), dep_t, lut, 0.5,
+              "CAMERA   off",
+              "running on sound alone - nothing to compare against")
     cloud(img, PAD + pw + 60, top, pw, ph, occ_p, dep_p, lut, thr,
           "SOUND   model prediction",
           f"a dot where the model is over {thr:.0%} sure - no camera data used")
@@ -188,15 +336,19 @@ def run_loop(src, pr, thr, fps_target, foot, live=False, state=None):
     hist = deque(maxlen=60)
     bn = None
     paused = False
+    show_ch = False          # c = สลับช่องซ้ายระหว่างกล้องกับคลื่นดิบ
     t0 = time.time()
     for ping, depth, held in src:
         bn = banner_for(held)
+        cnt = MD.read_counts(ping)
+        hl = chan_health(cnt, ref=(pr.dc, pr.scale))
         occ_p, dep_p = pr.push(ping)
         if depth is None:
             occ_t = np.zeros((GH, GW), bool)
             dep_t = np.zeros((GH, GW), np.float32)
         else:
-            small = MD.shrink(depth)
+            # แคชเก็บภาพเฉลยที่ย่อแล้ว ส่วนโฟลเดอร์ดิบเก็บ PNG เต็มความละเอียด
+            small = depth if depth.shape == (GH, GW) else MD.shrink(depth)
             occ_t = small > 0
             dep_t = small.astype(np.float32) / 10.0
             iou, mae = scores(occ_p, dep_p, occ_t, dep_t, thr)
@@ -216,20 +368,22 @@ def run_loop(src, pr, thr, fps_target, foot, live=False, state=None):
                    "honest": bool(acc["held"][0])}
         hist.append(time.time())
         fps = (len(hist) - 1) / max(hist[-1] - hist[0], 1e-6) if len(hist) > 1 else 0.0
-        cv2.imshow("map2", render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps,
-                                  bn, foot, thr,
-                                  echo=max(pr.amps) if live else None,
-                                  cam_on=state["cam"] if state else True))
+        have_cam = (state["cam"] if state else True) and not show_ch
+        frame = render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps, bn, foot, thr,
+                       echo=max(pr.amps) if live else None,
+                       cam_on=have_cam, hl=hl, counts=cnt)
+        cv2.imshow("map2", frame)
         wait = 0 if paused else (1 if live else max(1, int(1000 / fps_target)))
         k = cv2.waitKey(wait) & 0xFF
         if k in (27, ord("q")):
             break
         if k == ord(" "):
             paused = not paused
+        if k == ord("c"):
+            show_ch = not show_ch
         if k == ord("s"):
             n = f"cloud2_{int(time.time())}.png"
-            cv2.imwrite(n, render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps,
-                                  bn, foot, thr))
+            cv2.imwrite(n, frame)
             print(f"เซฟ {n}")
     cv2.destroyAllWindows()
     run["seen_n"] = acc["all"][0] - acc["held"][0]
@@ -257,6 +411,34 @@ def replay_src(name, section, test_section, held_only=False):
         z = np.load(u)
         yield ({"counts": z["counts"], "pins": z["pins"]},
                cv2.imread(str(p), cv2.IMREAD_UNCHANGED), held)
+
+
+def cache_src(section, test_section, held_only=False):
+    """เล่นย้อนจากแคชที่ train_map3 สร้างไว้ — ใช้เมื่อโฟลเดอร์ดิบไม่อยู่แล้ว
+
+    โฟลเดอร์ mix_s1..s5 ถูกลบไปแล้ว เหลือแต่แคช ซึ่งเก็บทั้งคลื่นดิบและภาพเฉลย
+    ที่ย่อเป็นตารางเป้าหมายไว้ครบ จึงเล่นย้อนได้เหมือนเดิมทุกอย่าง ต่างกันแค่
+    ภาพเฉลยย่อมาแล้ว ไม่ต้องย่อซ้ำ (run_loop ดูจากรูปทรงว่าย่อมาแล้วหรือยัง)
+
+    แคชเก็บคลื่นตามลำดับ PINS มาตรฐานอยู่แล้ว เพราะ read_counts ทำตอนสร้างแคช
+    """
+    if not MD.CACHE.exists():
+        sys.exit(f"ไม่มีทั้งโฟลเดอร์ดิบและแคชที่ {MD.CACHE}")
+    cn = np.load(MD.CACHE / "counts.npy", mmap_mode="r")
+    dm = np.load(MD.CACHE / "dmm.npy", mmap_mode="r")
+    sec = np.load(MD.CACHE / "sec.npy")
+    idx = np.nonzero(sec == section)[0]
+    if not len(idx):
+        sys.exit(f"แคชไม่มี section {section} (มี {sorted(set(sec.tolist()))})")
+    held = section == test_section
+    tag = ("ไม่เคยเห็นตอนเทรน — คะแนนที่เห็นคือของจริง" if held
+           else "**โมเดลเคยเห็น section นี้ตอนเทรน คะแนนจะดูดีเกินจริง**")
+    print(f"เล่นย้อนจากแคช section {section} · {len(idx)} เฟรม · {tag}")
+    if held_only and not held:
+        sys.exit(f"--held-only ต้องใช้กับ section {test_section} เท่านั้น")
+    for i in idx:
+        yield ({"counts": np.asarray(cn[i]), "pins": list(PINS)},
+               np.asarray(dm[i]), held)
 
 
 def live_src(a, state):
@@ -362,7 +544,8 @@ def main():
         print("  รูปร่างบนจอบอกตำแหน่งกับระยะได้ แต่ยังบอกท่าทางไม่ได้")
 
     import cv2  # noqa: F401
-    foot = "q ออก · space หยุด/เล่นต่อ · s เซฟภาพ"
+    # ต้องเป็นอังกฤษ — cv2.putText ใช้ฟอนต์ Hershey ซึ่งวาดตัวไทยไม่ได้ ออกมาเป็น ?
+    foot = "q quit  ·  space pause  ·  c camera / raw sensors  ·  s save png"
     if a.port:
         a.pr = pr
         # ใช้ dict ร่วมกัน เพราะ generator เริ่มทำงานทีหลัง run_loop
@@ -371,8 +554,12 @@ def main():
         run, el = run_loop(live_src(a, state), pr, a.thr, a.fps, foot,
                            live=True, state=state)
     else:
-        run, el = run_loop(replay_src(a.name, a.section, pr.test_section,
-                                      a.held_only), pr, a.thr, a.fps, foot)
+        if MD.frame_files(f"{a.name}_s{a.section}"):
+            src = replay_src(a.name, a.section, pr.test_section, a.held_only)
+        else:
+            print(f"ไม่มีโฟลเดอร์ดิบ {a.name}_s{a.section} — ใช้แคชตอนเทรนแทน")
+            src = cache_src(a.section, pr.test_section, a.held_only)
+        run, el = run_loop(src, pr, a.thr, a.fps, foot)
     if run["n"]:
         what = ("เฉพาะเฟรมที่ไม่เคยเห็นตอนเทรน" if run.get("honest")
                 else "ทุกเฟรม (มีเฟรมที่โมเดลเคยเห็นปนอยู่ เลขจึงดูดีเกินจริง)")

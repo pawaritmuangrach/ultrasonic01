@@ -113,17 +113,17 @@ class Sync4:
                   f"(เสียงต้องการ {self.acoustic_ms:.1f} · เก็บ {self.acq_ms:.1f} · "
                   f"ส่ง {self.tx_ms:.1f})")
 
-    def _read(self, retries=3):
+    def _read(self, retries=3, cmd=b"r\n"):
         for _ in range(retries):
             self.ser.reset_input_buffer()
-            self.ser.write(b"r\n")
+            self.ser.write(cmd)
             fr = read_frame(self.ser, verbose=False, wait=2.0 * self.ser.timeout)
             if fr is not None:
                 return fr
             self.bad_frames += 1
         return None
 
-    def ping(self, retries=3):
+    def ping(self, retries=3, fire=True):
         """ยิงหนึ่งครั้งตามจังหวะ คืน dict แบบเดียวกับ Ultrasonic.ping() หรือ None
 
         รอให้ครบคาบก่อนเสมอ แม้รอบก่อนจะเสร็จเร็ว — จังหวะที่สม่ำเสมอสำคัญกว่า
@@ -143,12 +143,14 @@ class Sync4:
         if self._t_prev is not None:
             self.periods.append((time.time() - self._t_prev) * 1e3)
         self._t_prev = time.time()
-        fr = self._read(retries)
+        # fire=False ใช้คำสั่ง q ของเฟิร์มแวร์: เก็บคลื่นโดยไม่ยิง (อ่านนอยส์ล้วน ๆ)
+        # ใช้ในการทดลองที่ต้องรู้ว่าสัญญาณที่เห็นเกิดจากเสียงยิงหรือไม่
+        fr = self._read(retries, b"r\n" if fire else b"q\n")
         if fr is None or fr["data"].shape[0] != 4:
             return None
         return {"counts": fr["data"].astype(np.uint16), "rate": float(fr["rate"]),
                 "skew_us": float(fr.get("skew_us", 0.0)), "pins": self.pins,
-                "npairs": 1, "simultaneous": True, "t": time.time()}
+                "npairs": 1, "simultaneous": True, "t": time.time(), "fired": bool(fire)}
 
     def cadence(self):
         """คืน (คาบจริงกลาง ms, สัดส่วนที่ยิงช้ากว่ากำหนด) — ใช้ตรวจว่าจังหวะคงที่จริงไหม"""

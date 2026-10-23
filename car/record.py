@@ -36,6 +36,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), "tools"))
 
+import qa                # noqa: E402  ต้อง import ก่อนเปิดกล้อง (ดูเหตุผลใน _warmup)
+
 DATA_ROOT = Path(HERE) / "data"
 DEPTH_W, DEPTH_H = 320, 240
 
@@ -101,6 +103,9 @@ def _warmup(tmp_root, nsamp=677, rate=66300.0):
         # ถ้าไปเกิดตอน OpenNI ทำงานอยู่ในอีกเธรด จะได้ heap corruption 0xc0000374
         m = view.measure(depth, ping)
         view.render(depth, ping, m, ping["pins"], "warmup", [("", (0, 0, 0))])
+        # เส้นทางตรวจสถานะฮาร์ดแวร์ (qa.py) ก็ต้องเคยวิ่งก่อนเปิดกล้องเหมือนกัน
+        qa.stats_fired(ping["counts"][None], rate)
+        qa.stats_quiet(ping["counts"][None])
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     gc.collect()
@@ -135,7 +140,9 @@ def wait_to_start(us, cam_thread, sec_no, total, gate, show=True,
     print(f"  กดปุ่ม SPACE (หรือ Enter) ในหน้าต่างภาพเพื่อเริ่มอัด · q = เลิก",
           flush=True)
     while True:
-        ping = us.ping()
+        # retries=1: เฟรมหายต้องไม่ทำให้ลูปนี้ค้างเกิน ~3 วินาที ไม่งั้น Windows ตีว่าหน้าต่าง
+        # Not Responding (เฟรมหาย 2-5% วัดจริง · ดู car/sync4.py)
+        ping = us.ping(retries=1)
         got = cam_thread.get()
         if ping is not None and got is not None:
             _t, depth = got
@@ -200,7 +207,7 @@ def record_section(us, cam_thread, out_dir, seconds, min_valid, sec_no, show=Tru
     snrs, diffs, out_of_range = [], [], 0
     strip = view.History()          # ประวัติค่าดิบสำหรับกราฟเลื่อน
     while time.time() < t_end:
-        ping = us.ping()
+        ping = us.ping(retries=1)       # ดูเหตุผลที่ wait_to_start
         if ping is None:
             skipped += 1
             continue
@@ -288,6 +295,22 @@ def _run(a):
                period_ms=a.period_ms, verbose=True)
     us.ping()                                  # เฟรมแรกทิ้ง (ตั้งค่า ADC)
 
+    # ตรวจสถานะฮาร์ดแวร์ก่อนอัด (ใช้แค่เซ็นเซอร์ ไม่ต้องมีกล้อง) แล้วเทียบกับครั้งล่าสุด
+    # เพื่อรู้ทันทีถ้านอยส์พุ่งหรือกำลังส่งเปลี่ยนจากเมื่อวาน — ก่อนเสียเวลาอัด 30 นาที
+    session = {"name": a.name, "start": time.strftime("%Y-%m-%d %H:%M:%S"),
+               "note": a.note, "port": a.port, "max_cm": a.max_cm}
+    if not a.no_preflight:
+        print("\nตรวจสถานะฮาร์ดแวร์ก่อนอัด (ยิง/ไม่ยิง อย่างละ "
+              f"{a.preflight_n} ปิง) — อย่าขยับอะไร ...", flush=True)
+        session["pre"] = qa.preflight(us, a.preflight_n)
+        ref_name, ref = qa.latest_session(DATA_ROOT, a.name)
+        qa.report("ก่อนอัด", session["pre"], ref=ref,
+                  ref_name=f"ชุด {ref_name}" if ref_name else "")
+        if ref is None:
+            print("            (ยังไม่มีค่าอ้างอิงจากชุดก่อนหน้า)")
+        if a.note:
+            print(f"            หมายเหตุที่จดไว้: {a.note}")
+
     # ซ้อม **หลังรู้รูปร่างข้อมูลจริง แต่ก่อนเปิดกล้อง** — ลำดับนี้สำคัญ ถ้า FFT ก้อนแรก
     # ไปเกิดตอน OpenNI ทำงานอยู่คนละเธรด จะได้ heap corruption 0xc0000374
     print("ซ้อมเส้นทางบันทึก+แสดงผลก่อนเปิดกล้อง ...", flush=True)
@@ -309,6 +332,7 @@ def _run(a):
 
     secs = a.minutes * 60.0
     report = []
+    ref_sec = None
     try:
         for s in range(a.start, a.start + a.sections):
             out = DATA_ROOT / f"{a.name}_s{s}"
@@ -333,7 +357,13 @@ def _run(a):
                                          s, show=not a.no_view,
                                          gate=(40.0, a.max_cm),
                                          poses=a.poses, hold=a.pose_hold)
+            st = qa.section_stats(out)
+            if ref_sec is None and "error" not in st:
+                ref_sec = st                   # ช่วงแรกของรอบนี้ = ค่าอ้างอิงภายในรอบ
+            if ref_sec is not None:
+                qa.report_section(st, ref_sec)
             (out / "meta.json").write_text(json.dumps({
+                "qa": st, "note": a.note,
                 "section": s, "samples": n, "skipped": sk,
                 "seconds": secs, "pins": a.pins, "simultaneous": True,
                 "us_rate_hz": us.rate, "us_samples": us.samples,
@@ -347,9 +377,19 @@ def _run(a):
             report.append((out.name, n, sk, n / secs, sync))
             print(f"  เสร็จ: {n} ตัวอย่าง ({n/secs:.1f}/วิ) · ข้าม {sk} · "
                   f"เหลื่อมเฉลี่ย {sync:.0f} ms")
+        if report and not a.no_preflight:
+            print("\nตรวจสถานะฮาร์ดแวร์หลังอัดครบ — อย่าขยับอะไร ...", flush=True)
+            session["post"] = qa.preflight(us, a.preflight_n)
+            qa.report("หลังอัด", session["post"], ref=session.get("pre"),
+                      ref_name="ก่อนอัด")
     except KeyboardInterrupt:
         print("\nหยุดกลางคัน — ข้อมูลที่เก็บไปแล้วยังอยู่ครบ")
     finally:
+        try:       # บันทึกผลตรวจไว้ข้างชุดข้อมูล ครั้งหน้าใช้เป็นค่าอ้างอิง
+            (DATA_ROOT / f"{a.name}_session.json").write_text(
+                json.dumps(session, indent=2, ensure_ascii=False), encoding="utf-8")
+        except OSError as e:
+            print(f"บันทึกผลตรวจสถานะไม่ได้: {e}")
         th.stop_flag = True
         time.sleep(0.3)
         try:
@@ -402,6 +442,12 @@ def main():
                     help="อัดทับช่วงที่มีข้อมูลอยู่แล้ว")
     ap.add_argument("--auto", action="store_true",
                     help="ไม่ต้องกด Enter ระหว่างช่วง (นับถอยหลัง 3 วิแทน)")
+    ap.add_argument("--note", default="",
+                    help="จดเงื่อนไขของรอบนี้ไว้กับข้อมูล เช่น 'ถอดสายชาร์จ' 'ห้องแอร์เปิด'")
+    ap.add_argument("--no-preflight", action="store_true",
+                    help="ไม่ตรวจสถานะฮาร์ดแวร์ก่อน/หลังอัด (ค่าปริยายคือตรวจ)")
+    ap.add_argument("--preflight-n", type=int, default=20,
+                    help="จำนวนปิง (ยิง และไม่ยิง อย่างละ) ในการตรวจสถานะ")
     ap.add_argument("--min-valid", type=float, default=0.0,
                     help="เก็บทุกเฟรมโดยไม่กรอง (ค่าเดิม 0) — ตั้งค่ามากกว่า 0 ถ้าอยากกรอง")
     a = ap.parse_args()

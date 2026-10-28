@@ -66,8 +66,18 @@ QUEUE_PERSON = [
     ("person_inroom_s0", SP_IN + F5 + PT),
     ("person_all_s0", SP_ALL + F5 + PT),
 ]
-QUEUE = {"dev": QUEUE_DEV, "final": QUEUE_FINAL, "person": QUEUE_PERSON}[STAGE]
-REPORT_GLOB = {"dev": "r5_*.json", "final": "final_*.json", "person": "person_*.json"}[STAGE]
+# ขั้น deploy: โมเดลสำหรับใช้งานสด (live_map2 --model) เห็นครบทั้งสี่ห้อง
+# กัน roomD_s3 ไว้แค่ตั้งจุดตัดและดูคะแนนในห้อง (ไม่ใช่คะแนนข้ามห้อง) · ใช้รอบสุดท้าย ไม่เลือกรอบ
+SP_DEP = ["--train", "hw2_*,roomB_*,roomC_*,roomD_s1,roomD_s2", "--val", "roomD_s3", "--test", "",
+          "--select", "last"]
+QUEUE_DEPLOY = [
+    ("deploy_person", SP_DEP + F5 + PT),
+    ("deploy_scene", SP_DEP + F5),
+]
+QUEUE = {"dev": QUEUE_DEV, "final": QUEUE_FINAL, "person": QUEUE_PERSON,
+         "deploy": QUEUE_DEPLOY}[STAGE]
+REPORT_GLOB = {"dev": "r5_*.json", "final": "final_*.json", "person": "person_*.json",
+               "deploy": "deploy_*.json"}[STAGE]
 
 
 def md(text):

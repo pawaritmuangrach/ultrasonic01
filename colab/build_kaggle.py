@@ -19,7 +19,7 @@ def notebook():
     q = "[\n" + "".join(f"    ({n!r}, {e!r}),\n" for n, e in QUEUE) + "]"
     cells = [
         md(f"""
-# ultrasonic รอบห้า ({ROUND}) บน Kaggle
+# ultrasonic รอบห้า ({ROUND} · ขั้น {STAGE}) บน Kaggle
 
 **ตั้งค่าก่อนรัน (แผงขวา → Session options)**
 - Accelerator: **GPU T4 x2** (ใช้จริงแค่ตัวเดียว)
@@ -107,9 +107,11 @@ for name, extra in QUEUE:
     print(f"{{'เสร็จ' if p.returncode == 0 else 'ล้ม'}} {{name}} · {{(time.time() - t) / 60:.0f}} นาที")
 """),
         md("## สรุปผล และรวมไฟล์ผลเป็น runs_json.zip (ดาวน์โหลดจากแท็บ Output)"),
-        code(f"!python r4_report.py '{REPORT_GLOB}'\n" + """
+        # ขั้น deploy ต้องการตัวโมเดล (.pt ~7 MB ต่อตัว) ไปใช้สดบนเครื่อง ขั้นอื่นเอาแค่ผล
+        code(f"!python r4_report.py '{REPORT_GLOB}'\nPT_TOO = {STAGE == 'deploy'}\n" + """
 with zipfile.ZipFile('/kaggle/working/runs_json.zip', 'w') as z:
-    for f in sorted(glob.glob(f'{RUNS}/*.json')) + sorted(glob.glob(f'{RUNS}/*.log')):
+    for f in (sorted(glob.glob(f'{RUNS}/*.json')) + sorted(glob.glob(f'{RUNS}/*.log'))
+              + (sorted(glob.glob(f'{RUNS}/*.pt')) if PT_TOO else [])):
         z.write(f, os.path.basename(f))
 print('รวมแล้ว', len(glob.glob(f'{RUNS}/*.json')), 'ผล -> /kaggle/working/runs_json.zip')
 """),

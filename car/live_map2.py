@@ -11,6 +11,10 @@
     python car/live_map2.py --port COM6 --no-cam       ดูสด เสียงล้วน
     python car/live_map2.py --name mix --section 4      เล่นย้อนจากที่อัดไว้
 
+โมเดลรอบสี่/ห้า (train_r4 · ใส่ --model):
+    python car/live_map2.py --port COM6 --no-cam --model car/data/r4_runs/deploy_person.pt
+    python car/live_map2.py --model car/data/r4_runs/deploy_person.pt --name roomD --section 3
+
 ซ้าย = กล้อง (ความจริง) · ขวา = เสียงล้วน (โมเดล) วาดบนตารางเดียวกัน
 สีฟ้า = ใกล้ · สีม่วง = ไกล (ช่วงที่เซ็นเซอร์เห็นคือ 40-200 ซม.)
 
@@ -281,8 +285,9 @@ def render(occ_p, dep_p, occ_t, dep_t, lut, sc, run, fps, banner, foot, thr,
         stat(img, PAD + 650, yb, "shadow height  cam / sound",
              f"{run['h_true']:.0f} / {run['h_pred']:.0f}",
              GOOD if abs(run["h_true"] - run["h_pred"]) < 6 else WARN)
-        stat(img, PAD + 960, yb, "guessing the average gets",
-             f"{sc.get('mean_iou', float('nan')):.3f}", DIM)
+        if "mean_iou" in sc:     # โมเดลรอบสี่/ห้าไม่ได้เก็บค่านี้ไว้ในตัว (อยู่ใน baselines_r4)
+            stat(img, PAD + 960, yb, "guessing the average gets",
+                 f"{sc['mean_iou']:.3f}", DIM)
     else:
         # ไม่มีกล้อง = ไม่มีอะไรให้เทียบ · โชว์เลข 0.000 ไว้จะเข้าใจผิดว่าโมเดลพลาดหมด
         stat(img, PAD, yb, "shadow height  from sound", f"{run['h_pred']:.0f}")
@@ -441,6 +446,41 @@ def cache_src(section, test_section, held_only=False):
                np.asarray(dm[i]), held)
 
 
+def cache4_src(pr, name, section, held_only=False):
+    """เล่นย้อนสำหรับโมเดลรอบสี่/ห้า จากแคช r5 (มีครบสี่ห้อง)
+
+    เฉลยบนจอต้องเป็นแบบเดียวกับที่โมเดลเทรนมา: โมเดลเฉพาะคนก็ต้องเทียบกับเฉลยเฉพาะคน
+    (ตัดพื้นหลังทั้งช่วงอัด จึงต้องอ่านทั้งช่วงก่อน ไม่ใช่ทีละเฟรม)
+    เคยเห็นตอนเทรนไหม ดูจากชุดเทรนที่บันทึกไว้ในโมเดล ไม่ได้เดา
+    """
+    from train_r4 import split_mask
+    cache = MD.DATA / f"_map2_cache_r5_{GW}x{GH}"
+    if not (cache / "meta.json").exists():
+        sys.exit(f"ไม่มีแคช {cache} — สร้างด้วย MAP2_ROUND=r5 python car/mapdata2.py")
+    import json
+    fam = json.loads((cache / "meta.json").read_text(encoding="utf-8"))["fam"]
+    if name not in fam:
+        sys.exit(f"ไม่มีห้อง {name} ในแคช (มี {fam}) · ใส่ --name เช่น roomD")
+    sec = np.load(cache / "sec.npy")
+    src = np.load(cache / "src.npy")
+    idx = np.nonzero((src == fam.index(name)) & (sec == section))[0]
+    if not len(idx):
+        sys.exit(f"ไม่มี {name}_s{section} ในแคช")
+    cn = np.load(cache / "counts.npy", mmap_mode="r")
+    dm = np.asarray(np.load(cache / "dmm.npy", mmap_mode="r")[idx])
+    if pr.target == "person":
+        from person_target import person_dmm
+        dm = person_dmm(dm, sec[idx], src[idx])
+    held = not split_mask(pr.args["train"], sec[idx[:1]], src[idx[:1]], fam)[0]
+    tag = ("ไม่เคยเห็นตอนเทรน — คะแนนที่เห็นคือของจริง" if held
+           else "**โมเดลเคยเห็นช่วงนี้ตอนเทรน คะแนนจะดูดีเกินจริง**")
+    print(f"เล่นย้อน {name}_s{section} จากแคช · {len(idx)} เฟรม · {tag}")
+    if held_only and not held:
+        sys.exit(f"--held-only: โมเดลเคยเห็น {name}_s{section} แล้ว · เทรนด้วย {pr.args['train']}")
+    for j, i in enumerate(idx):
+        yield {"counts": np.asarray(cn[i]), "pins": list(PINS)}, dm[j], held
+
+
 def live_src(a, state):
     """โหมดสด — ลำดับสำคัญ: ปิด GC ก่อนแตะกล้อง เปิดคืนหลังปิดกล้องแล้ว
 
@@ -520,12 +560,50 @@ def main():
                     help="ข้ามเฟรมที่โมเดลเคยเห็นตอนเทรน ดูเฉพาะของจริง")
     ap.add_argument("--no-cam", action="store_true",
                     help="โหมดสดแบบเสียงล้วน ไม่เปิดกล้อง")
+    ap.add_argument("--model", help="โมเดลรอบสี่/ห้า (.pt จาก train_r4) เช่น "
+                                    "car/data/r4_runs/deploy_person.pt · ไม่ใส่ = โมเดลรอบ 3")
     a = ap.parse_args()
 
-    if MD.ROUND != "r3":
-        sys.exit(f"หน้าจอนี้ใช้กับโมเดลรอบ 3 เท่านั้น "
+    if a.model:
+        pr = load_r4(a)
+    elif MD.ROUND != "r3":
+        sys.exit(f"หน้าจอนี้ใช้กับโมเดลรอบ 3 (หรือใส่ --model สำหรับรอบสี่/ห้า) "
                  f"(ตอนนี้ MAP2_ROUND={MD.ROUND}) · "
                  f"โมเดลรอบเก่าโครงสร้างต่างกันจนโหลดข้ามกันไม่ได้")
+    else:
+        pr = load_r3(a)
+
+    import cv2  # noqa: F401
+    # ต้องเป็นอังกฤษ — cv2.putText ใช้ฟอนต์ Hershey ซึ่งวาดตัวไทยไม่ได้ ออกมาเป็น ?
+    foot = "q quit  ·  space pause  ·  c camera / raw sensors  ·  s save png"
+    if a.port:
+        a.pr = pr
+        # ใช้ dict ร่วมกัน เพราะ generator เริ่มทำงานทีหลัง run_loop
+        # ถ้าส่งค่าไปตรง ๆ แล้วกล้องเปิดไม่ได้ทีหลัง จอจะยังเขียนว่ามีกล้องอยู่
+        state = {"cam": not a.no_cam}
+        run, el = run_loop(live_src(a, state), pr, a.thr, a.fps, foot,
+                           live=True, state=state)
+    else:
+        if a.model:
+            src = cache4_src(pr, a.name, a.section, a.held_only)
+        elif MD.frame_files(f"{a.name}_s{a.section}"):
+            src = replay_src(a.name, a.section, pr.test_section, a.held_only)
+        else:
+            print(f"ไม่มีโฟลเดอร์ดิบ {a.name}_s{a.section} — ใช้แคชตอนเทรนแทน")
+            src = cache_src(a.section, pr.test_section, a.held_only)
+        run, el = run_loop(src, pr, a.thr, a.fps, foot)
+    if run["n"]:
+        what = ("เฉพาะเฟรมที่ไม่เคยเห็นตอนเทรน" if run.get("honest")
+                else "ทุกเฟรม (มีเฟรมที่โมเดลเคยเห็นปนอยู่ เลขจึงดูดีเกินจริง)")
+        print(f"\nสรุป {run['n']} เฟรม ใน {el:.0f} วินาที · {what}")
+        print(f"  IoU {run['iou']:.3f} · ระยะพลาด {run['mae']:.1f} ซม. · "
+              f"สูงเงา กล้อง {run['h_true']:.1f} เทียบ เสียง {run['h_pred']:.1f} ช่อง")
+        if run.get("seen_n"):
+            print(f"  (ข้ามอีก {run['seen_n']} เฟรมที่โมเดลเคยเห็นตอนเทรน "
+                  f"ไม่เอามาคิดคะแนน)")
+
+
+def load_r3(a):
     from model3 import MapPredictor
     pr = MapPredictor(smooth=a.smooth)
     s = pr.score
@@ -542,33 +620,24 @@ def main():
     if s.get("h_r2", 0.0) <= 0.02:
         print("  ** ท่าทางยังทายไม่ได้ดีกว่าการเดาค่าเฉลี่ย **")
         print("  รูปร่างบนจอบอกตำแหน่งกับระยะได้ แต่ยังบอกท่าทางไม่ได้")
+    return pr
 
-    import cv2  # noqa: F401
-    # ต้องเป็นอังกฤษ — cv2.putText ใช้ฟอนต์ Hershey ซึ่งวาดตัวไทยไม่ได้ ออกมาเป็น ?
-    foot = "q quit  ·  space pause  ·  c camera / raw sensors  ·  s save png"
-    if a.port:
-        a.pr = pr
-        # ใช้ dict ร่วมกัน เพราะ generator เริ่มทำงานทีหลัง run_loop
-        # ถ้าส่งค่าไปตรง ๆ แล้วกล้องเปิดไม่ได้ทีหลัง จอจะยังเขียนว่ามีกล้องอยู่
-        state = {"cam": not a.no_cam}
-        run, el = run_loop(live_src(a, state), pr, a.thr, a.fps, foot,
-                           live=True, state=state)
-    else:
-        if MD.frame_files(f"{a.name}_s{a.section}"):
-            src = replay_src(a.name, a.section, pr.test_section, a.held_only)
-        else:
-            print(f"ไม่มีโฟลเดอร์ดิบ {a.name}_s{a.section} — ใช้แคชตอนเทรนแทน")
-            src = cache_src(a.section, pr.test_section, a.held_only)
-        run, el = run_loop(src, pr, a.thr, a.fps, foot)
-    if run["n"]:
-        what = ("เฉพาะเฟรมที่ไม่เคยเห็นตอนเทรน" if run.get("honest")
-                else "ทุกเฟรม (มีเฟรมที่โมเดลเคยเห็นปนอยู่ เลขจึงดูดีเกินจริง)")
-        print(f"\nสรุป {run['n']} เฟรม ใน {el:.0f} วินาที · {what}")
-        print(f"  IoU {run['iou']:.3f} · ระยะพลาด {run['mae']:.1f} ซม. · "
-              f"สูงเงา กล้อง {run['h_true']:.1f} เทียบ เสียง {run['h_pred']:.1f} ช่อง")
-        if run.get("seen_n"):
-            print(f"  (ข้ามอีก {run['seen_n']} เฟรมที่โมเดลเคยเห็นตอนเทรน "
-                  f"ไม่เอามาคิดคะแนน)")
+
+def load_r4(a):
+    from predict4 import Predictor4
+    pr = Predictor4(a.model, smooth=a.smooth)
+    s = pr.score
+    if a.thr is None:
+        a.thr = pr.thr
+    print(f"โมเดล {pr.name} · เฉลยแบบ {pr.target} · {pr.params:,} พารามิเตอร์ · "
+          f"{'ตัดช่วง %d ช่วง' % pr.K if pr.K else 'ไม่ตัดช่วง'} · จุดตัด {a.thr:.2f}")
+    print(f"  เทรนด้วย {pr.args['train']} · คะแนนบน {s.get('on', '?')}: "
+          f"IoU {s.get('iou', float('nan')):.3f} · "
+          f"ระยะพลาด {s.get('mae_cm', float('nan')):.1f} ซม. · "
+          f"สูงเงา R2 {s.get('h_r2', float('nan')):+.3f}")
+    if pr.target == "person":
+        print("  โมเดลนี้ทายเฉพาะสิ่งที่เคลื่อนที่ (คน) — เฟอร์นิเจอร์ที่อยู่นิ่งจะไม่ขึ้นบนจอ")
+    return pr
 
 
 if __name__ == "__main__":

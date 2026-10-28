@@ -40,7 +40,7 @@ LOSSES = ("r3", "bdh", "mse", "bce_l1", "dice_huber", "focal")
 
 
 # ------------------------------------------------------------------ loss
-def loss_fn(name, ol, dl, occ, z, torch, F, huber=0.1):
+def loss_fn(name, ol, dl, occ, z, torch, F, huber=0.1, wd=2.0):
     """ทุก loss คืนสเกลาร์ · ระยะคิดเฉพาะช่องที่มีวัตถุจริง (ระยะในที่ว่างไม่มีความหมาย)
 
     r3          BCE + Dice + 2 Huber + 0.5 ความสูงเงา   (สูตรรอบสาม = ค่าตั้งต้น)
@@ -61,20 +61,42 @@ def loss_fn(name, ol, dl, occ, z, torch, F, huber=0.1):
         bce = F.binary_cross_entropy_with_logits(ol, occ)
     if name == "r3":
         hgt = (soft_height(p, torch) - soft_height(occ, torch)).abs().mean() / GH
-        return bce + dice + 2 * hub + 0.5 * hgt
+        return bce + dice + wd * hub + 0.5 * hgt
     if name == "bdh":
-        return bce + dice + 2 * hub
+        return bce + dice + wd * hub
     if name == "mse":
-        return F.mse_loss(p, occ) + 2 * ((err ** 2) * m).sum() / den
+        return F.mse_loss(p, occ) + wd * ((err ** 2) * m).sum() / den
     if name == "bce_l1":
-        return bce + 2 * (err * m).sum() / den
+        return bce + wd * (err * m).sum() / den
     if name == "dice_huber":
-        return dice + 2 * hub
+        return dice + wd * hub
     if name == "focal":
         ce = F.binary_cross_entropy_with_logits(ol, occ, reduction="none")
         pt = torch.exp(-ce)
-        return ((1 - pt) ** 2 * ce).mean() + dice + 2 * hub
+        return ((1 - pt) ** 2 * ce).mean() + dice + wd * hub
     raise ValueError(name)
+
+
+def split_mask(spec, sec, src, fam):
+    """ "1,2,3,4" (เลขช่วงของชุดแรก ใช้กับรอบ r4) หรือ "hw2_s1,roomB_s2" (ชื่อชุด) -> mask
+
+    sec เป็นเลขท้ายชื่ออย่างเดียว hw2_s1 กับ roomB_s1 จึงได้ sec=1 เท่ากัน
+    ต้องดู src (ตระกูลชื่อ) ประกอบเสมอ ไม่งั้นสองห้องจะปนกัน"""
+    m = np.zeros(len(sec), bool)
+    for tok in str(spec).split(","):
+        tok = tok.strip()
+        if not tok:
+            continue
+        if "_s" in tok:
+            f, k = tok.rsplit("_s", 1)
+            if f not in fam:
+                raise SystemExit(f"ไม่มีชุด {tok} ในแคชนี้ (มี {fam})")
+            m |= (src == fam.index(f)) & (sec == int(k))
+        elif tok.endswith("_*"):
+            m |= src == fam.index(tok[:-2])
+        else:
+            m |= (src == 0) & (sec == int(tok))
+    return m
 
 
 # ------------------------------------------------------------------ ตัวชี้วัด
@@ -153,6 +175,7 @@ def prep_np(x, dc, scale, mode):
 def predict(torch, net, fd, ends, bs=64):
     """คืน (ความน่าจะเป็นมีวัตถุ, ระยะ ซม.) ของภาพเต็ม · โหมดตัดช่วง = ต่อทุกแถบเข้าด้วยกัน"""
     net.eval()
+    dev = next(net.parameters()).device
     P = np.zeros((len(ends), GH, GW), np.float32)
     D = np.zeros_like(P)
     with torch.no_grad():
@@ -160,17 +183,17 @@ def predict(torch, net, fd, ends, bs=64):
             e = ends[i:i + bs]
             w = fd.wave(e)
             if not fd.plan:
-                ol, dl = net(torch.from_numpy(w).float())
-                P[i:i + bs] = torch.sigmoid(ol).numpy()
-                D[i:i + bs] = (NEAR_CM + (FAR_CM - NEAR_CM) * torch.sigmoid(dl)).numpy()
+                ol, dl = net(torch.from_numpy(w).float().to(dev))
+                P[i:i + bs] = torch.sigmoid(ol).cpu().numpy()
+                D[i:i + bs] = (NEAR_CM + (FAR_CM - NEAR_CM) * torch.sigmoid(dl)).cpu().numpy()
                 continue
             best = np.full((len(e), GH, GW), -1.0, np.float32)
             dd = np.zeros_like(best)
             for k, (i0, i1, lo, hi) in enumerate(fd.plan):
-                cond = torch.from_numpy(np.eye(fd.K, dtype=np.float32)[[k] * len(e)])
-                ol, dl = net(torch.from_numpy(w[:, :, :, i0:i1]).float(), cond)
-                p = torch.sigmoid(ol).numpy()
-                d = lo + (hi - lo) * torch.sigmoid(dl).numpy()
+                cond = torch.from_numpy(np.eye(fd.K, dtype=np.float32)[[k] * len(e)]).to(dev)
+                ol, dl = net(torch.from_numpy(w[:, :, :, i0:i1]).float().to(dev), cond)
+                p = torch.sigmoid(ol).cpu().numpy()
+                d = lo + (hi - lo) * torch.sigmoid(dl).cpu().numpy()
                 take = p > best
                 best = np.where(take, p, best)
                 dd = np.where(take, d, dd)
@@ -196,9 +219,18 @@ def main():
     ap.add_argument("--lr", type=float, default=2e-3)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--train", default="1,2,3,4")
-    ap.add_argument("--val", type=int, default=5)
-    ap.add_argument("--test", type=int, default=6)
+    ap.add_argument("--val", default="5", help="เลขช่วง หรือชื่อชุด เช่น roomC_*")
+    ap.add_argument("--test", default="6")
+    ap.add_argument("--w-depth", type=float, default=2.0, help="น้ำหนักเทอมระยะใน loss")
+    ap.add_argument("--target", default="scene", choices=("scene", "person"),
+                    help="scene = ภาพกล้องทั้งฉาก · person = เฉพาะสิ่งที่เคลื่อนที่ (person_target.py)")
+    ap.add_argument("--select", default="best", choices=("best", "last"),
+                    help="best = รอบที่ชุดเลือกให้ IoU สูงสุด · last = รอบสุดท้ายเสมอ "
+                         "(ใช้ตอนชุดเลือกถูกรวมเข้าชุดเทรนแล้ว จึงเลือกด้วยมันไม่ได้)")
+    ap.add_argument("--thr", type=float, default=None,
+                    help="จุดตัดตายตัว (ไม่ใส่ = เลือกจากชุดเลือก) · ใช้คู่กับ --select last")
     ap.add_argument("--threads", type=int, default=6)
+    ap.add_argument("--device", default="auto", help="auto = ใช้ GPU ถ้ามี")
     a = ap.parse_args()
 
     import torch
@@ -206,24 +238,34 @@ def main():
     F = nn.functional
     torch.manual_seed(a.seed)
     torch.set_num_threads(a.threads)
+    dev = torch.device(a.device if a.device != "auto" else
+                       ("cuda" if torch.cuda.is_available() else "cpu"))
+    torch.backends.cudnn.benchmark = True
+    print(f"  อุปกรณ์: {dev}" + (f" ({torch.cuda.get_device_name(0)})" if dev.type == "cuda" else ""))
     rng = np.random.default_rng(a.seed)
     OUT.mkdir(parents=True, exist_ok=True)
 
     counts_mm, dmm, sec, src, meta = MD.load()
-    counts = np.asarray(counts_mm)                    # ~150 MB อยู่ในหน่วยความจำ อ่านเร็วกว่า
+    counts = np.asarray(counts_mm)
+    if a.target == "person":
+        from person_target import person_dmm
+        dmm = person_dmm(dmm, sec, src)                    # ~150 MB อยู่ในหน่วยความจำ อ่านเร็วกว่า
     rate = 66313.0
     ends = stack_index(sec, src, a.stack)
-    trs = [int(s) for s in a.train.split(",")]
-    tr = ends[np.isin(sec[ends], trs)]
-    va = ends[sec[ends] == a.val]
-    te = ends[sec[ends] == a.test]
+    fam = meta["fam"]
+    tr = ends[split_mask(a.train, sec, src, fam)[ends]]
+    va = ends[split_mask(a.val, sec, src, fam)[ends]]
+    te = ends[split_mask(a.test, sec, src, fam)[ends]] if a.test else ends[:0]
+    trs = a.train
+    if not len(tr) or not len(va):
+        raise SystemExit(f"ชุดเทรน ({len(tr)}) หรือชุดเลือก ({len(va)}) ว่าง — เช็ค --train/--val")
     dc, scale = M4.norm_params(counts, tr, a.norm)
     fd = Feeder(counts, dmm, rate, a, dc, scale)
-    net = make_net(torch, nn, a, fd)
+    net = make_net(torch, nn, a, fd).to(dev)
     npar = sum(p.numel() for p in net.parameters())
-    print(f"[{a.name}] act={a.act} loss={a.loss} norm={a.norm} stack={a.stack} "
+    print(f"[{a.name}] target={a.target} act={a.act} loss={a.loss} norm={a.norm} stack={a.stack} "
           f"slice={a.slice_ms}ms x{fd.K} · {npar:,} พารามิเตอร์")
-    print(f"  เทรน s{trs} {len(tr):,} · เลือก s{a.val} {len(va):,} · รายงาน s{a.test} {len(te):,}"
+    print(f"  เทรน {trs} {len(tr):,} · เลือก {a.val} {len(va):,} · รายงาน {a.test or '-'} {len(te):,}"
           f" · ปรับค่า dc {dc:.0f} scale {scale:.1f}", flush=True)
 
     opt = torch.optim.AdamW(net.parameters(), lr=a.lr, weight_decay=1e-4)
@@ -240,26 +282,27 @@ def main():
         for i in range(0, len(tr), a.batch):
             e = tr[np.sort(perm[i:i + a.batch])]
             w, cond, occ, z = fd.train_batch(e, rng)
-            ol, dl = net(torch.from_numpy(w).float(),
-                         None if cond is None else torch.from_numpy(cond))
-            loss = loss_fn(a.loss, ol, dl, torch.from_numpy(occ), torch.from_numpy(z), torch, F)
+            ol, dl = net(torch.from_numpy(w).float().to(dev),
+                         None if cond is None else torch.from_numpy(cond).to(dev))
+            loss = loss_fn(a.loss, ol, dl, torch.from_numpy(occ).to(dev),
+                           torch.from_numpy(z).to(dev), torch, F, wd=a.w_depth)
             opt.zero_grad()
             loss.backward()
             opt.step()
             sched.step()
             tot += float(loss.detach())
         P, D = predict(torch, net, fd, va)
-        thr = best_thr(P, occ_v)
+        thr = a.thr if a.thr is not None else best_thr(P, occ_v)
         mv = metrics(P, D, occ_v, dep_v, thr)
         mv.update(epoch=ep, loss=tot / nb, sec=time.time() - t0)
         hist.append(mv)
         mark = ""
-        if mv["iou"] > best:
+        if a.select == "last" or mv["iou"] > best:
             best = mv["iou"]
             torch.save({"model": net.state_dict(), "args": vars(a), "norm": (dc, scale),
                         "thr": thr, "epoch": ep}, ck)
             mark = "  <-"
-        print(f"  ep {ep:2d} loss {tot/nb:.4f} | s{a.val} IoU {mv['iou']:.3f} ระยะ {mv['mae_cm']:5.1f}"
+        print(f"  ep {ep:2d} loss {tot/nb:.4f} | เลือก IoU {mv['iou']:.3f} ระยะ {mv['mae_cm']:5.1f}"
               f" ซม. R2 {mv['h_r2']:+.3f} ({mv['sec']:.0f}s){mark}", flush=True)
 
     # ---- ตอนจบ: โหลดเช็คพอยต์ที่ s5 เลือก แล้วแตะ s6 ครั้งเดียว ด้วยจุดตัดจาก s5
@@ -268,19 +311,26 @@ def main():
     occ_t, dep_t = dmm[te] > 0, dmm[te].astype(np.float32) / 10.0
     Pv, Dv = predict(torch, net, fd, va)
     val = metrics(Pv, Dv, occ_v, dep_v, c["thr"])
-    P, D = predict(torch, net, fd, te)
-    test = metrics(P, D, occ_t, dep_t, c["thr"])
-    sh = np.random.default_rng(123).permutation(len(te))
-    shuf = metrics(P[sh], D[sh], occ_t, dep_t, c["thr"])
+    sv = np.random.default_rng(123).permutation(len(va))
+    val_shuf = metrics(Pv[sv], Dv[sv], occ_v, dep_v, c["thr"])
+    test = shuf = None
+    if len(te):           # รอบเลือกสูตร (r5dev) ไม่มีชุดรายงานเลย ตั้งใจ
+        P, D = predict(torch, net, fd, te)
+        test = metrics(P, D, occ_t, dep_t, c["thr"])
+        sh = np.random.default_rng(123).permutation(len(te))
+        shuf = metrics(P[sh], D[sh], occ_t, dep_t, c["thr"])
     res = {"name": a.name, "args": vars(a), "params": npar, "norm": [dc, scale],
-           "best_epoch": c["epoch"], "val": val, "test": test, "test_shuffled": shuf,
+           "best_epoch": c["epoch"], "val": val, "val_shuffled": val_shuf,
+           "test": test, "test_shuffled": shuf, "round": MD.ROUND,
            "hist": hist, "minutes": (time.time() - t_all) / 60}
     (OUT / f"{a.name}.json").write_text(json.dumps(res, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"  จบ ({res['minutes']:.0f} นาที) · รอบที่เลือก {c['epoch']} · "
-          f"s{a.val}: IoU {val['iou']:.3f} ระยะ {val['mae_cm']:.1f} · "
-          f"s{a.test}: IoU {test['iou']:.3f} ระยะ {test['mae_cm']:.1f} R2 {test['h_r2']:+.3f} · "
-          f"สลับคลื่น IoU {shuf['iou']:.3f}", flush=True)
-
+    msg = (f"  จบ ({res['minutes']:.0f} นาที) · รอบที่เลือก {c['epoch']} · "
+           f"เลือก: IoU {val['iou']:.3f} ระยะ {val['mae_cm']:.1f} R2 {val['h_r2']:+.3f} "
+           f"(สลับคลื่น {val_shuf['iou']:.3f})")
+    if test:
+        msg += (f" · รายงาน: IoU {test['iou']:.3f} ระยะ {test['mae_cm']:.1f} "
+                f"R2 {test['h_r2']:+.3f} (สลับคลื่น {shuf['iou']:.3f})")
+    print(msg, flush=True)
 
 def make_net(torch, nn, a, fd):
     return M4.make_model(torch, nn, GH, GW, a.stack, fd.nsamp, n_cond=fd.K, act=a.act)

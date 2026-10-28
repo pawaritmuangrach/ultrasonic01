@@ -26,7 +26,8 @@ NEAR_CM, FAR_CM = 40.0, 200.0
 #   80x60 ช่องละ 0.73 องศา -> ความเบลอกินไป 6 ช่อง = ได้ความเนียน ไม่ใช่ความละเอียด
 #   40x30 ช่องละ 1.46 องศา -> ความเบลอกินไป 3 ช่อง = ใกล้เคียงของจริงกว่า
 # และช่องออกน้อยลง 4 เท่า โอกาสจำข้อมูลแทนการเรียนก็น้อยลงตาม
-GRIDS = {"r2": (80, 60, 4), "r3": (40, 30, 8), "r4": (40, 30, 8)}
+GRIDS = {"r2": (80, 60, 4), "r3": (40, 30, 8), "r4": (40, 30, 8),
+         "r5dev": (40, 30, 8), "r5": (40, 30, 8), "r5d": (40, 30, 8)}
 
 # ชุดข้อมูลแยกตามรอบ · **แคชกับโมเดลของแต่ละรอบต้องอยู่คนละที่**
 # ไม่งั้นพอเก็บข้อมูลรอบใหม่แล้วสร้างแคช ของรอบเก่าจะถูกทับหายทั้งข้อมูล
@@ -43,6 +44,15 @@ ROUNDS = {
     # r4 = ฮาร์ดแวร์ชุดใหม่ (MCP6024) · พัลส์ตรงแรงกว่า r3 ~40 เท่า ห้ามปนกับ r3
     #      6 ช่วง x 5 นาที อัดวันเดียว 23 ต.ค. 2026 · ถอดสายชาร์จ · PULSE 863-880 ทุกช่วง
     "r4": [f"hw2_s{i}" for i in range(1, 7)],
+    # r5 = r4 + สามห้องใหม่ (26 ต.ค. 2026) · ห้อง D = ข้อสอบสุดท้าย ประกาศไว้ก่อนเก็บข้อมูล
+    #      r5dev ไม่มีห้อง D เลย ใช้เลือกสูตร เพื่อให้แอบดูห้องสอบไม่ได้แม้ตั้งใจ
+    #      roomB_s3 สั้น 3.7 นาที (การอัดหยุดกลางคัน ไม่มี meta.json) ข้อมูลที่มีใช้ได้ปกติ
+    "r5dev": ([f"hw2_s{i}" for i in range(1, 7)] + [f"roomB_s{i}" for i in range(1, 4)]
+              + [f"roomC_s{i}" for i in range(1, 4)]),
+    "r5": ([f"hw2_s{i}" for i in range(1, 7)] + [f"roomB_s{i}" for i in range(1, 4)]
+           + [f"roomC_s{i}" for i in range(1, 4)] + [f"roomD_s{i}" for i in range(1, 4)]),
+    # r5d = ห้อง D อย่างเดียว ไว้ส่งขึ้นเครื่องเทรนแยก แล้วรวมกับ r5dev เป็น r5 ด้วย merge_cache.py
+    "r5d": [f"roomD_s{i}" for i in range(1, 4)],
 }
 ROUND = os.environ.get("MAP2_ROUND", "r3")
 if ROUND not in ROUNDS:
@@ -126,10 +136,18 @@ def build(names=None, verbose=True):
     sec = np.zeros(N, np.uint8)
     src = np.zeros(N, np.uint8)
     fam = sorted({n.rsplit("_s", 1)[0] for n in names})
+    skipped, padded = 0, 0
     for i, (name, (u, p)) in enumerate(pairs):
         z = np.load(u)
         c = read_counts(z)
+        # Sync4 คำนวณจำนวนจุดจากอัตราสุ่มที่วัดได้ตอนเปิดพอร์ต ซึ่งแกว่งได้ ~0.1%
+        # ห้อง C (26 ต.ค. 2026) จึงได้ 870 จุดแทน 871 เคยถูกข้ามเงียบ ๆ ทั้งห้อง
+        # ต่างกัน 1-2 จุดที่ปลายหน้าต่าง (~0.3 ซม. ที่ 2 ม.) เติม/ตัดที่ปลายได้โดยไม่เสียอะไร
+        if c.shape[1] != 871 and abs(c.shape[1] - 871) <= 2:
+            c = c[:, :871] if c.shape[1] > 871 else np.pad(c, ((0, 0), (0, 871 - c.shape[1])), mode="edge")
+            padded += 1
         if c.shape[1] != 871:
+            skipped += 1
             continue
         counts[i] = c
         dmm[i] = shrink(cv2.imread(str(p), cv2.IMREAD_UNCHANGED))
@@ -145,6 +163,10 @@ def build(names=None, verbose=True):
         {"n": N, "sets": names, "fam": fam, "grid": [GW, GH], "blk": BLK,
          "near_cm": NEAR_CM, "far_cm": FAR_CM, "pins": list(PINS)},
         ensure_ascii=False, indent=2), encoding="utf-8")
+    if padded:
+        print(f"เติม/ตัดปลายให้ยาว 871 จุด {padded:,} เฟรม (ต่างกันไม่เกิน 2 จุด)")
+    if skipped:
+        print(f"!! ข้าม {skipped:,} เฟรมที่ความยาวต่างจาก 871 เกิน 2 จุด — ตรวจว่าตั้ง --max-cm เท่ากันไหม")
     if verbose:
         print(f"เก็บแคชที่ {CACHE}")
     return N

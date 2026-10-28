@@ -35,3 +35,6 @@ esp32_array/_backup/
 
 # ชุดสำหรับ Colab สร้างใหม่ได้ด้วย python colab/build_colab.py (มีข้อมูล 115 MB อยู่ข้างใน)
 colab/*.zip
+
+# ชิ้นข้อมูลห้อง D + โค้ด zip สำหรับอัปโหลด Kaggle (46 MB) สร้างใหม่ได้จาก car/data
+colab/final_upload/

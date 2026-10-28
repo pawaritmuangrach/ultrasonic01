@@ -22,9 +22,12 @@ import numpy as np  # noqa: E402
 
 import mapdata2 as MD                              # noqa: E402
 from mapdata2 import NEAR_CM, FAR_CM               # noqa: E402
-from train_r4 import best_thr, metrics, OUT        # noqa: E402
+from train_r4 import best_thr, metrics, OUT, split_mask   # noqa: E402
+import argparse     # noqa: E402
 
 BIN = 8
+PREFIX = "baseline"
+HAS_TEST = True
 
 
 def features(counts, dc):
@@ -36,14 +39,15 @@ def features(counts, dc):
 
 def run(name, P_v, D_v, P_t, D_t, occ_v, dep_v, occ_t, dep_t, extra, t0):
     thr = best_thr(P_v, occ_v)
-    res = {"name": f"baseline_{name}", "val": metrics(P_v, D_v, occ_v, dep_v, thr),
-           "test": metrics(P_t, D_t, occ_t, dep_t, thr), "minutes": (time.time() - t0) / 60,
-           "args": extra}
-    (OUT / f"baseline_{name}.json").write_text(json.dumps(res, indent=2, ensure_ascii=False),
+    res = {"name": f"{PREFIX}_{name}", "val": metrics(P_v, D_v, occ_v, dep_v, thr),
+           "test": metrics(P_t, D_t, occ_t, dep_t, thr) if HAS_TEST else None,
+           "minutes": (time.time() - t0) / 60, "args": extra, "round": MD.ROUND}
+    (OUT / f"{PREFIX}_{name}.json").write_text(json.dumps(res, indent=2, ensure_ascii=False),
                                                encoding="utf-8")
     v, t = res["val"], res["test"]
-    print(f"  {name:6} s5 IoU {v['iou']:.3f} ระยะ {v['mae_cm']:5.1f} · s6 IoU {t['iou']:.3f} "
-          f"ระยะ {t['mae_cm']:5.1f} R2 {t['h_r2']:+.3f} · {extra}", flush=True)
+    print(f"  {name:6} เลือก IoU {v['iou']:.3f} ระยะ {v['mae_cm']:5.1f} R2 {v['h_r2']:+.3f}"
+          + (f" · รายงาน IoU {t['iou']:.3f} ระยะ {t['mae_cm']:5.1f} R2 {t['h_r2']:+.3f}" if t else "")
+          + f" · {extra}", flush=True)
 
 
 def main():
@@ -52,10 +56,24 @@ def main():
     from sklearn.neighbors import NearestNeighbors
     from sklearn.preprocessing import StandardScaler
 
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--train", default="1,2,3,4")
+    ap.add_argument("--val", default="5")
+    ap.add_argument("--test", default="6", help="ว่าง = ไม่มีชุดรายงาน (รอบเลือกสูตร)")
+    ap.add_argument("--prefix", default="baseline")
+    ap.add_argument("--target", default="scene", choices=("scene", "person"))
+    a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
-    counts, dmm, sec, _src, _m = MD.load()
+    counts, dmm, sec, src, meta = MD.load()
     counts = np.asarray(counts)
-    tr, va, te = (np.nonzero(np.isin(sec, s))[0] for s in ([1, 2, 3, 4], [5], [6]))
+    if a.target == "person":
+        from person_target import person_dmm
+        dmm = person_dmm(dmm, sec, src)
+    tr, va = (np.nonzero(split_mask(x, sec, src, meta["fam"]))[0] for x in (a.train, a.val))
+    te = np.nonzero(split_mask(a.test, sec, src, meta["fam"]))[0] if a.test else va
+    global PREFIX, HAS_TEST
+    HAS_TEST = bool(a.test)
+    PREFIX = a.prefix
     dc = float(np.median(counts[tr[::40]]))
     occ = dmm > 0
     dep = dmm.astype(np.float32) / 10.0

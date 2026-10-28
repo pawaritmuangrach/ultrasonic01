@@ -1,13 +1,14 @@
-"""สร้างชุดสำหรับเทรนบน Google Colab (GPU T4) — โค้ด + ข้อมูล r4 + โน้ตบุ๊ก
+"""สร้างชุดสำหรับเทรนบน Google Colab (GPU T4)
 
-    python colab/build_colab.py
+    python colab/build_colab.py                 รอบ r5dev (เลือกสูตร · ไม่มีห้องสอบ D)
 
-ได้สองไฟล์ในโฟลเดอร์ colab/
-  ultrasonic_r4_colab.zip    โค้ดเทรน + แคชข้อมูล r4 (อัปโหลดไป Google Drive)
-  ultrasonic_r4_colab.ipynb  โน้ตบุ๊ก (เปิดใน Colab: File > Upload notebook)
+ได้สามไฟล์ในโฟลเดอร์ colab/
+  ultrasonic_<รอบ>_data.zip   แคชข้อมูล (ใหญ่ · อัปโหลดไป Drive ครั้งเดียวต่อรอบข้อมูล)
+  ultrasonic_code.zip         โค้ดเทรน (เล็ก · อัปโหลดใหม่ทุกครั้งที่โค้ดเปลี่ยน)
+  ultrasonic_<รอบ>.ipynb      โน้ตบุ๊ก (เปิดใน Colab: File > Upload notebook)
 
-**ไม่แก้ไฟล์ใน car/ เลย** ตัว train_r4.py ในชุดนี้คือสำเนาที่เติมการส่งข้อมูลขึ้น GPU
-ตอนแพ็ก เพื่อไม่กระทบคิวที่กำลังรันบนเครื่องอยู่ ค่าอื่นทุกอย่างเหมือนต้นฉบับ
+**r5dev ไม่มีข้อมูลห้อง D อยู่ในชุดเลย** ห้อง D เป็นข้อสอบสุดท้ายที่ประกาศไว้ก่อนเก็บ
+การไม่ใส่ไว้เลยทำให้เผลอเลือกสูตรจากห้อง D ไม่ได้แม้ตั้งใจ
 """
 import json
 import zipfile
@@ -16,59 +17,57 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CAR = ROOT / "car"
 OUTDIR = ROOT / "colab"
-ZIP = OUTDIR / "ultrasonic_r4_colab.zip"
-NB = OUTDIR / "ultrasonic_r4_colab.ipynb"
 CODE = ["mapdata2.py", "rig2.py", "model2.py", "model3.py", "model4.py", "train_map2.py",
-        "train_map3.py", "baselines_r4.py", "r4_report.py"]
-CACHE = CAR / "data" / "_map2_cache_r4_40x30"
+        "train_map3.py", "train_r4.py", "baselines_r4.py", "r4_report.py", "merge_cache.py", "person_target.py"]
+import os
+STAGE = os.environ.get("STAGE", "dev")      # dev = เลือกสูตร (ไม่มีห้อง D) · final = ข้อสอบห้อง D
+ROUND = "r5dev" if STAGE == "dev" else "r5"
+CACHE = CAR / "data" / f"_map2_cache_{ROUND}_40x30"
 
-# (ข้อความเดิม, ข้อความใหม่) · ต้องเจอข้อความเดิมครั้งเดียวพอดี ไม่งั้นหยุด
-GPU_PATCH = [
-    ('    ap.add_argument("--threads", type=int, default=6)\n',
-     '    ap.add_argument("--threads", type=int, default=6)\n'
-     '    ap.add_argument("--device", default="auto", help="auto = ใช้ GPU ถ้ามี")\n'),
-    ('    torch.set_num_threads(a.threads)\n',
-     '    torch.set_num_threads(a.threads)\n'
-     '    dev = torch.device(a.device if a.device != "auto" else\n'
-     '                       ("cuda" if torch.cuda.is_available() else "cpu"))\n'
-     '    torch.backends.cudnn.benchmark = True\n'
-     '    print(f"  อุปกรณ์: {dev}" + (f" ({torch.cuda.get_device_name(0)})" if dev.type == "cuda" else ""))\n'),
-    ('    net = make_net(torch, nn, a, fd)\n', '    net = make_net(torch, nn, a, fd).to(dev)\n'),
-    ('            ol, dl = net(torch.from_numpy(w).float(),\n'
-     '                         None if cond is None else torch.from_numpy(cond))\n'
-     '            loss = loss_fn(a.loss, ol, dl, torch.from_numpy(occ), torch.from_numpy(z), torch, F)\n',
-     '            ol, dl = net(torch.from_numpy(w).float().to(dev),\n'
-     '                         None if cond is None else torch.from_numpy(cond).to(dev))\n'
-     '            loss = loss_fn(a.loss, ol, dl, torch.from_numpy(occ).to(dev),\n'
-     '                           torch.from_numpy(z).to(dev), torch, F)\n'),
-    ('    net.eval()\n    P = np.zeros((len(ends), GH, GW), np.float32)\n',
-     '    net.eval()\n    dev = next(net.parameters()).device\n'
-     '    P = np.zeros((len(ends), GH, GW), np.float32)\n'),
-    ('                ol, dl = net(torch.from_numpy(w).float())\n'
-     '                P[i:i + bs] = torch.sigmoid(ol).numpy()\n'
-     '                D[i:i + bs] = (NEAR_CM + (FAR_CM - NEAR_CM) * torch.sigmoid(dl)).numpy()\n',
-     '                ol, dl = net(torch.from_numpy(w).float().to(dev))\n'
-     '                P[i:i + bs] = torch.sigmoid(ol).cpu().numpy()\n'
-     '                D[i:i + bs] = (NEAR_CM + (FAR_CM - NEAR_CM) * torch.sigmoid(dl)).cpu().numpy()\n'),
-    ('                cond = torch.from_numpy(np.eye(fd.K, dtype=np.float32)[[k] * len(e)])\n'
-     '                ol, dl = net(torch.from_numpy(w[:, :, :, i0:i1]).float(), cond)\n'
-     '                p = torch.sigmoid(ol).numpy()\n'
-     '                d = lo + (hi - lo) * torch.sigmoid(dl).numpy()\n',
-     '                cond = torch.from_numpy(np.eye(fd.K, dtype=np.float32)[[k] * len(e)]).to(dev)\n'
-     '                ol, dl = net(torch.from_numpy(w[:, :, :, i0:i1]).float().to(dev), cond)\n'
-     '                p = torch.sigmoid(ol).cpu().numpy()\n'
-     '                d = lo + (hi - lo) * torch.sigmoid(dl).cpu().numpy()\n'),
+# รอบเลือกสูตร: เทรนห้องเดิม (hw2) + ห้อง B · เลือกด้วยห้อง C ทั้งห้อง (ห้องที่ไม่เคยเห็น)
+SPLIT = (["--train", "hw2_*,roomB_*", "--val", "roomC_*", "--test", ""] if STAGE == "dev"
+         else [])          # ขั้น final: แต่ละรายการกำหนดการแบ่งเอง
+F5 = ["--loss", "bce_l1", "--slice-ms", "5"]
+SP_C = ["--train", "hw2_*,roomB_*", "--val", "roomC_*", "--test", "roomD_*"]
+# final_all: ห้อง C อยู่ในชุดเทรนแล้ว ชุดเลือก (roomC_s3) มีไว้แค่พิมพ์ความคืบหน้า ไม่ได้ใช้เลือกอะไร
+SP_ALL = ["--train", "hw2_*,roomB_*,roomC_*", "--val", "roomC_s3", "--test", "roomD_*",
+          "--select", "last", "--thr", "0.35"]
+QUEUE_FINAL = [
+    ("final_s0", SP_C + F5),
+    ("final_s1", SP_C + F5 + ["--seed", "1"]),
+    ("final_s2", SP_C + F5 + ["--seed", "2"]),
+    ("final_base_s0", SP_C),
+    ("final_base_s1", SP_C + ["--seed", "1"]),
+    ("final_all_s0", SP_ALL + F5),
+    ("final_all_s1", SP_ALL + F5 + ["--seed", "1"]),
 ]
-
-
-def patched_train():
-    s = (CAR / "train_r4.py").read_text(encoding="utf-8")
-    for old, new in GPU_PATCH:
-        n = s.count(old)
-        if n != 1:
-            raise SystemExit(f"แพตช์ GPU หาข้อความเดิมเจอ {n} ครั้ง (ต้อง 1): {old[:60]!r}")
-        s = s.replace(old, new)
-    return s
+QUEUE_DEV = [
+    ("r5_base_s0", []),
+    ("r5_base_s1", ["--seed", "1"]),
+    ("r5_l1_s0", ["--loss", "bce_l1"]),
+    ("r5_l1_s1", ["--loss", "bce_l1", "--seed", "1"]),
+    ("r5_mse_s0", ["--loss", "mse"]),
+    ("r5_bdh_w2", ["--loss", "bdh"]),
+    ("r5_bdh_w4", ["--loss", "bdh", "--w-depth", "4"]),
+    ("r5_l1_slice5_s0", ["--loss", "bce_l1", "--slice-ms", "5"]),
+    ("r5_l1_slice5_s1", ["--loss", "bce_l1", "--slice-ms", "5", "--seed", "1"]),
+    ("r5_l1_slice3", ["--loss", "bce_l1", "--slice-ms", "3"]),
+    ("r5_l1_slice8", ["--loss", "bce_l1", "--slice-ms", "8"]),
+    ("r5_l1_leaky", ["--loss", "bce_l1", "--act", "leaky"]),
+]
+# ขั้น person: เฉลยเฉพาะสิ่งที่เคลื่อนที่ (person_target.py) · สูตรและการแบ่งเหมือนขั้น final ทุกอย่าง
+PT = ["--target", "person"]
+SP_IN = ["--train", "hw2_s1,hw2_s2,hw2_s3,hw2_s4", "--val", "hw2_s5", "--test", "hw2_s6"]
+QUEUE_PERSON = [
+    ("person_s0", SP_C + F5 + PT),
+    ("person_s1", SP_C + F5 + PT + ["--seed", "1"]),
+    ("person_s2", SP_C + F5 + PT + ["--seed", "2"]),
+    ("person_base_s0", SP_C + PT),
+    ("person_inroom_s0", SP_IN + F5 + PT),
+    ("person_all_s0", SP_ALL + F5 + PT),
+]
+QUEUE = {"dev": QUEUE_DEV, "final": QUEUE_FINAL, "person": QUEUE_PERSON}[STAGE]
+REPORT_GLOB = {"dev": "r5_*.json", "final": "final_*.json", "person": "person_*.json"}[STAGE]
 
 
 def md(text):
@@ -81,122 +80,73 @@ def code(text):
 
 
 def notebook():
+    q = "[\n" + "".join(f"    ({n!r}, {e!r}),\n" for n, e in QUEUE) + "]"
     cells = [
-        md("""
-# ultrasonic รอบสี่ — เทรนบน Colab (GPU)
+        md(f"""
+# ultrasonic รอบห้า ({ROUND}) — เลือกสูตรด้วยห้องที่ไม่เคยเห็น
 
 **ก่อนเริ่ม**
-1. เมนู **Runtime → Change runtime type → T4 GPU** แล้วกด Save
-2. อัปโหลด `ultrasonic_r4_colab.zip` ไปไว้ใน Google Drive ที่โฟลเดอร์ **`MyDrive/ultrasonic_r4/`**
-3. รันทีละเซลล์จากบนลงล่าง (Shift+Enter)
+1. **Runtime → Change runtime type → T4 GPU** → Save
+2. อัปโหลดสองไฟล์ไปที่ Google Drive โฟลเดอร์ **`MyDrive/ultrasonic_r4/`** (โฟลเดอร์เดิม)
+   - `ultrasonic_{ROUND}_data.zip` (ข้อมูล)
+   - `ultrasonic_code.zip` (โค้ด · ทับของเดิมได้)
+3. รันทีละเซลล์จากบนลงล่าง
 
-ผลทุกการทดลองเก็บลง Drive (`MyDrive/ultrasonic_r4/runs/`) ถ้าเซสชันหลุด รันเซลล์ใหม่ได้เลย
-การทดลองที่เสร็จแล้วจะถูกข้าม · **ปล่อยแท็บนี้เปิดไว้** Colab ฟรีตัดเซสชันถ้าไม่มีความเคลื่อนไหวนาน
+การแบ่ง: เทรน **ห้องเดิม (hw2) + ห้อง B** · เลือกรอบ/จุดตัด/สูตร ด้วย **ห้อง C ทั้งห้อง**
+· **ห้อง D ไม่อยู่ในชุดนี้** (ข้อสอบสุดท้าย ใช้รอบหน้าครั้งเดียว)
 """),
-        md("## 1. ตรวจว่าได้ GPU"),
+        md("## 1. ตรวจ GPU"),
         code("""
 import torch
-print("torch", torch.__version__)
-if torch.cuda.is_available():
-    print("GPU:", torch.cuda.get_device_name(0))
-else:
-    print("ไม่มี GPU — ไปที่ Runtime > Change runtime type > T4 GPU แล้วรันเซลล์นี้ใหม่")
+print("torch", torch.__version__, "| GPU:", torch.cuda.get_device_name(0) if torch.cuda.is_available()
+      else "ไม่มี — Runtime > Change runtime type > T4 GPU")
 """),
-        md("## 2. เชื่อม Google Drive แล้วแตกไฟล์"),
-        code("""
+        md("## 2. เชื่อม Drive แล้วแตกไฟล์"),
+        code(f"""
 from google.colab import drive
 drive.mount('/content/drive')
-
 import os, shutil, zipfile
-DRIVE_DIR = '/content/drive/MyDrive/ultrasonic_r4'
-ZIP = f'{DRIVE_DIR}/ultrasonic_r4_colab.zip'
-RUNS = f'{DRIVE_DIR}/runs'
-WORK = '/content/r4'
-assert os.path.exists(ZIP), f'ไม่พบ {ZIP} — อัปโหลด zip ไปที่โฟลเดอร์นี้ใน Drive ก่อน'
+D = '/content/drive/MyDrive/ultrasonic_r4'
+RUNS = f'{{D}}/runs'
+WORK = '/content/r5'
+for z in ('ultrasonic_{ROUND}_data.zip', 'ultrasonic_code.zip'):
+    assert os.path.exists(f'{{D}}/{{z}}'), f'ไม่พบ {{D}}/{{z}} — อัปโหลดก่อน'
 os.makedirs(RUNS, exist_ok=True)
 if os.path.exists(WORK):
     shutil.rmtree(WORK)
-zipfile.ZipFile(ZIP).extractall(WORK)
-# ผลเขียนตรงลง Drive ผ่านลิงก์ จะได้ไม่หายตอนเซสชันหลุด
-os.symlink(RUNS, f'{WORK}/car/data/r4_runs')
-os.chdir(f'{WORK}/car')
-os.environ['MAP2_ROUND'] = 'r4'
+for z in ('ultrasonic_{ROUND}_data.zip', 'ultrasonic_code.zip'):
+    zipfile.ZipFile(f'{{D}}/{{z}}').extractall(WORK)
+os.symlink(RUNS, f'{{WORK}}/car/data/r4_runs')
+os.chdir(f'{{WORK}}/car')
+os.environ['MAP2_ROUND'] = '{ROUND}'
 os.environ['PYTHONIOENCODING'] = 'utf-8'
-print('พร้อม:', sorted(f for f in os.listdir('.') if f.endswith('.py')))
+print('พร้อม')
 """),
         md("""
-## 3. ทดสอบสั้น ๆ (~1-3 นาที)
+## 3. รันคิว (~1-1.5 ชั่วโมงบน T4)
 
-เทรน 1 รอบด้วยข้อมูลช่วงเดียว ดูว่าทุกอย่างทำงานและ **หนึ่งรอบใช้กี่วินาที**
-(บนเครื่องที่บ้าน รอบเต็มใช้ ~110 วินาที · ส่งตัวเลขนี้ให้ Claude ประเมินเวลาได้)
+ทุกการทดลองใช้การแบ่งเดียวกัน (`SPLIT`) เปลี่ยนทีละอย่าง ดูเหตุผลใน `car/ROUND4.md` หัวข้อ 7
 """),
-        code("""
-!python train_r4.py --name colab_smoke --train 1 --epochs 1 --threads 2
-for ext in ('json', 'pt', 'log'):
-    p = f'{RUNS}/colab_smoke.{ext}'
-    if os.path.exists(p):
-        os.remove(p)
-"""),
-        md("""
-## 4. รันคิวการทดลอง (ทั้งหมด ~1.5-2 ชั่วโมงบน T4)
-
-ชื่อขึ้นต้นด้วย `gpu_` เพื่อไม่ชนกับผลที่รันบนเครื่อง · ค่าตั้งต้น = สูตรรอบ 3
-เปลี่ยน **ทีละอย่าง** จากค่าตั้งต้น (ดูเหตุผลใน `car/ROUND4.md`)
-
-- `gpu_base_s0/1/2` ค่าตั้งต้น 3 ค่าสุ่ม = ความต่างที่เกิดจากความบังเอิญ · s0 เทียบกับบนเครื่องด้วย
-- `gpu_loss_*` วิธีวัดความผิด 5 แบบ · `gpu_act_*` ฟังก์ชันกระตุ้น 6 แบบ
-- `gpu_norm_log` บีบคลื่นแบบลอการิทึม · `gpu_slice5` ไอเดียตัดช่วงเวลา 5 ms เลื่อนทีละ 1 ms
-- `gpu_lc_*` เส้นโค้งการเรียนรู้ (เทรน 1, 2, 3 ช่วง) · `gpu_long40_base` เทรน 40 รอบ
-"""),
-        code("""
+        code(f"""
 import subprocess, sys, time
-QUEUE = [
-    ("gpu_base_s0", []),
-    ("gpu_base_s1", ["--seed", "1"]),
-    ("gpu_base_s2", ["--seed", "2"]),
-    ("gpu_loss_bdh", ["--loss", "bdh"]),
-    ("gpu_loss_mse", ["--loss", "mse"]),
-    ("gpu_loss_bce_l1", ["--loss", "bce_l1"]),
-    ("gpu_loss_dice_huber", ["--loss", "dice_huber"]),
-    ("gpu_loss_focal", ["--loss", "focal"]),
-    ("gpu_act_leaky", ["--act", "leaky"]),
-    ("gpu_act_elu", ["--act", "elu"]),
-    ("gpu_act_gelu", ["--act", "gelu"]),
-    ("gpu_act_silu", ["--act", "silu"]),
-    ("gpu_act_mish", ["--act", "mish"]),
-    ("gpu_act_tanh", ["--act", "tanh"]),
-    ("gpu_norm_log", ["--norm", "log"]),
-    ("gpu_slice5", ["--slice-ms", "5", "--slice-step-ms", "1"]),
-    ("gpu_lc_s1", ["--train", "1"]),
-    ("gpu_lc_s12", ["--train", "1,2"]),
-    ("gpu_lc_s123", ["--train", "1,2,3"]),
-    ("gpu_long40_base", ["--epochs", "40"]),
-]
-EPOCHS = "12"
-
+SPLIT = {SPLIT!r}
+QUEUE = {q}
 for name, extra in QUEUE:
-    if os.path.exists(f'{RUNS}/{name}.json'):
-        print('ข้าม (เสร็จแล้ว):', name)
-        continue
-    cmd = [sys.executable, 'train_r4.py', '--name', name, '--epochs', EPOCHS, '--threads', '2'] + extra
+    if os.path.exists(f'{{RUNS}}/{{name}}.json'):
+        print('ข้าม (เสร็จแล้ว):', name); continue
+    cmd = [sys.executable, 'train_r4.py', '--name', name, '--epochs', '12', '--threads', '2'] + SPLIT + extra
     print('=' * 70, '\\nเริ่ม', name, ' '.join(extra), flush=True)
     t = time.time()
-    with open(f'{RUNS}/{name}.log', 'w', encoding='utf-8') as log:
+    with open(f'{{RUNS}}/{{name}}.log', 'w', encoding='utf-8') as log:
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         for line in p.stdout:
-            print(line, end='', flush=True)
-            log.write(line)
+            print(line, end='', flush=True); log.write(line)
         p.wait()
-    print(f"{'เสร็จ' if p.returncode == 0 else 'ล้ม'} {name} · {(time.time() - t) / 60:.0f} นาที")
+    print(f"{{'เสร็จ' if p.returncode == 0 else 'ล้ม'}} {{name}} · {{(time.time() - t) / 60:.0f}} นาที")
 """),
-        md("## 5. สรุปผลทั้งหมด"),
-        code("!python r4_report.py"),
-        md("""
-## 6. ส่งผลกลับ
-
-ไฟล์ผลอยู่ใน Google Drive ที่ `MyDrive/ultrasonic_r4/runs/` (`*.json` คือผล · `*.pt` คือโมเดล)
-ดาวน์โหลด `*.json` ทั้งหมดไปวางที่ `car/data/r4_runs/` ในเครื่อง แล้วบอก Claude
-"""),
+        md("## 4. สรุปผล"),
+        code(f"!python r4_report.py '{REPORT_GLOB}'"),
+        md("ส่งตารางนี้ให้ Claude หรือบอกว่าเสร็จแล้ว (Claude อ่านจากลิงก์โฟลเดอร์ Drive ที่แชร์ได้)"),
     ]
     return {"cells": cells, "metadata": {"accelerator": "GPU", "colab": {"provenance": []},
                                          "kernelspec": {"display_name": "Python 3", "name": "python3"},
@@ -206,14 +156,22 @@ for name, extra in QUEUE:
 
 def main():
     OUTDIR.mkdir(exist_ok=True)
-    with zipfile.ZipFile(ZIP, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
-        for f in CODE:
-            z.write(CAR / f, f"car/{f}")
-        z.writestr("car/train_r4.py", patched_train())
+    if not (CACHE / "meta.json").exists():
+        raise SystemExit(f"ยังไม่มีแคช {CACHE} — สร้างด้วย MAP2_ROUND={ROUND} python car/mapdata2.py")
+    meta = json.loads((CACHE / "meta.json").read_text(encoding="utf-8"))
+    if STAGE == "dev" and any(s.startswith("roomD") for s in meta["sets"]):
+        raise SystemExit("แคชนี้มีห้อง D (ข้อสอบ) อยู่ — หยุด")
+    dz = OUTDIR / f"ultrasonic_{ROUND}_data.zip"
+    with zipfile.ZipFile(dz, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
         for f in sorted(CACHE.iterdir()):
             z.write(f, f"car/data/{CACHE.name}/{f.name}")
-    NB.write_text(json.dumps(notebook(), ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"{ZIP.name} {ZIP.stat().st_size / 1e6:.0f} MB · {NB.name}")
+    cz = OUTDIR / "ultrasonic_code.zip"
+    with zipfile.ZipFile(cz, "w", zipfile.ZIP_DEFLATED) as z:
+        for f in CODE:
+            z.write(CAR / f, f"car/{f}")
+    nb = OUTDIR / f"ultrasonic_{ROUND}.ipynb"
+    nb.write_text(json.dumps(notebook(), ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"{dz.name} {dz.stat().st_size / 1e6:.0f} MB · {cz.name} {cz.stat().st_size / 1e3:.0f} KB · {nb.name}")
 
 
 if __name__ == "__main__":
